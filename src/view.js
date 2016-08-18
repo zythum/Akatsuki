@@ -1,4 +1,10 @@
-import {parseTextTemplate, parseAttributeName} from './parser'
+import {
+  parseTextTemplate, 
+  parseAttributeName, 
+  parseDirectiveValue, 
+  parseFunctionCallString
+} from './parser'
+
 import {objForeach, getType, walk} from './utils'
 import directive from './directive'
 import Model from './model'
@@ -81,9 +87,11 @@ export default class View {
           tokens.forEach( token => {
             let textNode = document.createTextNode(token.value)
             element.parentNode.insertBefore(textNode, element)
-            if (token.type === 'binding')
+            if (token.type === 'binding') {
+              let {path, formatters} = parseDirectiveValue(token.value)
               this.__binding.push(
-                directive.text(textNode, token.value, this))
+                directive.text({textNode, path, formatters, view: this}))
+            }
           })
           element.parentNode.removeChild(element)
           break
@@ -96,13 +104,17 @@ export default class View {
             let {name, value} = attributes[idx]
             let type
             //判断为数据绑定
+            // [directive-args]="xx.xx.xx | filter1(a) | filter2(b)"
             if ( type = parseAttributeName(name, this.__directiveAttributeDelimiters) ) {
+              let {path, formatters} = parseDirectiveValue(value)
               let args = type.split('-')
-              type = args.shift()
-              if ( directive.hasType(type) ) directives.push([type, element, value, args, name])
+              type = args.shift()              
+              if ( directive.hasType(type) ) 
+                directives.push({type, args, name, element, path, formatters, view: this})
             }
 
             //判断为事件绑定
+            //(eventName)="xx.xx.xx($event, $element, $value, $xxx)"
             else if ( type = parseAttributeName(name, this.__eventAttributeDelimiters) ) {
               type.split('&').forEach(type => events.push([type, element, value, name]))
             }

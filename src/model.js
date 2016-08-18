@@ -50,9 +50,9 @@ export default class Model {
   }
 
   update (next) {
-    patch(this.__model, next, (prent, key, value, path) => {
+    patch(this.__model, next, (parent, key, value, path) => {
       const oldValue = parent[key]
-      prent[key] = value
+      parent[key] = value
       let oldValueType = getType(oldValue)
 
       //如果是值属性，并且值相等，那么就不触发变化事件了

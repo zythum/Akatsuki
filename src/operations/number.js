@@ -6,10 +6,12 @@ import {objForeach, getType} from '../utils'
  */
 export default objForeach({
 
-  $plus (number, [arg]) { return number + parseInt(arg, 10) },
-  $minus (number, [arg]) { return number - parseInt(arg, 10) },
-  $multiply (number, [arg]) { return number * parseInt(arg, 10) },
-  $divide (number, [arg]) { return number / parseInt(arg, 10) },
+  '$+': (number, [arg]) => number + parseFloat(arg),
+  '$-': (number, [arg]) => number - parseFloat(arg),
+  '$*': (number, [arg]) => number * parseFloat(arg),
+  '$/': (number, [arg]) => number / parseFloat(arg),
+  '$-x': (number, [arg]) => parseFloat(arg) - number,
+  '$/x': (number, [arg]) => parseFloat(arg) / number,
 
 }, (operation, name) => {
   return (target, args) => {

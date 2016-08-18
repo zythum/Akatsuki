@@ -7,12 +7,11 @@
 </head>
 <body>
 
-<div id="a">
+<div id="a">  
+  <span>${data.count | prefix('$')}</span>
+  <button (click)="buttonClick">plus</button>
   <button (click)="toggleShow">toggleShow</button>
-  
-  <div [if]="data.show">    
-    <span>${data.count}</span>
-    <button (click)="buttonClick">plus</button>
+  <div [if]="data.show">        
     <button (click)="pushItem">push D</button>
     <button (click)="popItem">pop</button>
     <button (click)="reverse">reverse</button>
@@ -21,7 +20,7 @@
       <li [each-item]="data.list">${item.text} | ${$index} | ${$length}</li>
     </ul>
     <ul>
-      <li [each-item]="data.list" [if]="item.show" [text]="item.text"></li>
+      <li [each-item]="data.list" [if]="item.show" [text]="item.text | suffix('%')"></li>
     </ul>
     <ul>
       <li [each-item]="data.list">

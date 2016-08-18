@@ -51,3 +51,54 @@ export function parseTextTemplate (template, delimiters) {
   }
   return tokens
 }
+
+/**
+ * 分析 functionName(args1, args2...) 这种格式
+ * @param  {string} template       模版字符串
+ * @return {functionName, args}    args = [arg1, arg2...]
+ */
+export function parseFunctionCallString (template) {
+  let [functionName, other] = template.split('(')
+  let args = []
+  if (other) {
+    args = other.substring(0, other.indexOf(')')).trim()
+    args = args.length === 0 ? [] : args.split(',').map(arg => arg.trim())
+  }
+  return {functionName: functionName.trim(), args}
+}
+
+/**
+ * 分析 functionName arg2 arg1... 这种格式
+ * @param  {string} template       模版字符串
+ * @return {functionName, args}    args = [arg1, arg2...]
+ */
+function parseFunctionCallString2 (template) {
+  let args = template.trim().split(/\s+/)
+  let functionName = args.shift()
+  return {functionName: functionName, args}
+}
+
+/**
+ * 分析 "xx.xx.xx | filter1('a') | filter2('b')" 这种格式
+ * 或者 "xx.xx.xx | filter1  | filter2 'b'" 这种格式
+ * @param  {string} template       模版字符串
+ * @return {path, formatters:[]}   formatters 元素是 parseFunctionCallString 的返回值
+ */
+export function parseDirectiveValue (template) {
+  let formatters = template.split('|')
+  let path = formatters.shift().trim()
+  formatters = formatters.map(formatter => {
+    formatter = parseFunctionCallString(formatter)
+    if (formatter.args.length === 0) 
+      formatter = parseFunctionCallString2(formatter.functionName)
+    
+    formatter.args = formatter.args.map(arg => {
+      let _arg = parseAttributeName(arg, ['\'', '\''])
+      if (_arg && _arg.indexOf('\'') === -1) arg = '"' + _arg + '"'
+      return JSON.parse(arg)
+    })
+
+    return formatter
+  })
+  return {path, formatters}
+}

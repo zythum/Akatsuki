@@ -3,6 +3,7 @@ import directivesHtml from './directives/html'
 import directivesIf from './directives/if'
 import directivesEach from './directives/each'
 import {objForeach} from './utils'
+import {execformatter} from './formatter'
 
 let directives = {}
 for (let directive of [
@@ -15,26 +16,27 @@ for (let directive of [
 export default function directive (directiveArgs, view) {
   let needBreak = false
   const instances = []
-  directiveArgs.sort(([type1], [type2]) => {
-    return directives[type2].priority - directives[type1].priority
+  directiveArgs.sort((a, b) => {
+    return directives[b.type].priority - directives[a.type].priority
   })
-  for (let [type, element, path, args, attributeName] of directiveArgs) {    
-    instances.push(bindDirective(directives[type], element, path, args, view, attributeName))
-    needBreak = needBreak || directives[type].stopParseChildElement
-    if (directives[type].stopParseNextDirective) break
+  for (let {type, args, name, element, path, formatters} of directiveArgs) {
+    let directive = directives[type]
+    instances.push(bindDirective({ directive, args, name, element, path, formatters, view }))
+    needBreak = needBreak || directive.stopParseChildElement
+    if (directive.stopParseNextDirective) break
   }
   return {instances, needBreak}
 }
 
-directive.text = function directiveText (textNode, path, view) {
+directive.text = function directiveText ({textNode, path, formatters, view}) {
   const delimiters = view.__textDelimiters
   const model = view.__computedModel.get(path) != undefined ?
     view.__computedModel : view.model  
-  const directiveTextListener = value => textNode.nodeValue = value
-
+  const directiveTextListener = value => {
+    textNode.nodeValue = execformatter(value, formatters)
+  }
   directiveTextListener(model.get(path))  
   model.on(path, directiveTextListener)
-
   return {
     element: textNode,
     path: path,
@@ -50,13 +52,17 @@ directive.hasType = function hasType (type) {
   return directives.hasOwnProperty(type)
 }
 
-function bindDirective (directive, element, path, args, view, attributeName) {
+function bindDirective ({directive, element, path, args, name, formatters, view}) {
   const model = view.__computedModel.get(path) != undefined ?
     view.__computedModel : view.model  
-  const directiveListener = value => callObjectFunctionIfExit(instance, directive, 'routine', value)
+  const directiveListener = value => {
+    value = execformatter(value, formatters)
+    callObjectFunctionIfExit(instance, directive, 'routine', value)
+  }
   const instance = {
     element: element,
-    attributeName: attributeName,
+    attributeName: name,
+    formatters: formatters,
     path: path,
     view: view,
     args: args,

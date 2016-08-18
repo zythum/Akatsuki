@@ -1,27 +1,18 @@
 import {objForeach, getType} from '../utils'
 
-const _ = ''
-const _replace = _.replcae
-const _substr = _.substr
-const _substring = _.substring
-const _slice = _.slice
-const _trim = _.trim
-const _trimLeft = _.trimLeft
-const _trimRight = _.trimRight
-
 /**
  * 字符串相关的model update 操作符。
  * 基本同数组的js原生方法类似
  */
 export default objForeach({
 
-  $replace (string, args) { _replace.apply(string, args) },
-  $substr (string, args) { _substr.apply(string, args) },
-  $substring (string, args) { _substring.apply(string, args) },
-  $slice (string, args) { _slice.apply(string, args) },
-  $trim (string, args) { _trim.apply(string, args) },
-  $trimLeft (string, args) { _trimLeft.apply(string, args) },
-  $trimRight (string, args) { _trimRight.apply(string, args) },
+  $replace (string, args) { return string.replace.apply(string, args) },
+  $substr (string, args) { return string.substr.apply(string, args) },
+  $substring (string, args) { return string.substring.apply(string, args) },
+  $slice (string, args) { return string.slice.apply(string, args) },
+  $trim (string, args) { return string.trim() },
+  $trimLeft (string, args) { return string.trimLeft() },
+  $trimRight (string, args) { return string.trimRight() },
 
   /**
    * 往字符串后添加字符串
