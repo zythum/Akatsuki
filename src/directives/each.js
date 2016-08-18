@@ -33,10 +33,11 @@ export default {
     let {element, childViews, parentNode, 
       startPlaceHolder, endPlaceHolder} = this
     childViews.forEach(childView => {
+      childView.unmout()
       parentNode.removeChild(childView.__rootElement)
       childView.destroy()
     })
-    parentNode.insertBefore(element, endPlaceHolder)
+    parentNode.insertBefore(element, startPlaceHolder)
     parentNode.removeChild(startPlaceHolder)
     parentNode.removeChild(endPlaceHolder)
     delete this.childViews
@@ -45,9 +46,10 @@ export default {
     delete this.endPlaceHolder
   },
   routine (value) {
-    let {element, path, view, childViews, parentNode, endPlaceHolder} = this
+    let {element, attributeName, path, view, 
+      childViews, parentNode, endPlaceHolder} = this
+    
     let itemKey = this.args
-
     let keys = {}
 
     value.forEach(item => {
@@ -76,7 +78,13 @@ export default {
           model: view.model,          
           methods: view.__methods          
         })
-        childView.__rootView = view.__rootView
+        for (let prop of [
+          '__rootView',
+          '__textDelimiters',
+          '__directiveAttributeDelimiters',
+          '__eventAttributeDelimiters'
+        ]) childView[prop] = view[prop]
+        childView.__rootElement.removeAttribute(attributeName)
       }
       childView.__computed = Object.assign({}, view.__computed, {
         [itemKey]: [path + '.$' + index, (item) => item],

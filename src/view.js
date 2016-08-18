@@ -14,8 +14,7 @@ export default class View {
     computed = {},
     methods = {},
   }) {
-    this.model = model
-
+    this.model = model    
     this.__rootView = this
     this.__rootElement = element    
     this.__methods = methods
@@ -31,17 +30,17 @@ export default class View {
   }
   destroy () {
     this.unmout()
-    delete this.model
+    // delete this.model
     delete this.__rootView    
-    delete this.__rootElement
+    // delete this.__rootElement
     delete this.__methods
     delete this.__binding
   }
   unmout () {
     if (!this.mounted) return
     
-    this.__binding.forEach(binding => binding.destroy())
-    this.__binding = []
+    let _bindingOne
+    while (_bindingOne = this.__binding.pop()) _bindingOne.destroy()
 
     this.__computedModel.destroy()
     this.__computedModel = null
@@ -52,25 +51,29 @@ export default class View {
   mount () {
     if (this.mounted) return
 
-    const computedModel = this.__computedModel = new Model({})
-    computedModel.linsteners = []
+    this.__computedModel = new Model({})
     objForeach(this.__computed, (computed, name) => {
       const modelPaths = [].concat(computed)
       const _computedFunction = modelPaths.pop()
 
       if (getType(_computedFunction) === 'function') {
         const routine = () => {
-          return _computedFunction.apply(this, modelPaths.map(path => {
-            return this.model.get(path)
-          }))
+          return _computedFunction.apply(this, modelPaths.map(path => this.model.get(path)))
         }        
-        const linstener = () => computedModel.set(name, routine())
-        computedModel.__model[name] = routine()
-        modelPaths.forEach(modelPath => this.model.on(modelPaths, linstener))
+        this.__computedModel.__model[name] = routine()
+        modelPaths.forEach(modelPath => {
+          const linstener = () => {
+            if (this.__computedModel) this.__computedModel.set(name, routine())
+          }
+          this.model.on(modelPath, linstener)
+          this.__binding.push({
+            destroy: () => this.model.off(modelPath, linstener) 
+          })
+        })
       }
     })
 
-    walk(this.__rootElement.firstChild, element => {
+    walk(this.__rootElement, element => {
       let returnValue
       switch (element.nodeType) {
         case 3: //text节点
@@ -93,18 +96,15 @@ export default class View {
             let {name, value} = attributes[idx]
             let type
             //判断为数据绑定
-            if ( type = parseAttributeName(name, 
-              this.__directiveAttributeDelimiters) ) {
+            if ( type = parseAttributeName(name, this.__directiveAttributeDelimiters) ) {
               let args = type.split('-')
               type = args.shift()
-              if ( directive.hasType(type) )
-                directives.push([type, element, value, args])
+              if ( directive.hasType(type) ) directives.push([type, element, value, args, name])
             }
 
-            //判断为事件绑定            
-            else if ( type = parseAttributeName(name, 
-              this.__eventAttributeDelimiters) ) {
-              type.split('&').forEach(type => events.push([type, element, value]))
+            //判断为事件绑定
+            else if ( type = parseAttributeName(name, this.__eventAttributeDelimiters) ) {
+              type.split('&').forEach(type => events.push([type, element, value, name]))
             }
           }
           if (directives.length) {

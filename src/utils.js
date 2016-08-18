@@ -19,12 +19,15 @@ export function objForeach (obj, callback) {
   return result
 }
 
-export function walk (element, callback) {
+function walkChild (element, callback) {
   if (element) {
-    walk(element.nextSibling, callback)
+    walkChild(element.nextSibling, callback)
     if (callback(element) != false)
-      walk(element.firstChild, callback)
+      walkChild(element.firstChild, callback)
   }
+}
+export function walk (element, callback) {
+    if (callback(element) != false) walkChild(element.firstChild, callback)
 }
 
 export function objectValueFromPath (obj, path, spliter, parseNumber) {

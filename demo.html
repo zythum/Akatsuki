@@ -9,41 +9,43 @@
 
 <div id="a">
   <button (click)="toggleShow">toggleShow</button>
-  <input type="text">
-  <div [if]="data.show">
+  
+  <div [if]="data.show">    
     <span>${data.count}</span>
     <button (click)="buttonClick">plus</button>
-    <ul>
-      <li [each-item]="data.list">
-        ${item.text} | ${index} | ${length}
-      </li>
-    </ul>
-    <ul>
-      <li [each-item]="data.list">
-        <span [text]="item.text"></span>
-      </li>
-    </ul>
     <button (click)="pushItem">push D</button>
+    <button (click)="popItem">pop</button>
+    <span>${listLen}</span>  
+    <ul>
+      <li [each-item]="data.list">${item.text} | ${$index} | ${$length}</li>
+    </ul>
+    <ul>
+      <li [each-item]="data.list" [if]="item.show" [text]="item.text"></li>
+    </ul>
+    <ul>
+      <li [each-item]="data.list">
+        <span [if]="item.show" [text]="item.text"></span>
+      </li>
+    </ul>
   </div>
 </div>
 
 <script>
+  var count = 3;
   var vm_text = akatsuki(document.getElementById('a'), {
     model: {
       data: {
         count: 1, 
-        show: true, 
+        show: true,
         list: [
-          {text: 'a'}, 
-          {text: 'b'}, 
-          {text: 'c'}
+          {text: 1, show: true},
+          {text: 2, show: false},
+          {text: 3, show: true}
         ]
       }
     },
     computed: {
-      listLen: ['data.list', function (list) {
-        return list.length
-      }],
+      listLen: ['data.list', function (list) { return list.length }],
     },
     methods: {
       buttonClick: function () {
@@ -53,7 +55,10 @@
         this.model.update({data:{show: {$toggle: 1}}})
       },
       pushItem: function () {
-        this.model.update({data:{list:{'$push': {text: 'd'}}}})
+        this.model.update({data:{list:{'$push': {text: ++count, show: count%2==0}}}})
+      },
+      popItem: function () {
+        this.model.update({data:{list:{'$pop': true}}})
       }
     }
   })

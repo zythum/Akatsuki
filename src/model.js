@@ -69,7 +69,9 @@ export default class Model {
   emit (path, value, oldValue) {
     objForeach(this.__events, (events, _path) => {
       if (path.indexOf(_path) != 0) return
-      events.forEach( callback => callback(value, oldValue) )
+      [].concat(events).forEach( callback => {
+        callback(value, oldValue)
+      })
     })
   }
 
@@ -83,9 +85,10 @@ export default class Model {
     for (let idx = 0, len = callbacks.length; idx < len; idx++) {
       if (callbacks[idx] === callback) {
         callbacks.splice(idx, 1)
-        return
+        break
       }
     }
+    if (callbacks.length == 0) delete this.__events[path]
   }
 }
 

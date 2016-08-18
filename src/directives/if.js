@@ -9,47 +9,57 @@ export default {
   stopParseNextDirective: false,
   bind () {
     let {element} = this
-    let parentNode = element.parentNode
-    let placeHolder = this.placeHolder =
+    let parentNode = this.parentNode = element.parentNode
+    let placeHolder = this.placeHolder = this.current =
       document.createComment(placeHolderName)
 
     parentNode.insertBefore(placeHolder, element)
     parentNode.removeChild(element)
   },
   unbind () {
-    let {childView, placeHolderm, element} = this
-    let parentNode = placeHolder.parentNode
-    if (parentNode) {
-      parentNode.insertBefore(element, placeHolder)
-      parentNode.removeChild(placeHolder)
-    }
+    let {childView, element, parentNode, current} = this
+
+    if (childView) childView.unmout()
+    parentNode.insertBefore(element, current)
+    parentNode.removeChild(current)    
     if (childView) childView.destroy()
     delete this.childView
+    delete this.current
+    delete this.parentNode
     delete this.placeHolder
   },
   routine (value) {
-    let {childView, element, placeHolder, view} = this
-    let parentNode = placeHolder.parentNode || element.parentNode
+    let {element, attributeName, view, 
+      childView, placeHolder, parentNode, current} = this
+
     if (!!value) {
-      if (!childView) {
-        childView = this.childView = new View(element, {
+      if (! (childView instanceof View) ) {
+        childView = this.childView = new View(element.cloneNode(true), {
           model: view.model,
           methods: view.__methods,
           computed: view.__computed
-        })
-        childView.__rootView = view.__rootView
+        })        
+        for (let prop of [
+          '__rootView',
+          '__textDelimiters',
+          '__directiveAttributeDelimiters',
+          '__eventAttributeDelimiters'
+        ]) childView[prop] = view[prop]
+        childView.__rootElement.removeAttribute(attributeName)
       }
-      if (placeHolder.parentNode) {
-        parentNode.insertBefore(element, placeHolder)
-        parentNode.removeChild(placeHolder)
+      if (current === placeHolder) {
+        parentNode.insertBefore(childView.__rootElement, current)
+        parentNode.removeChild(current)
+        this.current = childView.__rootElement
       }
       childView.mount()
     } else {
-      if (element.parentNode) {
-        parentNode.insertBefore(placeHolder, element)
-        parentNode.removeChild(element)
+      if (current != placeHolder) {
+        parentNode.insertBefore(placeHolder, current)
+        parentNode.removeChild(current)
+        this.current = placeHolder
       }
-      childView.unmout()
+      if (childView) childView.unmout()
     }
   }
 }
