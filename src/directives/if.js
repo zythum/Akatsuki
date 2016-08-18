@@ -37,6 +37,7 @@ export default {
           methods: view.__methods,
           computed: view.__computed
         })
+        childView.__rootView = view.__rootView
       }
       if (placeHolder.parentNode) {
         parentNode.insertBefore(element, placeHolder)

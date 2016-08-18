@@ -4,8 +4,8 @@ import Model from "./model"
 export default function (element, {
   model = {},
   methods = {},
-  modelPathPrefix = '',
+  computed = {}
 }) {
   model = new Model(model)
-  return new View(element, {model, methods, modelPathPrefix})
+  return new View(element, {model, methods, computed})
 }

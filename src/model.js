@@ -1,4 +1,5 @@
 import { objForeach, getType, objectValueFromPath } from './utils'
+import operationsCustom from './operations/custom'
 import operationsArray from './operations/array'
 import operationsBool from './operations/bool'
 import operationsNumber from './operations/number'
@@ -8,6 +9,7 @@ const modelSpliter = '.'
 
 const operations = Object.assign(
   {},
+  operationsCustom,
   operationsArray,
   operationsBool,
   operationsNumber,

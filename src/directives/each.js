@@ -74,13 +74,14 @@ export default {
       if (!childView) {
         childView = new View(element.cloneNode(true), {
           model: view.model,          
-          methods: view.methods          
+          methods: view.__methods          
         })
+        childView.__rootView = view.__rootView
       }
       childView.__computed = Object.assign({}, view.__computed, {
         [itemKey]: [path + '.$' + index, (item) => item],
-        index: [()=> index],
-        length: [() => value.length]
+        '$index': [()=> index],
+        '$length': [() => value.length]
       })
       parentNode.insertBefore(childView.__rootElement, endPlaceHolder)
       childView.mount()

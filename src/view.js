@@ -14,8 +14,10 @@ export default class View {
     computed = {},
     methods = {},
   }) {
-    this.__rootElement = element
     this.model = model
+
+    this.__rootView = this
+    this.__rootElement = element    
     this.__methods = methods
     this.__computed = computed
     this.__computedModel = null
@@ -30,6 +32,7 @@ export default class View {
   destroy () {
     this.unmout()
     delete this.model
+    delete this.__rootView    
     delete this.__rootElement
     delete this.__methods
     delete this.__binding
