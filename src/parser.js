@@ -1,3 +1,9 @@
+/**
+ * 获取节点属性是否是对应的标志的开头和结束
+ * @param  {string}           attributeName 被判断的字符串
+ * @param  {[string, string]} delimiters    标志符数组 比如 ['{', '}'] 那么认为 "{" 开头， "}" 结束，不支持复杂字符
+ * @return {string or false}                如果符合 标志的开头和结束 返回内部内容，不然返回fase
+ */
 export function parseAttributeName (attributeName, delimiters) {
   let [start, end] = delimiters
   if (attributeName.indexOf(start) != 0) return false
@@ -5,6 +11,13 @@ export function parseAttributeName (attributeName, delimiters) {
   return attributeName.slice(start.length, -end.length)
 }
 
+/**
+ * 获取文本模版否是对应的标志的开头和结束
+ * @param  {string}           template      被判断的字符串
+ * @param  {[string, string]} delimiters    标志符数组 比如 ['{', '}'] 那么认为 "{" 开头， "}" 结束，不支持复杂字符
+ * @return {[{type, value}...]}             返回判断接口，如果type为text 认为没有符合标志符数组，
+ *                                          如果返回 binding 说明符合 value是这段的内容
+ */
 export function parseTextTemplate (template, delimiters) {
   const length = template.length
   let tokens = []

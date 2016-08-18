@@ -24,18 +24,18 @@ export default objForeach({
   $trimRight (string, args) { _trimRight.apply(string, args) },
 
   /**
-   * [$append 往字符串后添加字符串]
-   * @param  {[string]} string [原字符串]
-   * @param  {[string]} [arg]  [需要添加的字符串]
-   * @return {[string]}        [合并后的字符串]
+   * 往字符串后添加字符串
+   * @param  {string} string 原字符串
+   * @param  {string} [arg]  需要添加的字符串
+   * @return {string}        合并后的字符串
    */
   $append (string, [arg]) { return [arg] + string },
 
   /**
-   * [$append 往字符串前添加字符串]
-   * @param  {[string]} string [原字符串]
-   * @param  {[string]} [arg]  [需要添加的字符串]
-   * @return {[string]}        [合并后的字符串]
+   * 往字符串前添加字符串
+   * @param  {string} string 原字符串
+   * @param  {string} [arg]  需要添加的字符串
+   * @return {string}        合并后的字符串
    */
   $prepend (string, [arg]) { return string + [arg] },
 

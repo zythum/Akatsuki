@@ -15,6 +15,7 @@
     <button (click)="buttonClick">plus</button>
     <button (click)="pushItem">push D</button>
     <button (click)="popItem">pop</button>
+    <button (click)="reverse">reverse</button>
     <span>${listLen}</span>  
     <ul>
       <li [each-item]="data.list">${item.text} | ${$index} | ${$length}</li>
@@ -55,11 +56,14 @@
         this.model.update({data:{show: {$toggle: 1}}})
       },
       pushItem: function () {
-        this.model.update({data:{list:{'$push': {text: ++count, show: count%2==0}}}})
+        this.model.update({data:{list:{'$push': {text: ++count, show: count%2!=0}}}})
       },
       popItem: function () {
         this.model.update({data:{list:{'$pop': true}}})
-      }
+      },
+      reverse: function () {
+        this.model.update({data:{list:{'$reverse': true}}})
+      },
     }
   })
   vm_text.mount()

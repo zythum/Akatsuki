@@ -26,10 +26,10 @@ export default objForeach({
   $map (array, [iteratee]) { return  array.map(iteratee)},
   
   /**
-   * [$remove 删除数组中对应index的元素]
-   * @param  {[array]} array 原数组
-   * @param  {[array]} args  需要删除的数组对应的index数组
-   * @return {[array]}       去掉了需要删除数组的原数组拷贝
+   * 删除数组中对应index的元素
+   * @param  {array} array 原数组
+   * @param  {array} args  需要删除的数组对应的index数组
+   * @return {array}       去掉了需要删除数组的原数组拷贝
    * 
    * $remove([1,2,3,4], [1,2]) == [1,4]
    */
