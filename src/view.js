@@ -30,6 +30,7 @@ export default class View {
     this.destroyed = false
 
     this.model = model
+    this.els = {}
     this.__rootView = this
     this.__rootElement = element
     this.__computedModel = null
@@ -79,6 +80,7 @@ export default class View {
     this.destroyed = true
 
     delete this.model
+    delete this.els
     delete this.__rootView    
     delete this.__rootElement
     delete this.__binding
@@ -188,7 +190,7 @@ export default class View {
             instances.forEach(ins => this.__binding.push(ins))
             returnValue = !needBreak
           }
-          if (events.length) {
+          if (returnValue != false && events.length) {
             let evtHandler = event(events, this)
             evtHandler.forEach(ins => this.__binding.push(ins))
           }

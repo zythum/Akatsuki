@@ -17,7 +17,7 @@
     <button (click)="reverse">reverse</button>
     <span>${listLen}</span>  
     <ul>
-      <li [each-item]="data.list">${item.text} | ${$index} | ${$length}</li>
+      <li [each-item]="data.list" [attr-a]="item.text">${item.text} | ${$index} | ${$length}</li>
     </ul>
     <ul>
       <li [each-item]="data.list | sort:odd">${item.text} | ${$index} | ${$length}</li>

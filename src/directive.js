@@ -2,7 +2,11 @@ import directivesText from './directives/text'
 import directivesHtml from './directives/html'
 import directivesIf from './directives/if'
 import directivesClass from './directives/class'
+import directivesAttr from './directives/attr'
+import directivesProp from './directives/prop'
+import directivesShow from './directives/show'
 import directivesEach from './directives/each'
+import directivesEl from './directives/el'
 import {objForeach} from './utils'
 import {execValueFormatter, parseFormatterArgs} from './formatter'
 
@@ -12,7 +16,9 @@ for (let directive of [
   directivesHtml, 
   directivesIf, 
   directivesClass,
-  directivesEach
+  directivesAttr,
+  directivesEach,
+  directivesEl
 ]) directives[directive.displayName] = directive
 
 export default function directive (directiveArgs, view) {

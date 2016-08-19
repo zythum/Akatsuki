@@ -6,20 +6,22 @@ export default {
   stopParseChildElement: false,
   stopParseNextDirective: false,
   bind () {
+    this.classNames = this.args.join('-').split(/\s+/)
     this.originClassName = this.element.className
   },
   unbind () {
     this.element.className = this.originClassName
     delete this.originClassName
+    delete this.classNames
   },
   routine (value) {
-    this.args.join('-').split(/\s+/).forEach((className) => {
+    let {element, classNames} = this
+    classNames.forEach((className) => {
       if (className.length === 0) return
-      if (!!value) {
-        this.element.classList.add(className)
-      } else {
-        this.element.classList.remove(className)
-      }
+      if (!!value) 
+        element.classList.add(className)
+      else 
+        element.classList.remove(className)
     })
   }
 }
