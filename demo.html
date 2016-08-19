@@ -10,7 +10,7 @@
 <div id="a">  
   <span>${data.count | prefix('$')}</span>
   <button (click)="buttonClick">plus</button>
-  <button (click)="toggleShow">toggleShow</button>
+  <button (click)="toggleShow($event, $element)">toggleShow</button>
   <div [if]="data.show">        
     <button (click)="pushItem">push D</button>
     <button (click)="popItem">pop</button>
@@ -51,7 +51,7 @@
       buttonClick: function () {
         this.model.set('data.count', this.model.get('data.count') + 1)
       },
-      toggleShow: function () {
+      toggleShow: function (event, element) {
         this.model.update({data:{show: {$toggle: 1}}})
       },
       pushItem: function () {

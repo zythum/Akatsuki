@@ -72,7 +72,7 @@ export function parseFunctionCallString (template) {
  * @param  {string} template       模版字符串
  * @return {functionName, args}    args = [arg1, arg2...]
  */
-function parseFunctionCallString2 (template) {
+export function parseFunctionCallString2 (template) {
   let args = template.trim().split(/\s+/)
   let functionName = args.shift()
   return {functionName: functionName, args}

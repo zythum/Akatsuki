@@ -74,16 +74,7 @@ export default {
       let key = item.key
       let childView = keys[key] instanceof View ? keys[key] : shiftOne(childViews)
       if (!childView) {
-        childView = new View(element.cloneNode(true), {
-          model: view.model,          
-          methods: view.__methods          
-        })
-        for (let prop of [
-          '__rootView',
-          '__textDelimiters',
-          '__directiveAttributeDelimiters',
-          '__eventAttributeDelimiters'
-        ]) childView[prop] = view[prop]
+        childView = view.childView(element.cloneNode(true))
         childView.__rootElement.removeAttribute(attributeName)
       }
       childView.__computed = Object.assign({}, view.__computed, {

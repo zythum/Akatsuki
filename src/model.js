@@ -33,7 +33,7 @@ export default class Model {
     return objectValueFromPath(this.__model, path, modelSpliter, true)
   }
 
-  set (path, data) {
+  set (path, value) {
     path = path.split(modelSpliter)
     let next = {}, last, key
     last = next
@@ -43,7 +43,7 @@ export default class Model {
       if (path.length) {
         last = last[key] = {}
       } else {
-        last[key] = {$set: data}
+        last[key] = {$set: value}
       }
     }
     this.update(next)

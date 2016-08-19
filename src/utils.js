@@ -1,3 +1,9 @@
+/**
+ * 空方法
+ * @return {undefined} 
+ */
+export function noop () {}
+
 //获取对象类型
 let class2type = {}
 let _toString = class2type.toString
@@ -62,6 +68,7 @@ export function walk (element, iteratee) {
  * @param  {string}  path         获取的path
  * @param  {string}  spliter      path的分割风格 比如 'a.b.c' => obj.a.b.c 那么分割风格是 '.'
  * @param  {boolean} parseNumber  是否把 $0 $1 认为是数字
+ * @return {any or undefined}
  */
 export function objectValueFromPath (obj, path, spliter, parseNumber) {
   path = path.split(spliter)

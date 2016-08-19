@@ -34,17 +34,7 @@ export default {
 
     if (!!value) {
       if (! (childView instanceof View) ) {
-        childView = this.childView = new View(element.cloneNode(true), {
-          model: view.model,
-          methods: view.__methods,
-          computed: view.__computed
-        })        
-        for (let prop of [
-          '__rootView',
-          '__textDelimiters',
-          '__directiveAttributeDelimiters',
-          '__eventAttributeDelimiters'
-        ]) childView[prop] = view[prop]
+        childView = this.childView = view.childView(element.cloneNode(true))
         childView.__rootElement.removeAttribute(attributeName)
       }
       if (current === placeHolder) {
