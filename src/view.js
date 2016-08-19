@@ -17,6 +17,7 @@ const defaultTventAttributeDelimiters = ['(', ')']
 export default class View {
   constructor (element, {
     model = {},
+    mixins = [],
     computed = {},
     methods = {},
     viewWillMount = noop,
@@ -24,33 +25,70 @@ export default class View {
     viewWillUnmount = noop,
     viewDidUmmount = noop,
   }) {
-    this.model = model    
-    this.__rootView = this
-    this.__rootElement = element    
-    this.__methods = methods
-    this.__computed = computed
-    this.__computedModel = null
+    
+    this.mounted = false
+    this.destroyed = false
 
-    this.viewWillMount = viewWillMount
-    this.viewDidMount = viewDidMount
-    this.viewWillUnmount = viewWillUnmount
-    this.viewDidUmmount = viewDidUmmount
+    this.model = model
+    this.__rootView = this
+    this.__rootElement = element
+    this.__computedModel = null
 
     this.__binding = []
     this.__textDelimiters = defaultTextDelimiters
     this.__directiveAttributeDelimiters = defaultTirectiveAttributeDelimiters
     this.__eventAttributeDelimiters = defaultTventAttributeDelimiters
-    this.mounted = false
-    this.destroyed = false
+    
+    this.__methods = {}
+    this.__computed = {}
+    
+    this.viewWillMount = null
+    this.viewDidMount = null
+    this.viewWillUnmount = null
+    this.viewDidUmmount = null
+
+    //合并mixins
+    mixins.push({
+      computed, methods, 
+      viewWillMount, viewDidMount, viewWillUnmount, viewDidUmmount
+    })
+
+    //合并生命周期函数
+    mixins.forEach(mixin => {
+      [
+        'viewWillMount', 
+        'viewDidMount', 
+        'viewWillUnmount', 
+        'viewDidUmmount'
+      ].forEach(key => {
+        if ( getType(mixin[key]) != 'function') return
+        let prev = this[key], next = mixin[key]
+        this[key] = getType(prev) === 'function' ? 
+          ()=> { prev.call(this), next.call(this) } : ()=> next.call(this)
+      })
+
+      //合并方法和计算属性
+      for (let key of ['methods', 'computed']) 
+        Object.assign(this[`__${key}`], mixin[key])
+    })  
   }
 
   destroy () {
     this.unmout()
-    // delete this.model
+    this.destroyed = true
+
+    delete this.model
     delete this.__rootView    
-    // delete this.__rootElement
-    delete this.__methods
+    delete this.__rootElement
     delete this.__binding
+    delete this.__methods
+    delete this.__computed
+    delete this.__computedModel
+    delete this.viewWillMount
+    delete this.viewDidMount
+    delete this.viewWillUnmount
+    delete this.viewDidUmmount
+    delete this.mounted
   }
 
   unmout () {
