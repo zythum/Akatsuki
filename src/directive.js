@@ -3,7 +3,7 @@ import directivesHtml from './directives/html'
 import directivesIf from './directives/if'
 import directivesEach from './directives/each'
 import {objForeach} from './utils'
-import {execformatter} from './formatter'
+import {execValueFormatter, parseFormaterArgs} from './formatter'
 
 let directives = {}
 for (let directive of [
@@ -16,8 +16,8 @@ for (let directive of [
 export default function directive (directiveArgs, view) {
   let needBreak = false
   const instances = []
-  directiveArgs.sort((a, b) => {
-    return directives[b.type].priority - directives[a.type].priority
+  directiveArgs.sort((arg1, arg2) => {
+    return directives[arg2.type].priority - directives[arg1.type].priority
   })
   for (let {type, args, name, element, path, formatters} of directiveArgs) {
     let directive = directives[type]
@@ -33,8 +33,9 @@ directive.text = function directiveText ({textNode, path, formatters, view}) {
   const model = view.__computedModel.get(path) != undefined ?
     view.__computedModel : view.model  
   const directiveTextListener = value => {
-    textNode.nodeValue = execformatter(value, formatters)
+    textNode.nodeValue = execValueFormatter(value, formatters)
   }
+  formatters = parseFormaterArgs(formatters, view.__formatters)
   directiveTextListener(model.get(path))  
   model.on(path, directiveTextListener)
   return {
@@ -55,14 +56,13 @@ directive.hasType = function hasType (type) {
 function bindDirective ({directive, element, path, args, name, formatters, view}) {
   const model = view.__computedModel.get(path) != undefined ?
     view.__computedModel : view.model  
-  const directiveListener = value => {
-    value = execformatter(value, formatters)
+  const directiveListener = value => {    
     callObjectFunctionIfExit(instance, directive, 'routine', value)
   }
   const instance = {
     element: element,
     attributeName: name,
-    formatters: formatters,
+    formatters: parseFormaterArgs(formatters, view.__formatters),
     path: path,
     view: view,
     args: args,

@@ -20,6 +20,9 @@
       <li [each-item]="data.list">${item.text} | ${$index} | ${$length}</li>
     </ul>
     <ul>
+      <li [each-item]="data.list | sort:odd">${item.text} | ${$index} | ${$length}</li>
+    </ul>
+    <ul>
       <li [each-item]="data.list" [if]="item.show" [text]="item.text | suffix('%')"></li>
     </ul>
     <ul>
@@ -46,6 +49,11 @@
     },
     computed: {
       listLen: ['data.list', function (list) { return list.length }],
+    },
+    formatters: {
+      'odd': function (item1, item2) {
+        return item2.text - item1.text
+      }
     },
     methods: {
       buttonClick: function () {

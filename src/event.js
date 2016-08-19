@@ -2,7 +2,7 @@ import {noop, objectValueFromPath} from './utils'
 
 export default function event (events, view) {
   return events.map(({type, element, functionName, args}) => {
-    let method = objectValueFromPath(view.__methods, functionName, '.')
+    let method = objectValueFromPath(view.__methods, functionName)
     if (!method) return { destroy: noop }
     
     const listener = event => {

@@ -1,4 +1,5 @@
 import View from '../view'
+import {execEachFormatter} from '../formatter'
 import {getType} from '../utils'
 
 const startPlaceHolderName = 'akasuki-each-start-placeholder'
@@ -46,6 +47,14 @@ export default {
     delete this.endPlaceHolder
   },
   routine (value) {
+    
+    let sourceMap
+    if (this.formatters.length) {
+      let result = execEachFormatter(value, this.formatters)
+      sourceMap = result.sourceMap
+      value = result.sourceMap
+    }
+
     let {element, attributeName, path, view, 
       childViews, parentNode, endPlaceHolder} = this
     
@@ -78,7 +87,7 @@ export default {
         childView.__rootElement.removeAttribute(attributeName)
       }
       childView.__computed = Object.assign({}, view.__computed, {
-        [itemKey]: [path + '.$' + index, (item) => item],
+        [itemKey]: [path + '.$' + (sourceMap ? sourceMap[index] : index), (item) => item],
         '$index': [()=> index],
         '$length': [() => value.length]
       })

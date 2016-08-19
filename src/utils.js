@@ -66,12 +66,11 @@ export function walk (element, iteratee) {
  * 获取对应path 下的对象数据
  * @param  {object}  obj          获取的对象
  * @param  {string}  path         获取的path
- * @param  {string}  spliter      path的分割风格 比如 'a.b.c' => obj.a.b.c 那么分割风格是 '.'
  * @param  {boolean} parseNumber  是否把 $0 $1 认为是数字
  * @return {any or undefined}
  */
-export function objectValueFromPath (obj, path, spliter, parseNumber) {
-  path = path.split(spliter)
+export function objectValueFromPath (obj, path, parseNumber) {
+  path = path.split('.')
   let key
   while (key = path.shift()) {
     if (parseNumber) {

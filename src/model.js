@@ -5,8 +5,6 @@ import operationsBool from './operations/bool'
 import operationsNumber from './operations/number'
 import operationsString from './operations/string'
 
-const modelSpliter = '.'
-
 const operations = Object.assign(
   {},
   operationsCustom,
@@ -30,11 +28,11 @@ export default class Model {
   }
 
   get (path) {
-    return objectValueFromPath(this.__model, path, modelSpliter, true)
+    return objectValueFromPath(this.__model, path, true)
   }
 
   set (path, value) {
-    path = path.split(modelSpliter)
+    path = path.split('.')
     let next = {}, last, key
     last = next
     while(key = path.shift()) {
@@ -102,7 +100,7 @@ function patch (prev, next, callback, prevParent, key, path=[]) {
   const prevType = getType(prev)
   const nextType = getType(next)
   const operation = operationFromNext(next)
-  const pathString = path.join(modelSpliter)
+  const pathString = path.join('.')
   switch (operation) {
     //正常赋值
     case null:

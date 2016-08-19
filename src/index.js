@@ -4,8 +4,9 @@ import Model from "./model"
 export default function (element, {
   model = {},
   methods = {},
-  computed = {}
+  formatters = {},
+  computed = {},
 }) {
   model = new Model(model)
-  return new View(element, {model, methods, computed})
+  return new View(element, {model, methods, formatters, computed})
 }

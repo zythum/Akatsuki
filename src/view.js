@@ -17,15 +17,15 @@ const defaultTventAttributeDelimiters = ['(', ')']
 export default class View {
   constructor (element, {
     model = {},
-    mixins = [],
-    computed = {},
+    mixins = [],    
+    formatters = {},
     methods = {},
+    computed = {},
     viewWillMount = noop,
     viewDidMount = noop,
     viewWillUnmount = noop,
     viewDidUmmount = noop,
   }) {
-    
     this.mounted = false
     this.destroyed = false
 
@@ -40,6 +40,7 @@ export default class View {
     this.__eventAttributeDelimiters = defaultTventAttributeDelimiters
     
     this.__methods = {}
+    this.__formatters = {}
     this.__computed = {}
     
     this.viewWillMount = null
@@ -49,7 +50,7 @@ export default class View {
 
     //合并mixins
     mixins.push({
-      computed, methods, 
+      formatters, methods, computed,
       viewWillMount, viewDidMount, viewWillUnmount, viewDidUmmount
     })
 
@@ -68,7 +69,7 @@ export default class View {
       })
 
       //合并方法和计算属性
-      for (let key of ['methods', 'computed']) 
+      for (let key of ['methods', 'formatters', 'computed']) 
         Object.assign(this[`__${key}`], mixin[key])
     })  
   }
@@ -162,14 +163,13 @@ export default class View {
           let directives = []
           let events = []
           for (let idx = 0, len = attributes.length; idx < len; idx++) {
-            let {name, value} = attributes[idx]
-            let type
+            let type, {name, value} = attributes[idx]
             //判断为数据绑定
             // [directive-args]="xx.xx.xx | filter1(a) | filter2(b)"
             if ( type = parseAttributeName(name, this.__directiveAttributeDelimiters) ) {
-              let {path, formatters} = parseDirectiveValue(value)
               let args = type.split('-')
-              type = args.shift()              
+              type = args.shift()
+              let {path, formatters} = parseDirectiveValue(value)
               if ( directive.hasType(type) ) 
                 directives.push({type, args, name, element, path, formatters, view: this})
             }
@@ -212,16 +212,19 @@ export default class View {
   childView (element, mixins={}) {
     mixins.model = this.model
     mixins.computed = Object.assign({}, this.__computed, mixins.computed || {})
-    mixins.methods = Object.assign(
-      {}, 
-      objForeach(this.__methods, (_, name) => {
-        let __methods = this.__methods
-        return function () { return __methods[name].apply(this, arguments) }
-      }),
-      mixins.methods || {}
-    )
+    
+    ;['methods', 'formatters'].forEach(prop => {
+      let wrapper = objForeach(this[`__${prop}`], (_, name) => {
+        // 这里用 this[`__${prop}`][name] 而不只是直接用对应值是留一个运行时修改的余地
+        let self = this[`__${prop}`]
+        return function () { return self[name].apply(this, arguments) }
+      })
+      mixins[prop] = Object.assign({}, wrapper, mixins[prop] || {})
+    })
 
     const childView = new View(element, mixins)
+    
+    //把parent的一些东西写回去
     for (let prop of [
       '__rootView',
       '__textDelimiters',
