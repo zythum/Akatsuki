@@ -8,7 +8,7 @@
 <body>
 
 <div id="a">  
-  <span>${data.count | prefix('$')}</span>
+  <span [class-show-1]="data.show" >${data.count | prefix('$')}</span>
   <button (click)="buttonClick">plus</button>
   <button (click)="toggleShow($event, $element)">toggleShow</button>
   <div [if]="data.show">        

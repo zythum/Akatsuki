@@ -1,15 +1,17 @@
 import directivesText from './directives/text'
 import directivesHtml from './directives/html'
 import directivesIf from './directives/if'
+import directivesClass from './directives/class'
 import directivesEach from './directives/each'
 import {objForeach} from './utils'
-import {execValueFormatter, parseFormaterArgs} from './formatter'
+import {execValueFormatter, parseFormatterArgs} from './formatter'
 
 let directives = {}
 for (let directive of [
   directivesText, 
   directivesHtml, 
   directivesIf, 
+  directivesClass,
   directivesEach
 ]) directives[directive.displayName] = directive
 
@@ -35,7 +37,7 @@ directive.text = function directiveText ({textNode, path, formatters, view}) {
   const directiveTextListener = value => {
     textNode.nodeValue = execValueFormatter(value, formatters)
   }
-  formatters = parseFormaterArgs(formatters, view.__formatters)
+  formatters = parseFormatterArgs(formatters, view.__formatters)
   directiveTextListener(model.get(path))  
   model.on(path, directiveTextListener)
   return {
@@ -62,7 +64,7 @@ function bindDirective ({directive, element, path, args, name, formatters, view}
   const instance = {
     element: element,
     attributeName: name,
-    formatters: parseFormaterArgs(formatters, view.__formatters),
+    formatters: parseFormatterArgs(formatters, view.__formatters),
     path: path,
     view: view,
     args: args,

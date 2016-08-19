@@ -14,7 +14,7 @@ const formatters = {
   sort: {} 
 }
 
-export function parseFormaterArgs (formatterArgs, customFormateMap) {
+export function parseFormatterArgs (formatterArgs, customFormateMap) {
   return formatterArgs.map(({functionName, args}) => {
     let type
     if (functionName.indexOf(':') === -1) {
