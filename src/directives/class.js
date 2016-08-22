@@ -16,6 +16,7 @@ export default {
   },
   routine (value) {
     let {element, classNames} = this
+    value = execValueFormatter(value, this.formatters)
     classNames.forEach((className) => {
       if (className.length === 0) return
       if (!!value) 

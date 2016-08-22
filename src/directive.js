@@ -17,6 +17,8 @@ for (let directive of [
   directivesIf, 
   directivesClass,
   directivesAttr,
+  directivesProp,
+  directivesShow,
   directivesEach,
   directivesEl
 ]) directives[directive.displayName] = directive
@@ -64,14 +66,15 @@ directive.hasType = function hasType (type) {
 function bindDirective ({directive, element, path, args, name, formatters, view}) {
   const model = view.__computedModel.get(path) != undefined ?
     view.__computedModel : view.model  
-  const directiveListener = value => {    
+  const directiveListener = value => {
     callObjectFunctionIfExit(instance, directive, 'routine', value)
   }
   const instance = {
     element: element,
     attributeName: name,
-    formatters: parseFormatterArgs(formatters, view.__formatters),
+    model: model,
     path: path,
+    formatters: parseFormatterArgs(formatters, view.__formatters),    
     view: view,
     args: args,
     destroy () {

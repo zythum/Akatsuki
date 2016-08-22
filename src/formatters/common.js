@@ -8,6 +8,22 @@ export default objForeach({
     return value
   },
 
+  count (obj) {
+    if ('length' in obj) return obj.length
+    if (typeof obj === 'object') return Object.keys(obj)
+    return 0
+  },
+
+  empty (obj) {
+    if ('length' in obj) return obj.length === 0
+    if (typeof obj === 'object') return Object.keys(obj) === 0
+    return !obj
+  },
+  
+  '!empty' (obj) {
+    return !this.empty(obj)
+  },
+
   '<':   (value, [arg]) => value <   arg,
   '<=':  (value, [arg]) => value <=  arg,
   '==':  (value, [arg]) => value ==  arg,
@@ -27,8 +43,8 @@ export default objForeach({
     return value === undefined || value === null ? arg : value
   }
 
-}, (formatter, name) => {
+}, (formatter, name, object) => {
   return (target, args) => {
-    return formatter(target, args === undefined ? [] : [].concat(args))
+    return formatter.call(object, target, args === undefined ? [] : [].concat(args))
   }
 })

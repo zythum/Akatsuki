@@ -13,6 +13,7 @@ export default {
     delete this.originDisplay
   },
   routine (value) {
+    value = execValueFormatter(value, this.formatters)
     this.element.style.display = !!value ? '' : 'none'
   }
 }

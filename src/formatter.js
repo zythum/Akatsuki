@@ -66,5 +66,3 @@ export function execEachFormatter (value, formatterArgs) {
   })
   return {value, sourceMap}
 }
-
-

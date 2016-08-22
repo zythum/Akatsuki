@@ -26,16 +26,16 @@ export function getType (object) {
 
 /**
  * 循环对象元素
- * @param  {Object}   obj      Object, 最好是一个纯对象
+ * @param  {Object}   object      Object, 最好是一个纯对象
  * @param  {Function} iteratee 循环函数
  * @return {Object}            类似Array.map 将 iteratee 返回的数据组成新对象
  */
-export function objForeach (obj, iteratee) {
+export function objForeach (object, iteratee) {
   let result = {}
-  for (let key in obj) {
+  for (let key in object) {
     //如果是 Object.create(null) 创建的纯对象是没有 hasOwnProperty 的
-    if (obj.hasOwnProperty == undefined || obj.hasOwnProperty(key))
-      result[key] = iteratee(obj[key], key)
+    if (object.hasOwnProperty == undefined || object.hasOwnProperty(key))
+      result[key] = iteratee(object[key], key, object)
   }
   return result
 }
@@ -109,4 +109,3 @@ export function dateFormat (date, fmt) {
         (o[k]) : (('00' + o[k]).substr(('' + o[k]).length)))
   return fmt
 }
-

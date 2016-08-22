@@ -23,8 +23,8 @@ export default objForeach({
     return dateFormat(new Date(number), format)
   },
 
-}, (formatter, name) => {
+}, (formatter, name, object) => {
   return (target, args) => {
-    return formatter(parseFloat(target), args === undefined ? [] : [].concat(args))
+    return formatter.call(object, parseFloat(target), args === undefined ? [] : [].concat(args))
   }
 })

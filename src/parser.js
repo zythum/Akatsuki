@@ -102,3 +102,9 @@ export function parseDirectiveValue (template) {
   })
   return {path, formatters}
 }
+
+export function parseValue (value) {
+  let _value = parseAttributeName(value, ['\'', '\''])
+  if (_value && _value.indexOf('\'') === -1) value = '"' + _value + '"'
+  return JSON.parse(value)
+}

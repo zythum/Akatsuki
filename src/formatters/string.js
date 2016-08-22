@@ -13,8 +13,8 @@ export default objForeach({
   prefix (string, [arg]) { return '' + arg + string },
   suffix (string, [arg]) { return '' + string + arg },
 
-}, (formatter, name) => {
+}, (formatter, name, object) => {
   return (target, args) => {
-    return formatter(target + '', args === undefined ? [] : [].concat(args))
+    return formatter.call(object, target + '', args === undefined ? [] : [].concat(args))
   }
 })

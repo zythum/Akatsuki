@@ -30,9 +30,9 @@ export default objForeach({
    */
   $prepend (string, [arg]) { return string + [arg] },
 
-}, (operation, name) => {
+}, (operation, name, object) => {
   return (target, args) => {
     if (getType(target) != 'array') throw `${name} 必须是个数组才可以`
-    return operation(target, args === undefined ? [] : [].concat(args))
+    return operation.call(object, target, args === undefined ? [] : [].concat(args))
   }
 })

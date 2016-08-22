@@ -87,7 +87,7 @@ export default {
         childView.__rootElement.removeAttribute(attributeName)
       }
       childView.__computed = Object.assign({}, view.__computed, {
-        [itemKey]: [path + '.$' + (sourceMap ? sourceMap[index] : index), (item) => item],
+        [itemKey]: [path + '.$' + (sourceMap ? sourceMap[index] : index), (item) => item, this.model],
         '$index': [()=> index],
         '$length': [() => value.length]
       })

@@ -118,20 +118,24 @@ export default class View {
     this.__computedModel = new Model({})
     objForeach(this.__computed, (computed, name) => {
       const modelPaths = [].concat(computed)
-      const _computedFunction = modelPaths.pop()
+      let _computedFunction = modelPaths.pop()
+      let model = this.model
+      if (_computedFunction instanceof Model) {
+        [model, _computedFunction] = [_computedFunction, modelPaths.pop()]
+      }
 
       if (getType(_computedFunction) === 'function') {
         const routine = () => {
-          return _computedFunction.apply(this, modelPaths.map(path => this.model.get(path)))
+          return _computedFunction.apply(this, modelPaths.map(path => model.get(path)))
         }        
         this.__computedModel.__model[name] = routine()
         modelPaths.forEach(modelPath => {
           const linstener = () => {
             if (this.__computedModel) this.__computedModel.set(name, routine())
           }
-          this.model.on(modelPath, linstener)
+          model.on(modelPath, linstener)
           this.__binding.push({
-            destroy: () => this.model.off(modelPath, linstener) 
+            destroy: () => model.off(modelPath, linstener) 
           })
         })
       }

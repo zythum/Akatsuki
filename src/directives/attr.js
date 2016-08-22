@@ -24,6 +24,7 @@ export default {
   },
   routine (value) {
     let {element, attrName} = this
+    value = execValueFormatter(value, this.formatters)
     if (getType(value) === 'boolean') {
       if (value)
         element.setAttribute(attrName, attrName)

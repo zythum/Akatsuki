@@ -19,6 +19,6 @@ export default objForeach({
     throw '$exec中, 处理函数必须入参和返回值类型一致'
   }
 
-}, (operation) => {
-  return (target, args) => operation(target, args === undefined ? [] : [].concat(args))
+}, (operation, name, object) => {
+  return (target, args) => operation.call(object, target, args === undefined ? [] : [].concat(args))
 })

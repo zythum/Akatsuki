@@ -13,7 +13,8 @@ export default {
     this.originValue = element[propName]
   },
   unbind () {
-    if (this.originHasProp)
+    let {element, originHasProp, propName} = this
+    if (originHasProp)
       element[propName] = this.originValue
     else 
       delete element[propName]
@@ -24,6 +25,7 @@ export default {
   },
   routine (value) {    
     let {element, propName} = this
+    value = execValueFormatter(value, this.formatters)
     element[propName] = value
   }
 }

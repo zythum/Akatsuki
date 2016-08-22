@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-cn">
+  <head>
+    <meta charset="utf-8">
+    <title>Todo</title>
+    <link rel="stylesheet" href="./app.css">
+  </head>
+  <body>
+    <section class="todoapp">
+      <header class="header">
+        <h1>todos</h1>
+        <input class="new-todo" placeholder="What needs to be done?" autofocus (keyup.enter)="createTodo($event, $element)">
+      </header>
+      <section class="main">
+        <input class="toggle-all" type="checkbox" [prop-checked]="leftTodoCount | == 0" (click)="toggleAll">
+        <label for="toggle-all">Mark all as complete</label>
+        <ul class="todo-list">
+          <li [each-todo]="filteredTodos" [class-completed]="todo.completed">
+            <div class="view">
+              <input class="toggle" type="checkbox" [prop-checked]="todo.completed" (click)="toggleItem($index)">
+              <label>${todo.title}</label>
+              <button class="destroy" (click)="deleteItem($index)"></button>
+            </div>
+          </li>
+        </ul>
+      </section>
+      <footer class="footer" [if]="todos | !empty">
+      <span class="todo-count"><strong [text]="leftTodoCount"></strong> item left</span>
+      <ul class="filters">
+        <li>
+          <a [class-selected]="filter | == 'all'" href="javascript:void(0);" (click)="filter('all')">All</a>
+        </li>
+        <li>
+          <a [class-selected]="filter | == 'active'" href="javascript:void(0);" (click)="filter('active')">Active</a>
+        </li>
+        <li>
+          <a [class-selected]="filter | == 'completed'" href="javascript:void(0);" (click)="filter('completed')">Completed</a>
+        </li>
+      </ul>
+    </footer>
+    </section>
+    <script src="../../dist/index.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
+

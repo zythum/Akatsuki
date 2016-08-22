@@ -37,7 +37,10 @@ export default class Model {
     last = next
     while(key = path.shift()) {
       let match = key.match(/^\$(\d)+$/)
-      if (match) key = match[1]
+      if (match) {
+        key = match[1]
+        last = last['$update'] = {}
+      }
       if (path.length) {
         last = last[key] = {}
       } else {
@@ -58,17 +61,16 @@ export default class Model {
         oldValueType != 'object' && oldValueType != 'array' &&
         value === oldValue
       ) return
-
-      this.emit(path, value, oldValue)
+      this.emit(path, value)
     }, this, '__model')
 
   }
 
-  emit (path, value, oldValue) {
+  emit (path, value) {
     objForeach(this.__events, (events, _path) => {
       if (path.indexOf(_path) != 0) return
       [].concat(events).forEach( callback => {
-        callback(value, oldValue)
+        callback(this.get(_path))
       })
     })
   }
@@ -104,7 +106,7 @@ function patch (prev, next, callback, prevParent, key, path=[]) {
   switch (operation) {
     //正常赋值
     case null:
-      if (prevType != nextType) throw "prev next的值类型不一致"
+      if (prevType != nextType) throw "prev next的值类型不一致"      
       if (prevType === 'object') {
         objForeach(next, (_next, key) => {
           patch(prev[key], _next, callback, prev, key, path.concat(key))
@@ -121,7 +123,7 @@ function patch (prev, next, callback, prevParent, key, path=[]) {
       if (getType(next.$update) != 'object') throw "update 必须是个对象"
       if (prevType != 'object' && prevType != 'array') throw "prev 必须是个对象或者数组"
       objForeach(next.$update, (_next, key) => {
-        let prefix$ = prevType === 'array' ? '$' : ''
+        let prefix = prevType === 'array' ? '$' : ''
         patch(prev[key], _next, callback, prev, key, path.concat(prefix + key))
       })
       break

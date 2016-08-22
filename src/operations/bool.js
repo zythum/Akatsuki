@@ -9,9 +9,9 @@ export default objForeach({
    */
   $toggle (bool) { return !bool },
 
-}, (operation, name) => {
+}, (operation, name, object) => {
   return (target, args) => {
     if (getType(target) != 'boolean') throw `${name} 必须是个布尔才可以`
-    return operation(target, args === undefined ? [] : [].concat(args))
+    return operation.call(object, target, args === undefined ? [] : [].concat(args))
   }
 })

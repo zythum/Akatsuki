@@ -13,9 +13,9 @@ export default objForeach({
   '$-x': (number, [arg]) => parseFloat(arg) - number,
   '$/x': (number, [arg]) => parseFloat(arg) / number,
 
-}, (operation, name) => {
+}, (operation, name, object) => {
   return (target, args) => {
     if (getType(target) != 'array') throw `${name} 必须是个数字才可以`
-    return operation(target, args === undefined ? [] : [].concat(args))
+    return operation.call(object, target, args === undefined ? [] : [].concat(args))
   }
 })
