@@ -19,38 +19,50 @@ export default class Model {
   constructor (dataObject) {
     this.__model = {}
     this.__events = {}
+    this.__pathPrefix = null
     if (dataObject) this.update({$set: dataObject})
   }
   
   destroy () {
     delete this.__model
     delete this.__events
+    delete this.__pathPrefix
+  }
+
+  path (path) {
+    if (!path && path === '') return this
+    let childModel = new Model()
+    childModel.__events = this.__events
+    childModel.__model = this.__model
+    childModel.__pathPrefix = path
+    return childModel
+  }
+
+  pathForEach (path, iteratee) {
+    let array = this.get(path)
+    if ( getType(array) === 'array' ) {
+      array.forEach((_, index) => iteratee(this.path(path + '.$' + index), index))
+    } else if (getType(array) === 'object') {
+      objForeach((_, key) => iteratee(this.path(path + '.' + key), key))
+    }
   }
 
   get (path) {
+    getPath(path, this.__pathPrefix)
     return objectValueFromPath(this.__model, path, true)
   }
 
   set (path, value) {
-    path = path.split('.')
-    let next = {}, last, key
-    last = next
-    while(key = path.shift()) {
-      let match = key.match(/^\$(\d)+$/)
-      if (match) {
-        key = match[1]
-        last = last['$update'] = {}
-      }
-      if (path.length) {
-        last = last[key] = {}
-      } else {
-        last[key] = {$set: value}
-      }
-    }
+    getPath(path, this.__pathPrefix)
+    let next = pathToObject(path, value)
     this.update(next)
   }
 
   update (next) {
+    if (this.__pathPrefix) {
+      next = pathToObject(this.__pathPrefix, next)
+    }
+
     patch(this.__model, next, (parent, key, value, path) => {
       const oldValue = parent[key]
       parent[key] = value
@@ -67,6 +79,7 @@ export default class Model {
   }
 
   emit (path, value) {
+    getPath(path, this.__pathPrefix)
     objForeach(this.__events, (events, _path) => {
       if (path.indexOf(_path) != 0) return
       [].concat(events).forEach( callback => {
@@ -76,10 +89,12 @@ export default class Model {
   }
 
   on (path, callback=function(){}) {
-    (this.__events[path] = this.__events[path] || []).push(callback)
+    getPath(path, this.__pathPrefix)
+    ;(this.__events[path] = this.__events[path] || []).push(callback)
   }
 
   off (path, callback) {
+    getPath(path, this.__pathPrefix)
     if (!this.__events[path]) return
     const callbacks = this.__events[path]
     for (let idx = 0, len = callbacks.length; idx < len; idx++) {
@@ -90,6 +105,29 @@ export default class Model {
     }
     if (callbacks.length == 0) delete this.__events[path]
   }
+}
+
+function getPath (path, prefix) {
+  return prefix ? prefix + '.' + path : path
+}
+
+function pathToObject (path, last) {
+  path = path.split('.')
+  let object, current, key
+  current = object = {}
+  while(key = path.shift()) {
+    let match = key.match(/^\$(\d)+$/)
+    if (match) {
+      key = match[1]
+      current = current['$update'] = {}
+    }
+    if (path.length) {
+      current = current[key] = {}
+    } else {
+      current[key] = last
+    }
+  }
+  return object
 }
 
 function operationFromNext (next) {

@@ -38,15 +38,15 @@
                 [prop:checked]="todo.completed" 
                 (click)="toggleItem($index)"
               >
-              <label (dblclick)="edit($index)">${todo.title}</label>
+              <label (dblclick)="edit($element, $index)">${todo.title}</label>
               <button class="destroy" (click)="deleteItem($index)"></button>
             </div>
             <input
               class="edit" type="text"
-              (keyup.enter)="finishEdit($index, $element, $value)"
-              (keyup.esc)="cancelEdit($index, $element, $value)"
-              (focus)="startEdit($index, $element)"
-              (blur)="finishEdit($index, $element, $value)"
+              (keyup.enter)="finishEdit($element, $value, $index)"
+              (keyup.esc)="cancelEdit($element, $value, $index)"
+              (focus)="startEdit($element, $index)"
+              (blur)="finishEdit($element, $value, $index)"
             >
           </li>
         </ul>

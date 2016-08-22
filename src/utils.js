@@ -64,23 +64,25 @@ export function walk (element, iteratee) {
 
 /**
  * 获取对应path 下的对象数据
- * @param  {object}  obj          获取的对象
- * @param  {string}  path         获取的path
+ * @param  {object}  object          获取的对象
+ * @param  {stringOrArray}  path     获取的path
  * @param  {boolean} parseNumber  是否把 $0 $1 认为是数字
  * @return {any or undefined}
  */
-export function objectValueFromPath (obj, path, parseNumber) {
-  path = path.split('.')
-  let key
-  while (key = path.shift()) {
+export function objectValueFromPath (object, path, parseNumber) {  
+  if (getType(path) === 'string') {
+    if (path === '') return object  
+    path = path.split('.')
+  }
+  for (let key of path) {
     if (parseNumber) {
       let match = key.match(/^\$(\d+)$/)
       if (match) key = match[1]
     }
-    if (obj.hasOwnProperty(key)) obj = obj[key]
+    if (object.hasOwnProperty(key)) object = object[key]
     else return
   }
-  return obj
+  return object
 }
 
 /**

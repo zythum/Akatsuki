@@ -213,8 +213,14 @@ export default class View {
     let value = this.__computedModel.get(path)
     return value != undefined ? value : this.model.get(path)
   }
+  
   set (path, value) { this.model.set(path, value) }
+  
   update (next) { this.model.update(next) }
+
+  path (path) { return this.model.path(path) }
+
+  pathForEach (path, iteratee) { return this.model.pathForEach(path, iteratee) }
 
   childView (element, mixins={}) {
     mixins.model = this.model

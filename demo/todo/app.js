@@ -14,11 +14,9 @@ var todoapp = Akatsuki(rootElement, {
   viewDidMount: function () {
     this.sync(this.get('todos'))
     this.model.on('todos', this.sync)
-    this.model.on('editing', this.editingChange)
   },
   viewWillUnmount: function () {
     this.model.off('todos', this.sync)
-    this.model.off('editing', this.editingChange)
   },
   computed: {
     filteredTodos: ['todos', 'filter', function (todos, filter) {
@@ -38,35 +36,26 @@ var todoapp = Akatsuki(rootElement, {
     sync: function (todos) {
       localStorage.setItem(storageKey, JSON.stringify(todos))
     },
-    editingChange: function (editing) {
-      if (editing >= 0) {
-        setTimeout(function () {
-          this.els.list.children[editing]
-            .querySelector('.edit').focus()
-        }.bind(this))
-      }
-    },
     createTodo: function (event, element, value) {
       if (value.trim().length === 0) return
       var unshiftData = {title: value, completed: false}
-      this.update({
-        todos: { $unshift: unshiftData }
-      })
+      this.path('todos').update({ $unshift: unshiftData })
       element.value = ''
     },
-    edit: function (index) {
+    edit: function (element, index) {
       this.set('editing', index)
+      setTimeout(function () {
+        element.parentNode.nextElementSibling.focus()
+      })
     },
-    startEdit: function (index, element) {
-      var path = 'todos.$' + index + '.title'      
-      element.value = this.get(path)
+    startEdit: function (element, index) {
+      element.value = this.get('todos.$' + index + '.title')      
     },
-    finishEdit: function (index, element, value) {
+    finishEdit: function (element, value, index) {
       this.set('editing', -1)
       value = value.trim()
       if (value.length) {
-        var path = 'todos.$' + index + '.title'
-        this.set(path, value)
+        this.set('todos.$' + index + '.title', value)
       }
       element.value = ''
     },
@@ -76,17 +65,15 @@ var todoapp = Akatsuki(rootElement, {
     },
     toggleAll: function () {
       var hasLeft = this.get('leftTodoCount') > 0
-      this.get('todos').forEach(function (todo, index) {
-        var path = 'todos.$' + index + '.completed'
-        this.set(path, hasLeft)
-      }.bind(this))
+      this.pathForEach('todos', function (path) {
+        path.set('completed', hasLeft)
+      })
     },
     toggleItem: function (index) {
-      var path = 'todos.$' + index + '.completed'
-      this.set(path, !this.get(path))
+      this.path('todos.$' + index + '.completed').update({$toggle: true})
     },
     deleteItem: function (index) {
-      this.update({todos: {$remove: index}})
+      this.path('todos').update({$remove: index})
     },
     filter: function (type) {
       this.set('filter', type)
