@@ -1,6 +1,6 @@
 var rootElement = document.querySelector('.todoapp')
 
-var todoapp = akatsuki(rootElement, {
+var todoapp = Akatsuki(rootElement, {
   model: { 
     filter: 'all',
     todos: [
