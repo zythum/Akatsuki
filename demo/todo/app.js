@@ -1,6 +1,6 @@
 var rootElement = document.querySelector('.todoapp')
-
-var todos = localStorage.getItem('Akatsuki-todos')
+var storageKey = 'Akatsuki-todos'
+var todos = localStorage.getItem(storageKey)
 todos = JSON.parse(todos) || [
   {title: '今天天气不错', completed: false},
   {title: '吃晚饭后跑两圈', completed: false},
@@ -34,7 +34,7 @@ var todoapp = Akatsuki(rootElement, {
   },
   methods: {
     sync: function (todos) {
-      localStorage.setItem('todos', JSON.stringify(todos))
+      localStorage.setItem(storageKey, JSON.stringify(todos))
     },
     createTodo: function (event, element, value) {
       if (value.trim().length === 0) return
