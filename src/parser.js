@@ -102,18 +102,16 @@ export function parseDirectiveValue (template) {
     formatter = parseFunctionCallString(formatter)
     if (formatter.args.length === 0) 
       formatter = parseFunctionCallString2(formatter.functionName)
-    
-    formatter.args = formatter.args.map(arg => {
-      let _arg = parseAttributeName(arg, ['\'', '\''])
-      if (_arg && _arg.indexOf('\'') === -1) arg = '"' + _arg + '"'
-      return JSON.parse(arg)
-    })
-
     return formatter
   })
   return {path, formatters}
 }
 
+/**
+ * 转换字符串为JSON基本类型
+ * @param  {string} value
+ * @return {JSON可用类型}
+ */
 export function parseValue (value) {
   let _value = parseAttributeName(value, ['\'', '\''])
   if (_value && _value.indexOf('\'') === -1) value = '"' + _value + '"'

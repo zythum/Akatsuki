@@ -45,6 +45,7 @@ export default objForeach({
 
 }, (formatter, name, object) => {
   return (target, args) => {
-    return formatter.call(object, target, args === undefined ? [] : [].concat(args))
+    args = args.map(arg => getType(arg) === 'function' ? arg() : arg)
+    return formatter.call(object, target, args)
   }
 })

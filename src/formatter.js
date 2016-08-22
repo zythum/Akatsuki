@@ -1,4 +1,5 @@
 import {noop, getType, dateFormat, objectValueFromPath} from './utils'
+import {parseAttributeName} from './parser'
 import formattersCommon from './formatters/common'
 import formattersNumber from './formatters/number'
 import formattersString from './formatters/string'
@@ -14,9 +15,10 @@ const formatters = {
   sort: {} 
 }
 
-export function parseFormatterArgs (formatterArgs, customFormateMap) {
-  return formatterArgs.map(({functionName, args}) => {
-    let type
+export function parseFormatterArgs (formatterArgs, customFormateMap, dependMap) {
+  let depends = {}
+  formatterArgs = formatterArgs.map(({functionName, args}) => {
+    let type 
     if (functionName.indexOf(':') === -1) {
       type = 'value',
       functionName = functionName
@@ -27,8 +29,19 @@ export function parseFormatterArgs (formatterArgs, customFormateMap) {
     let formatter = customFormateMap[functionName] || 
       objectValueFromPath(formatters, `${type}.${functionName}`)
 
+    args = args.map(arg => {
+      if (dependMap.hasOwnProperty(args)) {
+        depends[arg] = true
+        return dependMap[arg]
+      }
+      let _arg = parseAttributeName(arg, ['\'', '\''])
+      if (_arg && _arg.indexOf('\'') === -1) arg = '"' + _arg + '"'
+      return JSON.parse(arg)
+    })
     return {type, formatter, args}
   })
+  formatterArgs.depends = depends
+  return formatterArgs
 }
 
 export function execValueFormatter (value, formatterArgs) {

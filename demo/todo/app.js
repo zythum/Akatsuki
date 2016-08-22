@@ -9,14 +9,16 @@ todos = JSON.parse(todos) || [
 
 var todoapp = Akatsuki(rootElement, {
   model: { 
-    filter: 'all', todos: todos   
+    editing:-1, filter: 'all', todos: todos   
   },
   viewDidMount: function () {
     this.sync(this.get('todos'))
     this.model.on('todos', this.sync)
+    this.model.on('editing', this.editingChange)
   },
   viewWillUnmount: function () {
     this.model.off('todos', this.sync)
+    this.model.off('editing', this.editingChange)
   },
   computed: {
     filteredTodos: ['todos', 'filter', function (todos, filter) {
@@ -36,12 +38,33 @@ var todoapp = Akatsuki(rootElement, {
     sync: function (todos) {
       localStorage.setItem(storageKey, JSON.stringify(todos))
     },
+    editingChange: function (editing) {
+      if (editing >= 0)
+        this.els.list.children[editing].querySelector('.edit').focus()
+    },
     createTodo: function (event, element, value) {
       if (value.trim().length === 0) return
       var unshiftData = {title: value, completed: false}
       this.update({
         todos: { $unshift: unshiftData }
       })
+      element.value = ''
+    },
+    edit: function (index) {
+      this.set('editing', index)
+    },
+    startEdit: function (index, element) {
+      var path = 'todos.$' + index + '.title'      
+      element.value = this.get(path)
+    },
+    finishEdit: function (index, element, value) {
+      this.set('editing', -1)
+      var path = 'todos.$' + index + '.title'
+      this.set(path, value)
+      element.value = ''
+    },
+    cancelEdit: function (element) {
+      this.set('editing', -1)
       element.value = ''
     },
     toggleAll: function () {

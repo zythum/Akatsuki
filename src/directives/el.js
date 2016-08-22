@@ -9,7 +9,7 @@ export default {
   bind () {
     let {element, args, view} = this
     let elName = this.elName = args
-    let els = view.__rootElement.els
+    let els = view.__rootView.els
     if (els[elName] && els[elName] != element) 
       throw "不要用两个名字相同的节点"
     
@@ -17,7 +17,7 @@ export default {
   },
   unbind () {
     let {element, elName, view} = this
-    let els = view.__rootElement.els
+    let els = view.__rootView.els
     if (els[elName] === element) delete els[elName]
     delete this.elName
   },
