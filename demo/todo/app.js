@@ -33,11 +33,10 @@ var todoapp = akatsuki(rootElement, {
     },
     toggleAll: function () {
       var hasLeft = this.get('leftTodoCount') > 0
-      var self = this
       this.get('todos').forEach(function (todo, index) {
         var path = 'todos.$' + index + '.completed'
-        self.set(path, hasLeft)
-      })
+        this.set(path, hasLeft)
+      }.bind(this))
     },
     toggleItem: function (index) {
       var path = 'todos.$' + index + '.completed'
