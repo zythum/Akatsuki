@@ -7,7 +7,7 @@ export default {
   stopParseNextDirective: false,
   bind () {
     let {element, args} = this
-    let propName = this.propName = args.join('-')
+    let propName = this.propName = args
 
     this.originHasProp = propName in element
     this.originValue = element[propName]

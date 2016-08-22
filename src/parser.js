@@ -79,6 +79,17 @@ export function parseFunctionCallString2 (template) {
 }
 
 /**
+ * 分析 class:selected 这种格式
+ * @param  {string} template 模版字符串
+ * @return {directiveType, args}
+ */
+export function parseDirectiveName (template) {
+  let args = template.split(':')
+  let directiveType = args.shift()
+  return {directiveType, args: args.join(':')}
+}
+
+/**
  * 分析 "xx.xx.xx | filter1('a') | filter2('b')" 这种格式
  * 或者 "xx.xx.xx | filter1  | filter2 'b'" 这种格式
  * @param  {string} template       模版字符串

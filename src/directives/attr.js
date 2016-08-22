@@ -8,7 +8,7 @@ export default {
   stopParseNextDirective: false,
   bind () {
     let {element, args} = this
-    let attrName = this.attrName = args.join('-')
+    let attrName = this.attrName = args
     this.originValue = element.getAttribute(attrName)
   },
   unbind () {

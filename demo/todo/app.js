@@ -4,7 +4,9 @@ var todoapp = akatsuki(rootElement, {
   model: { 
     filter: 'all',
     todos: [
-      {title: 'aaa', completed: true}
+      {title: '今天天气不错', completed: false},
+      {title: '吃晚饭后跑两圈', completed: false},
+      {title: '周日去定羽毛球场地', completed: false}
     ]    
   },
   computed: {
@@ -22,12 +24,11 @@ var todoapp = akatsuki(rootElement, {
     }]
   },
   methods: {
-    createTodo: function (event, element) {
-      var unshiftData = {title: element.value, completed: false}
+    createTodo: function (event, element, value) {
+      if (value.trim().length === 0) return
+      var unshiftData = {title: value, completed: false}
       this.update({
-        todos: {
-          $unshift: unshiftData
-        }
+        todos: { $unshift: unshiftData }
       })
       element.value = ''
     },

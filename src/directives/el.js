@@ -8,7 +8,7 @@ export default {
   stopParseNextDirective: false,
   bind () {
     let {element, args, view} = this
-    let elName = this.elName = args.join('-')
+    let elName = this.elName = args
     let els = view.__rootElement.els
     if (els[elName] && els[elName] != element) 
       throw "不要用两个名字相同的节点"

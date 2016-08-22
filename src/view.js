@@ -1,6 +1,7 @@
 import {  
   parseTextTemplate, 
   parseAttributeName, 
+  parseDirectiveName, 
   parseDirectiveValue, 
   parseFunctionCallString
 } from './parser'
@@ -173,11 +174,10 @@ export default class View {
             //判断为数据绑定
             // [directive-args]="xx.xx.xx | filter1(a) | filter2(b)"
             if ( type = parseAttributeName(name, this.__directiveAttributeDelimiters) ) {
-              let args = type.split('-')
-              type = args.shift()
+              let {directiveType, args} = parseDirectiveName(type)
               let {path, formatters} = parseDirectiveValue(value)
-              if ( directive.hasType(type) ) 
-                directives.push({type, args, name, element, path, formatters, view: this})
+              if ( directive.hasType(directiveType) ) 
+                directives.push({type: directiveType, args, name, element, path, formatters, view: this})
             }
 
             //判断为事件绑定

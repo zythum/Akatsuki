@@ -6,7 +6,7 @@ export default {
   stopParseChildElement: false,
   stopParseNextDirective: false,
   bind () {
-    this.classNames = this.args.join('-').split(/\s+/)
+    this.classNames = this.args.split(/\s+/)
     this.originClassName = this.element.className
   },
   unbind () {
