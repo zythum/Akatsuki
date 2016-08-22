@@ -12,7 +12,7 @@
         <input class="new-todo" placeholder="What needs to be done?" autofocus (keyup.enter)="createTodo($event, $element)">
       </header>
       <section class="main">
-        <input class="toggle-all" type="checkbox" [prop-checked]="leftTodoCount | == 0" (click)="toggleAll">
+        <input class="toggle-all" type="checkbox" [prop-checked]="leftTodoCount | == 0" [show]="todos | count | > 0" (click)="toggleAll">
         <label for="toggle-all">Mark all as complete</label>
         <ul class="todo-list">
           <li [each-todo]="filteredTodos" [class-completed]="todo.completed">

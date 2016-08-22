@@ -9,17 +9,11 @@ var todoapp = akatsuki(rootElement, {
   },
   computed: {
     filteredTodos: ['todos', 'filter', function (todos, filter) {
-      if (filter === 'active') {
-        return todos.filter(function (todo) {
-          return todo.completed === false
-        })
-      }
-      if (filter === 'completed') {
-        return todos.filter(function (todo) {
-          return todo.completed === true
-        })
-      }
-      return todos
+      filter = ({
+        active: function (todo) { return todo.completed === false},
+        completed: function (todo) { return todo.completed === true}
+      })[filter]
+      return filter ? todos.filter(filter) : todos
     }],
     leftTodoCount: ['todos', function (todos) {
       return todos.filter(function (todo) {
