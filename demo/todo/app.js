@@ -39,8 +39,12 @@ var todoapp = Akatsuki(rootElement, {
       localStorage.setItem(storageKey, JSON.stringify(todos))
     },
     editingChange: function (editing) {
-      if (editing >= 0)
-        this.els.list.children[editing].querySelector('.edit').focus()
+      if (editing >= 0) {
+        setTimeout(function () {
+          this.els.list.children[editing]
+            .querySelector('.edit').focus()
+        }.bind(this))
+      }
     },
     createTodo: function (event, element, value) {
       if (value.trim().length === 0) return
@@ -59,8 +63,11 @@ var todoapp = Akatsuki(rootElement, {
     },
     finishEdit: function (index, element, value) {
       this.set('editing', -1)
-      var path = 'todos.$' + index + '.title'
-      this.set(path, value)
+      value = value.trim()
+      if (value.length) {
+        var path = 'todos.$' + index + '.title'
+        this.set(path, value)
+      }
       element.value = ''
     },
     cancelEdit: function (element) {
