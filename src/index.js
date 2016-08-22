@@ -6,7 +6,17 @@ export default function (element, {
   methods = {},
   formatters = {},
   computed = {},
+  viewWillMount,
+  viewDidMount,
+  viewWillUnmount,
+  viewDidUmmount,
 }) {
   model = new Model(model)
-  return new View(element, {model, methods, formatters, computed})
+  return new View(element, {
+    model, methods, formatters, computed,
+    viewWillMount,
+    viewDidMount,
+    viewWillUnmount,
+    viewDidUmmount,
+  })
 }

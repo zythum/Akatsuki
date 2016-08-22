@@ -55,17 +55,18 @@ export default class View {
       formatters, methods, computed,
       viewWillMount, viewDidMount, viewWillUnmount, viewDidUmmount
     })
-
-    //合并生命周期函数
+    
     mixins.forEach(mixin => {
+      
+      //合并生命周期函数      
       [
         'viewWillMount', 
         'viewDidMount', 
         'viewWillUnmount', 
         'viewDidUmmount'
       ].forEach(key => {
-        if ( getType(mixin[key]) != 'function') return
         let prev = this[key], next = mixin[key]
+        if ( getType(next) != 'function') return
         this[key] = getType(prev) === 'function' ? 
           ()=> { prev.call(this), next.call(this) } : ()=> next.call(this)
       })
@@ -97,7 +98,7 @@ export default class View {
 
   unmout () {
     if (!this.mounted) return
-    this.viewWillUnmount.call(this)
+    this.viewWillUnmount()
     let _bindingOne
     while (_bindingOne = this.__binding.pop()) _bindingOne.destroy()
 
@@ -108,12 +109,12 @@ export default class View {
     objForeach(this.__methods, (_, name) => delete this[name])
 
     this.mounted = false
-    this.viewDidUmmount.call(this)
+    this.viewDidUmmount()
   }
 
   mount () {
     if (this.mounted) return
-    this.viewWillMount.call(this)
+    this.viewWillMount()
     
     //处理计算属性  
     this.__computedModel = new Model({})
@@ -205,7 +206,7 @@ export default class View {
       return returnValue
     })
     this.mounted = true
-    this.viewDidMount.call(this)
+    this.viewDidMount()
   }
 
   get (path) {

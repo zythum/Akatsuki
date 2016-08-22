@@ -1,13 +1,22 @@
 var rootElement = document.querySelector('.todoapp')
 
+var todos = localStorage.getItem('Akatsuki-todos')
+todos = JSON.parse(todos) || [
+  {title: '今天天气不错', completed: false},
+  {title: '吃晚饭后跑两圈', completed: false},
+  {title: '周日去定羽毛球场地', completed: false}
+]  
+
 var todoapp = Akatsuki(rootElement, {
   model: { 
-    filter: 'all',
-    todos: [
-      {title: '今天天气不错', completed: false},
-      {title: '吃晚饭后跑两圈', completed: false},
-      {title: '周日去定羽毛球场地', completed: false}
-    ]    
+    filter: 'all', todos: todos   
+  },
+  viewDidMount: function () {
+    this.sync(this.get('todos'))
+    this.model.on('todos', this.sync)
+  },
+  viewWillUnmount: function () {
+    this.model.off('todos', this.sync)
   },
   computed: {
     filteredTodos: ['todos', 'filter', function (todos, filter) {
@@ -24,6 +33,9 @@ var todoapp = Akatsuki(rootElement, {
     }]
   },
   methods: {
+    sync: function (todos) {
+      localStorage.setItem('todos', JSON.stringify(todos))
+    },
     createTodo: function (event, element, value) {
       if (value.trim().length === 0) return
       var unshiftData = {title: value, completed: false}
