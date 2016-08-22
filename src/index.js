@@ -2,9 +2,10 @@ import View from "./view"
 import Model from "./model"
 
 export default function (element, {
-  model = {},
-  methods = {},
+  model = {},  
+  directives = {},
   formatters = {},
+  methods = {},
   computed = {},
   viewWillMount,
   viewDidMount,
@@ -13,7 +14,7 @@ export default function (element, {
 }) {
   model = new Model(model)
   return new View(element, {
-    model, methods, formatters, computed,
+    model, directives, formatters, methods, computed,
     viewWillMount,
     viewDidMount,
     viewWillUnmount,

@@ -1,10 +1,9 @@
-import {execValueFormatter} from '../formatter'
-
 export default {
   displayName: 'show',
   priority: 300,
   stopParseChildElement: false,
   stopParseNextDirective: false,
+  noValueFormatter: false,
   bind () {
     this.originDisplay = this.element.style.display
   },
@@ -13,7 +12,6 @@ export default {
     delete this.originDisplay
   },
   routine (value) {
-    value = execValueFormatter(value, this.formatters)
     this.element.style.display = !!value ? '' : 'none'
   }
 }

@@ -1,10 +1,9 @@
-import {execValueFormatter} from '../formatter'
-
 export default {
   displayName: 'class',
   priority: 300,
   stopParseChildElement: false,
   stopParseNextDirective: false,
+  noValueFormatter: false,
   bind () {
     this.classNames = this.args.split(/\s+/)
     this.originClassName = this.element.className
@@ -16,7 +15,6 @@ export default {
   },
   routine (value) {
     let {element, classNames} = this
-    value = execValueFormatter(value, this.formatters)
     classNames.forEach((className) => {
       if (className.length === 0) return
       if (!!value) 

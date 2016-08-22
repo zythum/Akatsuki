@@ -1,4 +1,3 @@
-import {execValueFormatter} from '../formatter'
 import {getType} from '../utils'
 
 export default {
@@ -6,6 +5,7 @@ export default {
   priority: 300,
   stopParseChildElement: false,
   stopParseNextDirective: false,
+  noValueFormatter: true,
   bind () {
     let {element, args, view} = this
     let elName = this.elName = args

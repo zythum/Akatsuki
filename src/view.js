@@ -20,6 +20,7 @@ export default class View {
     model = {},
     mixins = [],    
     formatters = {},
+    directives = {},
     methods = {},
     computed = {},
     viewWillMount = noop,
@@ -41,9 +42,11 @@ export default class View {
     this.__directiveAttributeDelimiters = defaultTirectiveAttributeDelimiters
     this.__eventAttributeDelimiters = defaultTventAttributeDelimiters
     
-    this.__methods = {}
+    this.__directives = {}
     this.__formatters = {}
+    this.__methods = {}
     this.__computed = {}
+
     
     this.viewWillMount = null
     this.viewDidMount = null
@@ -52,7 +55,7 @@ export default class View {
 
     //合并mixins
     mixins.push({
-      formatters, methods, computed,
+      directives, formatters, methods, computed,
       viewWillMount, viewDidMount, viewWillUnmount, viewDidUmmount
     })
     
@@ -72,7 +75,7 @@ export default class View {
       })
 
       //合并方法和计算属性
-      for (let key of ['methods', 'formatters', 'computed']) 
+      for (let key of ['directives', 'formatters', 'methods', 'computed']) 
         Object.assign(this[`__${key}`], mixin[key])
     })  
   }
@@ -86,6 +89,8 @@ export default class View {
     delete this.__rootView    
     delete this.__rootElement
     delete this.__binding
+    delete this.__directives
+    delete this.__formatters
     delete this.__methods
     delete this.__computed
     delete this.__computedModel

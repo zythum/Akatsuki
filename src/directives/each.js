@@ -16,6 +16,7 @@ export default {
   priority: 600,
   stopParseChildElement: true,
   stopParseNextDirective: true,
+  noValueFormatter: true,
   bind () {
     let { element } = this
     let childViews = this.childViews = []

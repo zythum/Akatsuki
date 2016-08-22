@@ -27,10 +27,12 @@ export default function directive (directiveArgs, view) {
   let needBreak = false
   const instances = []
   directiveArgs.sort((arg1, arg2) => {
-    return directives[arg2.type].priority - directives[arg1.type].priority
+    let priority2 = (view.__directives[arg2.type] || directives[arg2.type]).priority
+    let priority1 = (view.__directives[arg1.type] || directives[arg1.type]).priority
+    return priority2 - priority1
   })
   for (let {type, args, name, element, path, formatters} of directiveArgs) {
-    let directive = directives[type]
+    let directive = view.__directives[type] || directives[type]
     instances.push(bindDirective({ directive, args, name, element, path, formatters, view }))
     needBreak = needBreak || directive.stopParseChildElement
     if (directive.stopParseNextDirective) break
@@ -76,6 +78,9 @@ function bindDirective ({directive, element, path, args, name, formatters, view}
   const model = view.__computedModel.get(path) != undefined ?
     view.__computedModel : view.model  
   const directiveListener = value => {
+    if (directive.noValueFormatter === false) 
+      value = execValueFormatter(value, formatters)
+
     callObjectFunctionIfExit(instance, directive, 'routine', value)
   }
   formatters = parseFormatterArgs(formatters, view.__formatters, {

@@ -1,5 +1,4 @@
 import View from '../view'
-import {execValueFormatter} from '../formatter'
 const placeHolderName = 'akasuki-if-placeholder'
 
 export default {
@@ -7,6 +6,7 @@ export default {
   priority: 500,
   stopParseChildElement: true,
   stopParseNextDirective: false,
+  noValueFormatter: false,
   bind () {
     let {element} = this
     let parentNode = this.parentNode = element.parentNode
@@ -29,7 +29,6 @@ export default {
     delete this.placeHolder
   },
   routine (value) {
-    value = execValueFormatter(value, this.formatters)
     let {element, attributeName, view, 
       childView, placeHolder, parentNode, current} = this
 

@@ -1,4 +1,3 @@
-import {execValueFormatter} from '../formatter'
 import {getType} from '../utils'
 
 export default {
@@ -6,6 +5,7 @@ export default {
   priority: 300,
   stopParseChildElement: false,
   stopParseNextDirective: false,
+  noValueFormatter: false,
   bind () {
     let {element, args} = this
     let attrName = this.attrName = args
@@ -24,7 +24,6 @@ export default {
   },
   routine (value) {
     let {element, attrName} = this
-    value = execValueFormatter(value, this.formatters)
     if (getType(value) === 'boolean') {
       if (value)
         element.setAttribute(attrName, attrName)

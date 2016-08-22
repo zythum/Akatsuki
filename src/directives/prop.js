@@ -1,10 +1,9 @@
-import {execValueFormatter} from '../formatter'
-
 export default {
   displayName: 'prop',
   priority: 300,
   stopParseChildElement: false,
   stopParseNextDirective: false,
+  noValueFormatter: false,
   bind () {
     let {element, args} = this
     let propName = this.propName = args
@@ -25,7 +24,6 @@ export default {
   },
   routine (value) {    
     let {element, propName} = this
-    value = execValueFormatter(value, this.formatters)
     element[propName] = value
   }
 }
