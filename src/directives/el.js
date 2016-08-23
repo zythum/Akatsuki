@@ -6,6 +6,7 @@ export default {
   stopParseChildElement: false,
   stopParseNextDirective: false,
   noValueFormatter: true,
+  noClearAttribute: false,
   bind () {
     let {element, args, view} = this
     let elName = this.elName = args

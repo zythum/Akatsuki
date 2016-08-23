@@ -2,10 +2,11 @@ import {noop, objectValueFromPath} from './utils'
 import {parseValue} from './parser'
 
 export default function event (events, view) {
-  return events.map(({type, element, functionName, args}) => {
-    let method = objectValueFromPath(view.__methods, functionName)
+  return events.map(({type, element, name, functionName, args}) => {
+    const method = objectValueFromPath(view.__methods, functionName)
     if (!method) return { destroy: noop }
     
+    const attribute = element.getAttributeNode(name)
     let configs = type.split('.')
     type = configs.shift().trim()
 
@@ -49,7 +50,8 @@ export default function event (events, view) {
         return parseValue(type)
       }))
     }
-    
+
+    element.removeAttributeNode(attribute)
     element.addEventListener(type, listener, capture)
     return {
       element: element,
@@ -59,6 +61,7 @@ export default function event (events, view) {
       args: args,
       destroy () {
         element.removeEventListener(type, listener, capture)
+        element.setAttributeNode(attribute)
       }
     }
   })

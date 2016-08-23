@@ -4,6 +4,7 @@ export default {
   stopParseChildElement: false,
   stopParseNextDirective: false,
   noValueFormatter: false,
+  noClearAttribute: false,
   bind () {
     this.classNames = this.args.split(/\s+/)
     this.originClassName = this.element.className

@@ -4,6 +4,7 @@ export default {
   stopParseChildElement: false,
   stopParseNextDirective: false,
   noValueFormatter: false,
+  noClearAttribute: false,
   bind () {
     let {element, args} = this
     let propName = this.propName = args

@@ -75,18 +75,19 @@ directive.hasType = function hasType (type) {
 }
 
 function bindDirective ({directive, element, path, args, name, formatters, view}) {
-  const model = view.__computedModel.get(path) != undefined ?
-    view.__computedModel : view.model  
-  const directiveListener = value => {
-    if (directive.noValueFormatter === false) 
-      value = execValueFormatter(value, formatters)
-
-    callObjectFunctionIfExit(instance, directive, 'routine', value)
-  }
   formatters = parseFormatterArgs(formatters, view.__formatters, {
     $index: () => view.__computedModel.get('$index'),
     $length: () => view.__computedModel.get('$length')
   })
+  const attribute = element.getAttributeNode(name)
+  const model = view.__computedModel.get(path) != undefined ?
+    view.__computedModel : view.model  
+  const directiveListener = value => {
+    if (directive.noValueFormatter === false) {
+      value = execValueFormatter(value, formatters)
+    }
+    callObjectFunctionIfExit(instance, directive, 'routine', value)
+  }  
   const instance = {
     element: element,
     attributeName: name,
@@ -101,8 +102,16 @@ function bindDirective ({directive, element, path, args, name, formatters, view}
       })
       model.off(path, directiveListener)
       callObjectFunctionIfExit(instance, directive, 'unbind')
+      //把之前清掉的属性写回去
+      if (directive.noClearAttribute === false) {
+        element.setAttributeNode(attribute)
+      }
       objForeach(instance, (_, key) => delete instance[key])
     }
+  }
+  //清掉的[directive]属性 美观起见
+  if (directive.noClearAttribute === false) {
+    element.removeAttributeNode(attribute)
   }
   callObjectFunctionIfExit(instance, directive, 'bind')
   directiveListener(model.get(path))

@@ -17,6 +17,7 @@ export default {
   stopParseChildElement: true,
   stopParseNextDirective: true,
   noValueFormatter: true,
+  noClearAttribute: true,
   bind () {
     let { element } = this
     let childViews = this.childViews = []

@@ -19,50 +19,39 @@ export default class Model {
   constructor (dataObject) {
     this.__model = {}
     this.__events = {}
-    this.__pathPrefix = null
     if (dataObject) this.update({$set: dataObject})
   }
   
   destroy () {
     delete this.__model
     delete this.__events
-    delete this.__pathPrefix
   }
 
   path (path) {
-    if (!path && path === '') return this
-    let childModel = new Model()
-    childModel.__events = this.__events
-    childModel.__model = this.__model
-    childModel.__pathPrefix = path
-    return childModel
+    if (!path || path === '') return this
+    return new Path(path, this)
   }
 
   pathForEach (path, iteratee) {
     let array = this.get(path)
     if ( getType(array) === 'array' ) {
-      array.forEach((_, index) => iteratee(this.path(path + '.$' + index), index))
+      array.forEach((_, index) => 
+        iteratee(this.path(path + '.$' + index), index, this.path(path)))
     } else if (getType(array) === 'object') {
-      objForeach((_, key) => iteratee(this.path(path + '.' + key), key))
+      objForeach((_, key) => 
+        iteratee(this.path(path + '.' + key), key, this.path(path)))
     }
   }
 
   get (path) {
-    getPath(path, this.__pathPrefix)
     return objectValueFromPath(this.__model, path, true)
   }
 
   set (path, value) {
-    getPath(path, this.__pathPrefix)
-    let next = pathToObject(path, value)
-    this.update(next)
+    this.update(pathToObject(path, value))
   }
 
   update (next) {
-    if (this.__pathPrefix) {
-      next = pathToObject(this.__pathPrefix, next)
-    }
-
     patch(this.__model, next, (parent, key, value, path) => {
       const oldValue = parent[key]
       parent[key] = value
@@ -79,7 +68,6 @@ export default class Model {
   }
 
   emit (path, value) {
-    getPath(path, this.__pathPrefix)
     objForeach(this.__events, (events, _path) => {
       if (path.indexOf(_path) != 0) return
       [].concat(events).forEach( callback => {
@@ -89,12 +77,10 @@ export default class Model {
   }
 
   on (path, callback=function(){}) {
-    getPath(path, this.__pathPrefix)
-    ;(this.__events[path] = this.__events[path] || []).push(callback)
+    (this.__events[path] = this.__events[path] || []).push(callback)
   }
 
   off (path, callback) {
-    getPath(path, this.__pathPrefix)
     if (!this.__events[path]) return
     const callbacks = this.__events[path]
     for (let idx = 0, len = callbacks.length; idx < len; idx++) {
@@ -107,8 +93,51 @@ export default class Model {
   }
 }
 
-function getPath (path, prefix) {
-  return prefix ? prefix + '.' + path : path
+//用于 path, pathForEach 的语法糖
+class Path {
+  constructor (prefix, model) {
+    this.prefix = prefix
+    this.model = model
+  }
+
+  pathForEach (path, iteratee) {
+    let array = this.get(path)
+    if ( getType(array) === 'array' ) {
+      array.forEach((_, index) => 
+        iteratee(this.path(path + '.$' + index), index, this.path(path)))
+    } else if (getType(array) === 'object') {
+      objForeach((_, key) => 
+        iteratee(this.path(path + '.' + key), key, this.path(path)))
+    }
+  }
+
+  path (prefix) {
+    return new Path(`${prefix}.${this.prefix}`, this.model)
+  }
+
+  get (path) {
+    return this.model.get(`${this.prefix}.${path}`)
+  }
+
+  set (path, value) {
+    this.model.set(`${this.prefix}.${path}`, value)
+  }
+
+  update (next) {
+    this.model.update(pathToObject(this.prefix, next))
+  }
+
+  on (path, callback) {
+    this.model.on(`${this.prefix}.${path}`, callback)
+  }
+
+  off (path, callback) {
+    this.model.off(`${this.prefix}.${path}`, callback)
+  }
+
+  emit (path, value) {
+    this.model.emit(`${this.prefix}.${path}`, value)
+  }
 }
 
 function pathToObject (path, last) {

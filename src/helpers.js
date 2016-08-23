@@ -5,6 +5,7 @@ const defaultDirectiveConfig = {
   stopParseChildElement: false,
   stopParseNextDirective: false,
   noValueFormatter: false,
+  noClearAttribute: false,
 }
 
 export function directiveHelper (configs) {

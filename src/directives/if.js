@@ -7,6 +7,7 @@ export default {
   stopParseChildElement: true,
   stopParseNextDirective: false,
   noValueFormatter: false,
+  noClearAttribute: true,
   bind () {
     let {element} = this
     let parentNode = this.parentNode = element.parentNode

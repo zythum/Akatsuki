@@ -1,10 +1,15 @@
+function ukey () {
+  ukey.count = ukey.count || 0
+  return Date.now() + '-' + ukey.count++
+}
+
 var rootElement = document.querySelector('.todoapp')
 var storageKey = 'Akatsuki-todos'
 var todos = localStorage.getItem(storageKey)
 todos = JSON.parse(todos) || [
-  {title: '今天天气不错', completed: false},
-  {title: '吃晚饭后跑两圈', completed: false},
-  {title: '周日去定羽毛球场地', completed: false}
+  {title: '今天天气不错', completed: false, key: ukey()},
+  {title: '吃晚饭后跑两圈', completed: false, key: ukey()},
+  {title: '周日去定羽毛球场地', completed: false, key: ukey()}
 ]  
 
 var todoapp = Akatsuki(rootElement, {
@@ -45,7 +50,7 @@ var todoapp = Akatsuki(rootElement, {
     },
     createTodo: function (event, element, value) {
       if (value.trim().length === 0) return
-      var unshiftData = {title: value, completed: false}
+      var unshiftData = {title: value, completed: false, key: ukey()}
       this.path('todos').update({ $unshift: unshiftData })
       element.value = ''
     },
@@ -70,14 +75,20 @@ var todoapp = Akatsuki(rootElement, {
     toggleAll: function () {
       var hasLeft = this.get('leftTodoCount') > 0
       this.pathForEach('todos', function (path) {
-        path.set('completed', hasLeft)
+          path.set('completed', hasLeft)
       })
     },
     toggleItem: function (index) {
-      this.path('todos.$' + index + '.completed').update({$toggle: true})
+      var key = this.get('filteredTodos')[index].key
+      this.pathForEach('todos', function (path, index, listPath) {
+        if (path.get('key') === key) path.update({completed: {$toggle: true}})
+      })
     },
     deleteItem: function (index) {
-      this.path('todos').update({$remove: index})
+      var key = this.get('filteredTodos')[index].key
+      this.pathForEach('todos', function (path, index, listPath) {
+        if (path.get('key') === key) listPath.update({$remove: index})
+      })
     },
     filter: function (type) {
       this.set('filter', type)
