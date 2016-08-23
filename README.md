@@ -49,7 +49,7 @@ Akatsuki 的指令使用 `[directive:arg]="your.model.path | formatter"` 的格�
 #### [text]
 更新元素的 textContent, 也可以直接使用 `${your.model.path}` 的方式写在内容体内。
 
-```html
+```
 <div [text]="your.model.path"><div>
 <div>${your.model.path}<div>
 ```
@@ -59,7 +59,7 @@ Akatsuki 的指令使用 `[directive:arg]="your.model.path | formatter"` 的格�
 
 ⚠️尽量使用`[text]` `${}`的方式而不是修改innerHTML, 直接渲染html是有xss风险的，特别是内容是用户输入的情况下。
 
-```html
+```
 <div [html]="your.model.path"><div>
 ```
 #### [class:className1 className2]
@@ -67,7 +67,7 @@ Akatsuki 的指令使用 `[directive:arg]="your.model.path | formatter"` 的格�
 
 `arg` 控制的className值，可以多个空格分隔
 
-```html
+```
 <div [class:current]="your.model.path"><div>
 <div [class:current selected]="your.model.path"><div>
 <div 
@@ -80,7 +80,7 @@ Akatsuki 的指令使用 `[directive:arg]="your.model.path | formatter"` 的格�
 
 `arg` 控制的 property 的name
 
-```html
+```
 <input type="checkbox" [prop:checked]="your.model.path"/>
 ```
 
@@ -90,7 +90,7 @@ Akatsuki 的指令使用 `[directive:arg]="your.model.path | formatter"` 的格�
 
 `arg` 控制的 attribute 的 name 
 
-```html
+```
 <input type="checkbox" [attr:data-info]="your.model.path"/>
 ```
 
@@ -99,7 +99,7 @@ Akatsuki 的指令使用 `[directive:arg]="your.model.path | formatter"` 的格�
 
 ⚠️show只是在 `'none'` `''` 之前切换，特殊的css处理会对show有一定影响
 
-```html
+```
 <div class="modal" [show]="your.model.path"></div>
 ```
 
@@ -110,17 +110,18 @@ Akatsuki 的指令使用 `[directive:arg]="your.model.path | formatter"` 的格�
 
 ⚠️ 同名的el只能存在提个，Akastuki设计是抢占式的
 
-```html
+```
 <div id="root">
     <input [els:user] name="userName" value="用户名" />
 </div>
-```
-```javascript
+
+<script>
 Akatsuki(document.getElementById('root'), {
     viewDidMount: function () {
         this.els.user.value === '用户名'
     }
 })    
+</script>
 ```
 
 #### [if]
@@ -129,7 +130,7 @@ Akatsuki(document.getElementById('root'), {
 请区别 [if] 和 ［show］，虽然一般来说表现效果一致，但是内在实现完全不同，
 [if] 不显示时不显示的dom是不存在的， [show] 只是`display:none`了而已
 
-```html
+```
 <div [if]="your.model.path"> 暁よ。一人前のレディーとして扱ってよね！</div>
 ```
 
@@ -142,7 +143,7 @@ Akatsuki(document.getElementById('root'), {
 
 `$lengh` 内部遍历到的数组的长度
 
-```html
+```
 <ul>
   <li [each:item]="list.path" [class:current]="item.current">
     ${$index} | ${item.text} | ${$length}
