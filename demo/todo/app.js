@@ -44,7 +44,7 @@ var todoapp = Akatsuki(rootElement, {
     },
     edit: function (element, index) {
       this.set('editing', index)
-      setTimeout(function () {
+      Akatsuki.nextTick(function () {
         element.parentNode.nextElementSibling.focus()
       })
     },
@@ -80,4 +80,3 @@ var todoapp = Akatsuki(rootElement, {
     }
   }
 })
-todoapp.mount()

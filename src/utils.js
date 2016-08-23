@@ -111,3 +111,17 @@ export function dateFormat (date, fmt) {
         (o[k]) : (('00' + o[k]).substr(('' + o[k]).length)))
   return fmt
 }
+
+const _requestAnimationFrame = 
+  window.requestAnimationFrame || 
+  window.mozRequestAnimationFrame || 
+  window.webkitRequestAnimationFrame || 
+  window.msRequestAnimationFrame || 
+  (fn => setTimeout(fn, 16))
+
+/**
+ * 下一时刻触发
+ * @param  {function} fn
+ * @return
+ */
+export function nextTick (fn) { _requestAnimationFrame(fn) }

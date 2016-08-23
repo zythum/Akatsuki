@@ -11,7 +11,7 @@ rollup.rollup({
   return bundle.write({ 
     format: 'umd',
     moduleName: 'Akatsuki',
-    dest: './dist/index.js',
+    dest: './dist/akatsuki.js',
     sourceMap: true
   })
 })
@@ -25,7 +25,7 @@ rollup.rollup({
   return bundle.write({ 
     format: 'umd',
     moduleName: 'Akatsuki',
-    dest: './dist/index.min.js',
+    dest: './dist/akatsuki.min.js',
     sourceMap: true
   })
 })

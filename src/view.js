@@ -19,8 +19,8 @@ export default class View {
   constructor (element, {
     model = {},
     mixins = [],    
-    formatters = {},
     directives = {},
+    formatters = {},
     methods = {},
     computed = {},
     viewWillMount = noop,
@@ -28,56 +28,32 @@ export default class View {
     viewWillUnmount = noop,
     viewDidUmmount = noop,
   }) {
-    this.mounted = false
-    this.destroyed = false
-
-    this.model = model
+    
     this.els = {}
+    this.model = model instanceof Model ? model : new Model(model)
+    this.__computedModel = null
     this.__rootView = this
     this.__rootElement = element
-    this.__computedModel = null
+    
+    this.__binding = []    
 
-    this.__binding = []
+    this.__directives = directives
+    this.__formatters = formatters
+    this.__methods = methods
+    this.__computed = computed
+
+    //生命周期
+    this.mounted = false
+    this.destroyed = false
+    this.viewWillMount = viewWillMount
+    this.viewDidMount = viewDidMount
+    this.viewWillUnmount = viewWillUnmount
+    this.viewDidUmmount = viewDidUmmount
+
+    //默认标示设置
     this.__textDelimiters = defaultTextDelimiters
     this.__directiveAttributeDelimiters = defaultTirectiveAttributeDelimiters
     this.__eventAttributeDelimiters = defaultTventAttributeDelimiters
-    
-    this.__directives = {}
-    this.__formatters = {}
-    this.__methods = {}
-    this.__computed = {}
-
-    
-    this.viewWillMount = null
-    this.viewDidMount = null
-    this.viewWillUnmount = null
-    this.viewDidUmmount = null
-
-    //合并mixins
-    mixins.push({
-      directives, formatters, methods, computed,
-      viewWillMount, viewDidMount, viewWillUnmount, viewDidUmmount
-    })
-    
-    mixins.forEach(mixin => {
-      
-      //合并生命周期函数      
-      [
-        'viewWillMount', 
-        'viewDidMount', 
-        'viewWillUnmount', 
-        'viewDidUmmount'
-      ].forEach(key => {
-        let prev = this[key], next = mixin[key]
-        if ( getType(next) != 'function') return
-        this[key] = getType(prev) === 'function' ? 
-          ()=> { prev.call(this), next.call(this) } : ()=> next.call(this)
-      })
-
-      //合并方法和计算属性
-      for (let key of ['directives', 'formatters', 'methods', 'computed']) 
-        Object.assign(this[`__${key}`], mixin[key])
-    })  
   }
 
   destroy () {
@@ -115,6 +91,7 @@ export default class View {
 
     this.mounted = false
     this.viewDidUmmount()
+    return this
   }
 
   mount () {
@@ -212,6 +189,7 @@ export default class View {
     })
     this.mounted = true
     this.viewDidMount()
+    return this
   }
 
   get (path) {
@@ -219,13 +197,13 @@ export default class View {
     return value != undefined ? value : this.model.get(path)
   }
   
-  set (path, value) { this.model.set(path, value) }
+  set (path, value) { this.model.set(path, value); return this }
   
-  update (next) { this.model.update(next) }
+  update (next) { this.model.update(next); return this }
 
   path (path) { return this.model.path(path) }
 
-  pathForEach (path, iteratee) { return this.model.pathForEach(path, iteratee) }
+  pathForEach (path, iteratee) { this.model.pathForEach(path, iteratee); return this }
 
   childView (element, mixins={}) {
     mixins.model = this.model
