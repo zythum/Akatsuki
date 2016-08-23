@@ -20,6 +20,7 @@ Akatsuki(document.getElementById('main'), {
 ---
 
 ##开发 Akatsuki
+
 git clone 下来之后执行下面命令
 
 ```
