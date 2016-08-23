@@ -116,9 +116,9 @@ function pathToObject (path, last) {
   let object, current, key
   current = object = {}
   while(key = path.shift()) {
-    let match = key.match(/^\$(\d)+$/)
+    let match = key.match(/^\$(\d+)$/)
     if (match) {
-      key = match[1]
+      key = parseInt(match[1])
       current = current['$update'] = {}
     }
     if (path.length) {

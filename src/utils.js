@@ -77,7 +77,12 @@ export function objectValueFromPath (object, path, parseNumber) {
   for (let key of path) {
     if (parseNumber) {
       let match = key.match(/^\$(\d+)$/)
-      if (match) key = match[1]
+      if (match) {
+        key = parseInt(match[1])
+        if (getType(object) === 'array') object = object[key]
+        else return
+        continue
+      }
     }
     if (object.hasOwnProperty(key)) object = object[key]
     else return
