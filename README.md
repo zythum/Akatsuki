@@ -1,4 +1,4 @@
-#Akatsuki
+# Akatsuki
 ---
 
 > 暁よ。一人前のレディーとして扱ってよね！
@@ -19,7 +19,7 @@ Akatsuki(document.getElementById('main'), {
 
 ---
 
-##开发 Akatsuki
+## 开发 Akatsuki
 
 git clone 下来之后执行下面命令
 
@@ -34,6 +34,6 @@ $ npm run build
 
 ---
 
-##使用 Akatsuki
+## 使用 Akatsuki
 
 朱一很懒，还没写
