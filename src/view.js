@@ -77,7 +77,7 @@ export default class View {
     delete this.mounted
   }
 
-  unmout () {
+  unmount () {
     if (!this.mounted) return
     this.viewWillUnmount()
     let _bindingOne

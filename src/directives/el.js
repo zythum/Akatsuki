@@ -11,9 +11,7 @@ export default {
     let {element, args, view} = this
     let elName = this.elName = args
     let els = view.__rootView.els
-    if (els[elName] && els[elName] != element) 
-      throw "不要用两个名字相同的节点"
-    
+    if (els[elName]) return 
     els[elName] = element
   },
   unbind () {
