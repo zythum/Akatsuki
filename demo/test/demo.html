@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <title>Document</title>
-  <script src="./dist/index.js"></script>
+  <script src="../../dist/akatsuki.js"></script>
 </head>
 <body>
 
 <div id="a">  
-  <span [class-show-1]="data.show" >${data.count | prefix('$')}</span>
+  <span [class:show-1]="data.show" >${data.count | prefix('$')}</span>
   <button (click)="buttonClick">plus</button>
   <button (click)="toggleShow($event, $element)">toggleShow</button>
   <div [if]="data.show">        
@@ -17,16 +17,16 @@
     <button (click)="reverse">reverse</button>
     <span>${listLen}</span>  
     <ul>
-      <li [each-item]="data.list" [attr-a]="item.text">${item.text} | ${$index} | ${$length}</li>
+      <li [each:item]="data.list" [attr-a]="item.text">${item.text} | ${$index} | ${$length}</li>
     </ul>
     <ul>
-      <li [each-item]="data.list | sort:odd">${item.text} | ${$index} | ${$length}</li>
+      <li [each:item]="data.list | sort:odd">${item.text} | ${$index} | ${$length}</li>
     </ul>
     <ul>
-      <li [each-item]="data.list" [if]="item.show" [text]="item.text | suffix('%')"></li>
+      <li [each:item]="data.list" [if]="item.show" [text]="item.text | suffix('%')"></li>
     </ul>
     <ul>
-      <li [each-item]="data.list">
+      <li [each:item]="data.list">
         <span [if]="item.show" [text]="item.text"></span>
       </li>
     </ul>
@@ -73,7 +73,6 @@
       },
     }
   })
-  vm_text.mount()
 
 </script>
 </body>
