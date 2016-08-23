@@ -79,13 +79,13 @@ var todoapp = Akatsuki(rootElement, {
       })
     },
     toggleItem: function (index) {
-      var key = this.get('filteredTodos')[index].key
+      var key = this.get('filteredTodos.$'+index+'.key')
       this.pathForEach('todos', function (path, index, listPath) {
         if (path.get('key') === key) path.update({completed: {$toggle: true}})
       })
     },
     deleteItem: function (index) {
-      var key = this.get('filteredTodos')[index].key
+      var key = this.get('filteredTodos.$'+index+'.key')
       this.pathForEach('todos', function (path, index, listPath) {
         if (path.get('key') === key) listPath.update({$remove: index})
       })
