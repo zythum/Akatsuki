@@ -43,6 +43,7 @@
             </div>
             <input
               class="edit" type="text"
+              [focus]="editing | == $index"
               (keyup.enter)="finishEdit($element, $value, $index)"
               (keyup.esc)="cancelEdit($element, $value, $index)"
               (focus)="startEdit($element, $index)"

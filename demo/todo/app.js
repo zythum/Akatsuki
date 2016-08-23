@@ -18,6 +18,13 @@ var todoapp = Akatsuki(rootElement, {
   viewWillUnmount: function () {
     this.model.off('todos', this.sync)
   },
+  directives: {
+    'focus': function (value) {
+      if (!value) return
+      var element = this.element
+      Akatsuki.nextTick(function () { element.focus() })
+    }
+  },
   computed: {
     filteredTodos: ['todos', 'filter', function (todos, filter) {
       filter = ({
@@ -43,10 +50,7 @@ var todoapp = Akatsuki(rootElement, {
       element.value = ''
     },
     edit: function (element, index) {
-      this.set('editing', index)
-      Akatsuki.nextTick(function () {
-        element.parentNode.nextElementSibling.focus()
-      })
+      this.set('editing', index)      
     },
     startEdit: function (element, index) {
       element.value = this.get('todos.$' + index + '.title')      

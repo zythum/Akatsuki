@@ -159,7 +159,7 @@ export default class View {
             if ( type = parseAttributeName(name, this.__directiveAttributeDelimiters) ) {
               let {directiveType, args} = parseDirectiveName(type)
               let {path, formatters} = parseDirectiveValue(value)
-              if ( directive.hasType(directiveType) ) 
+              if ( directive.hasType(directiveType) || this.__directives.hasOwnProperty(directiveType) ) 
                 directives.push({type: directiveType, args, name, element, path, formatters, view: this})
             }
 
@@ -208,8 +208,9 @@ export default class View {
   childView (element, mixins={}) {
     mixins.model = this.model
     mixins.computed = Object.assign({}, this.__computed, mixins.computed || {})
+    mixins.directives = this.__directives
     
-    ;['methods', 'formatters'].forEach(prop => {
+    ;['formatters', 'methods'].forEach(prop => {
       let wrapper = objForeach(this[`__${prop}`], (_, name) => {
         // 这里用 this[`__${prop}`][name] 而不只是直接用对应值是留一个运行时修改的余地
         let self = this[`__${prop}`]

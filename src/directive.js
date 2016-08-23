@@ -32,7 +32,7 @@ export default function directive (directiveArgs, view) {
     return priority2 - priority1
   })
   for (let {type, args, name, element, path, formatters} of directiveArgs) {
-    let directive = view.__directives[type] || directives[type]
+    let directive = view.__directives[type] || directives[type]    
     instances.push(bindDirective({ directive, args, name, element, path, formatters, view }))
     needBreak = needBreak || directive.stopParseChildElement
     if (directive.stopParseNextDirective) break
