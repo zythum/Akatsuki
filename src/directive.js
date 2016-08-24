@@ -7,7 +7,7 @@ import directivesProp from './directives/prop'
 import directivesShow from './directives/show'
 import directivesEach from './directives/each'
 import directivesEl from './directives/el'
-import {objForeach} from './utils'
+import {objForeach, nextTick} from './utils'
 import {execValueFormatter, parseFormatterArgs} from './formatter'
 
 let directives = {}
@@ -45,7 +45,12 @@ directive.text = function directiveText ({textNode, path, formatters, view}) {
   const model = view.__computedModel.get(path) != undefined ?
     view.__computedModel : view.model  
   const directiveTextListener = value => {
-    textNode.nodeValue = execValueFormatter(value, formatters)
+    value = execValueFormatter(value, formatters)
+    if (view.mounted === true) {
+      nextTick(() => textNode.nodeValue = value)
+    } else {
+      textNode.nodeValue = value
+    }
   }
   formatters = parseFormatterArgs(formatters, view.__formatters, {
     $index: () => view.__computedModel.get('$index'),
@@ -86,7 +91,11 @@ function bindDirective ({directive, element, path, args, name, formatters, view}
     if (directive.noValueFormatter === false) {
       value = execValueFormatter(value, formatters)
     }
-    callObjectFunctionIfExit(instance, directive, 'routine', value)
+    if (view.mounted === true) {
+      nextTick(()=> callObjectFunctionIfExit(instance, directive, 'routine', value))
+    } else {
+      callObjectFunctionIfExit(instance, directive, 'routine', value)
+    }
   }  
   const instance = {
     element: element,

@@ -150,12 +150,22 @@ const _requestAnimationFrame =
   window.msRequestAnimationFrame || 
   (fn => setTimeout(fn, 16))
 
+let nextTickList = []
+
+function doNextTick (fn) {
+  while(fn = nextTickList.shift()) {
+    try { fn() } catch (e) {}
+  }
+}
+
 /**
  * 下一时刻触发
  * @param  {function} fn
  * @return
  */
-export function nextTick (fn) { _requestAnimationFrame(fn) }
+export function nextTick (fn) {
+  if (nextTickList.push(fn) === 1) _requestAnimationFrame(doNextTick)
+}
 
 /**
  * 深度拷贝对象
