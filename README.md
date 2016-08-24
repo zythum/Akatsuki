@@ -527,7 +527,7 @@ Akatsuki(document.getElementById('root'), {
 
 ### other
 
-####Akatsuki.nextTick
+#### Akatsuki.nextTick
 > 在下一个事件循环时处理回调
 > 
 > + @param {function}
