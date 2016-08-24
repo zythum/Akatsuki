@@ -74,19 +74,19 @@ var todoapp = Akatsuki(rootElement, {
     },
     toggleAll: function () {
       var hasLeft = this.get('leftTodoCount') > 0
-      this.pathForEach('todos', function (path) {
+      this.path('todos').each(function (path) {
           path.set('completed', hasLeft)
       })
     },
     toggleItem: function (index) {
       var key = this.get('filteredTodos.$'+index+'.key')
-      this.pathForEach('todos', function (path, index, listPath) {
+      this.path('todos').each(function (path, index, listPath) {
         if (path.get('key') === key) path.update({completed: {$toggle: true}})
       })
     },
     deleteItem: function (index) {
       var key = this.get('filteredTodos.$'+index+'.key')
-      this.pathForEach('todos', function (path, index, listPath) {
+      this.path('todos').each(function (path, index, listPath) {
         if (path.get('key') === key) listPath.update({$remove: index})
       })
     },

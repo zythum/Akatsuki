@@ -200,7 +200,7 @@ export default class View {
   set (path, value) { this.model.set(path, value); return this }
   update (next) { this.model.update(next); return this }
   path (path) { return this.model.path(path) }
-  pathForEach (path, iteratee) { this.model.pathForEach(path, iteratee); return this }
+  each (iteratee) { return this.model.each(iteratee) }
 
   //创建子view
   childView (element, mixins={}) {

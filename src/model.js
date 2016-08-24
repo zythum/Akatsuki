@@ -32,16 +32,8 @@ export default class Model {
     return new Path(path, this)
   }
 
-  pathForEach (path, iteratee) {
-    let array = this.get(path)
-    if ( getType(array) === 'array' ) {
-      array.forEach((_, index) => 
-        iteratee(this.path(path + '.$' + index), index, this.path(path)))
-    } else if (getType(array) === 'object') {
-      objForeach((_, key) => 
-        iteratee(this.path(path + '.' + key), key, this.path(path)))
-    }
-  }
+  //反hook path的 each
+  each (iteratee) { return this.path().each(iteratee) }
 
   get (path) {
     return objectValueFromPath(this.__model, path, true)
@@ -56,7 +48,6 @@ export default class Model {
       const oldValue = parent[key]
       parent[key] = value
       let oldValueType = getType(oldValue)
-
       //如果是值属性，并且值相等，那么就不触发变化事件了
       if (
         oldValueType != 'object' && oldValueType != 'array' &&
@@ -100,20 +91,29 @@ class Path {
     this.model = model
   }
 
-  relative(path) {
-    return this.prefix ? `${this.prefix}.${path}` : path
+  relative (path) {
+    var _path = []
+    if (this.prefix) _path.push(this.prefix)
+    if (path) _path.push(path)
+    return _path.join('.')
   }
   
-  path (prefix) { return new Path(this.relative(prefix), this.model) }
+  path (prefix) { 
+    return new Path(this.relative(prefix), this.model) 
+  }
 
-  pathForEach (path, iteratee) {
-    let array = this.get(path)
-    if ( getType(array) === 'array' ) {
-      array.forEach((_, index) => 
-        iteratee(this.path(path + '.$' + index), index, this.path(path)))
-    } else if (getType(array) === 'object') {
-      objForeach((_, key) => 
-        iteratee(this.path(path + '.' + key), key, this.path(path)))
+  each (iteratee) {
+    let object = this.get()
+    switch (getType(object)) {
+      case 'array':
+        return object.map((_, index) => {
+          iteratee(this.path('$' + index), index, this)
+        })
+      case 'object':
+        return objForeach(object, (_, key) => {
+          iteratee(this.path('$' + index), key, this)
+        })
+      default: throw 'each的对象只能是object或者array'
     }
   }
 
