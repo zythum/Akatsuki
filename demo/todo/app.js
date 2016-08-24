@@ -86,9 +86,13 @@ var todoapp = Akatsuki(rootElement, {
     },
     deleteItem: function (index) {
       var key = this.get('filteredTodos.$'+index+'.key')
+      var needRemoveIndex
       this.path('todos').each(function (path, index, listPath) {
-        if (path.get('key') === key) listPath.update({$remove: index})
+        if (path.get('key') === key) needRemoveIndex = index
       })
+      if (needRemoveIndex != undefined) {
+        this.path('todos').update({$remove: needRemoveIndex})
+      }
     },
     filter: function (type) {
       this.set('filter', type)

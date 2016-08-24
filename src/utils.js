@@ -69,7 +69,7 @@ export function walk (element, iteratee) {
  * @param  {boolean} parseNumber  是否把 $0 $1 认为是数字
  * @return {any or undefined}
  */
-export function objectValueFromPath (object, path, parseNumber) {  
+export function objectValueFromPath (object, path, parseNumber) {
   if (getType(path) === 'string') {
     if (path === '') return object  
     path = path.split('.')
@@ -84,8 +84,34 @@ export function objectValueFromPath (object, path, parseNumber) {
         continue
       }
     }
-    if (object.hasOwnProperty(key)) object = object[key]
+    if (object && object.hasOwnProperty(key)) object = object[key]    
     else return
+  }
+  return object
+}
+
+/**
+ * 通过对应path 创建对象数据
+ * @param  {string} path
+ * @param  {any}    最终对象的值
+ * @return {object}
+ */
+export function pathToObject (path, value) {
+  if (!path) return value
+  path = path.split('.')
+  let object, current, key
+  current = object = {}
+  while(key = path.shift()) {
+    let match = key.match(/^\$(\d+)$/)
+    if (match) {
+      key = parseInt(match[1])
+      current = current['$update'] = {}
+    }
+    if (path.length) {
+      current = current[key] = {}
+    } else {
+      current[key] = value
+    }
   }
   return object
 }

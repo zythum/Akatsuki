@@ -1,4 +1,10 @@
-import { objForeach, getType, objectValueFromPath, deepCopy } from './utils'
+import { 
+  objForeach, 
+  getType, 
+  objectValueFromPath, 
+  deepCopy,
+  pathToObject,
+} from './utils'
 import operationsCustom from './operations/custom'
 import operationsArray from './operations/array'
 import operationsBool from './operations/bool'
@@ -130,32 +136,17 @@ class Path {
   emit (path, value) { this.model.emit(this.relative(path), value) }
 }
 
-function pathToObject (path, last) {
-  if (!path) return last
-  path = path.split('.')
-  let object, current, key
-  current = object = {}
-  while(key = path.shift()) {
-    let match = key.match(/^\$(\d+)$/)
-    if (match) {
-      key = parseInt(match[1])
-      current = current['$update'] = {}
-    }
-    if (path.length) {
-      current = current[key] = {}
-    } else {
-      current[key] = last
-    }
-  }
-  return object
-}
-
-function operationFromNext (next) {
-  for (let key in next) if (key.indexOf('$') === 0) return key
-  return null
-}
-
-function patch (prev, next, callback, prevParent, key, path=[]) {
+/**
+ * 寻找两个数据对象的差异
+ * @param  {object or array}      prev       源数据对象
+ * @param  {object or array}      next       新数据对象
+ * @param  {Function}             callback   差异的回调函数
+ * @param  {object or array}      prevParent 源数据对象的父级
+ * @param  {string}               key        源数据对象对应父级的key
+ * @param  {array}                path       源数据对象的顶级的 path
+ * @return
+ */
+export function patch (prev, next, callback, prevParent, key, path=[]) {
 
   const prevType = getType(prev)
   const nextType = getType(next)
@@ -190,4 +181,9 @@ function patch (prev, next, callback, prevParent, key, path=[]) {
       let nextValue = operations[operation](prevParent[key], next[operation])
       callback(prevParent, key, nextValue, pathString)
   }
+}
+
+function operationFromNext (next) {
+  for (let key in next) if (key.indexOf('$') === 0) return key
+  return null
 }
