@@ -130,3 +130,22 @@ const _requestAnimationFrame =
  * @return
  */
 export function nextTick (fn) { _requestAnimationFrame(fn) }
+
+/**
+ * 深度拷贝对象
+ * @param  {any} object
+ * @return {any}
+ * checkObjectKey 用于 model中检测key的合法性
+ */
+export function deepCopy (object, checkObjectKey) {
+  switch (getType(object)) {
+    case 'object':
+      return objForeach(object, (one, key) => {
+        if (checkObjectKey) checkObjectKey(key)
+        return deepCopy(one)
+      })
+    case 'array':
+      return object.map((one) => deepCopy(one))
+    default: return object
+  }
+}

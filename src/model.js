@@ -1,4 +1,4 @@
-import { objForeach, getType, objectValueFromPath } from './utils'
+import { objForeach, getType, objectValueFromPath, deepCopy } from './utils'
 import operationsCustom from './operations/custom'
 import operationsArray from './operations/array'
 import operationsBool from './operations/bool'
@@ -17,6 +17,10 @@ const operations = Object.assign(
 export default class Model {
 
   constructor (dataObject) {
+    dataObject = deepCopy(dataObject, (key) => {
+      if (key.indexOf('.') != -1) throw 'model 数据的 key 不可以有 "."'
+      if (key.indexOf('$') === 0) throw 'model 数据的 key 不可以是 "$" 开头'
+    })
     this.__model = {}
     this.__events = {}
     if (dataObject) this.update({$set: dataObject})
@@ -36,7 +40,7 @@ export default class Model {
   each (iteratee) { return this.path().each(iteratee) }
 
   get (path) {
-    return objectValueFromPath(this.__model, path, true)
+    return deepCopy(objectValueFromPath(this.__model, path, true))
   }
 
   set (path, value) {
