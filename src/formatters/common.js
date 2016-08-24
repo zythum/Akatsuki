@@ -39,13 +39,6 @@ export default objForeach({
   '!=':  (value, [arg]) => value !=  arg,
   '!==': (value, [arg]) => value !== arg,
 
-  // ? : 的三元运算符，这里记得 value ? a : b 中  ? : 的左右必须有空格 
-  '?' : (value, args) => {
-    let [trueValue, sign, falseValue] = args
-    if (args.legnth != 3 || sign != ':') throw "? x : y 的三元运算符格式不对"
-    return !!value ? trueValue : falseValue
-  },
-
   // 如果value 是空 则返回默认值的操作
   '??': (value, [arg]) => {
     return value === undefined || value === null ? arg : value

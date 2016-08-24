@@ -10,8 +10,10 @@ export default objForeach({
   '$-': (number, [arg]) => number - parseFloat(arg),
   '$*': (number, [arg]) => number * parseFloat(arg),
   '$/': (number, [arg]) => number / parseFloat(arg),
+  '$%': (number, [arg]) => number % parseFloat(arg),
   '$-x': (number, [arg]) => parseFloat(arg) - number,
   '$/x': (number, [arg]) => parseFloat(arg) / number,
+  '$%x': (number, [arg]) => parseFloat(arg) % number,
 
 }, (operation, name, object) => {
   return (target, args) => {

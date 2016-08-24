@@ -38,20 +38,20 @@ $ npm run build
 ### directives
 > directives 是插入html中的一些指令，来处理渲染逻辑。
 
-Akatsuki 的指令使用 `[directive:arg]="your.model.path | formatter"` 的格式。
+Akatsuki 的指令使用 `[directive:arg]="my.model.path | formatter"` 的格式。
 
 + directive 是指令类型，
 + arg 是指令参数，
-+ your.model.path 是指令监听的model的path, 
++ my.model.path 是指令监听的model的path, 
 + formatter 是对于 model 数据的值处理（相见 formatters）
 
 
 #### [text]
-> 更新元素的 textContent, 也可以直接使用 `${your.model.path}` 的方式写在内容体内。
+> 更新元素的 textContent, 也可以直接使用 `${my.model.path}` 的方式写在内容体内。
 
 ```
-<div [text]="your.model.path"><div>
-<div>${your.model.path}<div>
+<div [text]="my.model.path"><div>
+<div>${my.model.path}<div>
 ```
 
 #### [html]
@@ -60,7 +60,7 @@ Akatsuki 的指令使用 `[directive:arg]="your.model.path | formatter"` 的格�
 ⚠️尽量使用`[text]` `${}`的方式而不是修改innerHTML, 直接渲染html是有xss风险的，特别是内容是用户输入的情况下。
 
 ```
-<div [html]="your.model.path"><div>
+<div [html]="my.model.path"><div>
 ```
 #### [class:className1 className2]
 > 更新元素的 className。
@@ -68,10 +68,10 @@ Akatsuki 的指令使用 `[directive:arg]="your.model.path | formatter"` 的格�
 `arg` 控制的className值，可以多个空格分隔
 
 ```
-<div [class:current]="your.model.path"><div>
-<div [class:current selected]="your.model.path"><div>
+<div [class:current]="my.model.path"><div>
+<div [class:current selected]="my.model.path"><div>
 <div 
-    [class:current]="your.model.path" 
+    [class:current]="my.model.path" 
     [class:current]="another.model.path">
 <div>
 ```
@@ -81,7 +81,7 @@ Akatsuki 的指令使用 `[directive:arg]="your.model.path | formatter"` 的格�
 `arg` 控制的 property 的name
 
 ```
-<input type="checkbox" [prop:checked]="your.model.path"/>
+<input type="checkbox" [prop:checked]="my.model.path"/>
 ```
 
 #### [attr:attributeName]
@@ -91,7 +91,7 @@ Akatsuki 的指令使用 `[directive:arg]="your.model.path | formatter"` 的格�
 `arg` 控制的 attribute 的 name 
 
 ```
-<input type="checkbox" [attr:data-info]="your.model.path"/>
+<input type="checkbox" [attr:data-info]="my.model.path"/>
 ```
 
 #### [show]
@@ -100,7 +100,7 @@ Akatsuki 的指令使用 `[directive:arg]="your.model.path | formatter"` 的格�
 ⚠️show只是在 `'none'` `''` 之前切换，特殊的css处理会对show有一定影响
 
 ```
-<div class="modal" [show]="your.model.path"></div>
+<div class="modal" [show]="my.model.path"></div>
 ```
 
 #### [el:alias]
@@ -131,7 +131,7 @@ Akatsuki(document.getElementById('root'), {
 [if] 不显示时不显示的dom是不存在的， [show] 只是`display:none`了而已
 
 ```
-<div [if]="your.model.path"> 暁よ。一人前のレディーとして扱ってよね！</div>
+<div [if]="my.model.path"> 暁よ。一人前のレディーとして扱ってよね！</div>
 ```
 
 #### [each:item]
@@ -169,6 +169,7 @@ Akatsuki(document.getElementById('root'), {
 > 
 > + 不支持存在 "." 字符的key名(会和 path 冲突)，
 > + 不支持 "$" 字符开头的key名(会和 operation 冲突)，
+> + 在view中，model的方法会hook到 instance上。可以通过类似 this.get方法获取。
 
 #### get
 > 从path获取对象,
@@ -179,7 +180,7 @@ Akatsuki(document.getElementById('root'), {
 + @return {any}
 
 ```javascript
-model.get('your.model.path')
+model.get('my.model.path')
 ```
 
 #### set
@@ -192,8 +193,8 @@ model.get('your.model.path')
 + @return
 
 ```javascript
-model.set('your.model.path', 'Akatsuki')
-model.set('your.model.path', {name: 'Akatsuki'})
+model.set('my.model.path', 'Akatsuki')
+model.set('my.model.path', {name: 'Akatsuki'})
 ```
 
 #### update
@@ -221,39 +222,318 @@ model.update('$prefix', 'I love ')
 
 ```javascript
 model.update({name: 'Akatsuki'})
-model.update({$prefix: 'Akatsuki'})
+model.update({$prefix: 'Akatsuki'}) //$prefix是operation
 ```
 
 #### on
+> 绑定事件，当path的内容变更时触发
+
++ @param {path}
++ @param {function} -> {any}
 
 
+```javascript
+model.on('my.model.path', function (value) { 
+    console.log('new value is ', value)
+})
+```
 
 #### off
+> 同 on, 是 on 的逆操作
 
 #### path
+> 短链接，可以认为是path相对路经
+
++ @param {path}
++ @return {Path} 返回一个类似Model的，和model api一样的对象，在上面操作传入的path都是相对当前路经的 
+
+```javascript
+var path = model.path('my')
+path.set('model.path', 123)
+path.get('model.path') === 123
+
+```
 
 #### each
+> 一维遍历当前数组或者对象的model或者path.
+
++ @param {function} -> {path} {number} {path}
+
+回调函数传值依次是
+
++ @param {path} 遍历开始后，当前获取到的元素的path
++ @param {number} 遍历开始后，当前获取到的元素的index
++ @param {path} 父元素的path
+
+```javascript
+
+model.path.set('goods', ['apple', 'car', 'bike', 'cake'])
+model.path('goods').each(function (path, index, listPath) {
+    console.log(path.get(), index, listPath.get())
+})
+
+// => apple 0 ['apple', 'car', 'bike', 'cake']
+// => car 1 ['apple', 'car', 'bike', 'cake']
+// => bike 2 ['apple', 'car', 'bike', 'cake']
+// => cake 3 ['apple', 'car', 'bike', 'cake']
+```
 
 ---
-
-### computed
-
----
-
 ### methods
+> methods 处理当前 view 中的所有事件，当前view给出的外跑还输，以及一些公用方法。
+> 
+> + methods 中的 this 指向当前 instance
+> + methods 中的方法在mount后会直接挂在当前 instance 上。 umount会会移除
+> + methods 只支持一维，值只能是 function
+
+####页面绑定事件方式
+
+页面标记 `(eventName.plugin)="methodsName(...args)"`
+
+```
+<!--页面绑定实例-->
+<div id="root">
+    <input (keyup.enter)="inputSubmit($value)" />
+<div>
+<script>
+Akatsuki(document.getElementById('root'), {
+    methods: {
+        inputSubmit: function (value) {
+            alert(value)
+        }
+    }
+})
+</script>
+```
+
++ `eventName` 需要绑定的事件名
++ `plugin` 当前事件的一些插件
+    + `.stop` 阻止事件冒泡
+    + `.prevent` 阻止浏览器默认行为
+    + `.capture` 绑定为捕获模式
+    + `.keyCodeMap` 输入某些键触发
+        + `esc` `tab` `enter` `space` `delete` `up` `left` `right` `down`
+        + 单个字母和数字键 比如 `a` `v` `s` `1` `2` `0`
++ `methodsName` 对应 methods 中的哪个方法
++ `...args` 传入 methodsName 对应方法的参数。可以多个，逗号分隔 比如 `methodsName($index, $value, '111', 111, false)`
+    + `$index`: 当前如果在each中的话当前元素的 index
+    + `$length`: 当前如果在each中的话当前的数组 length
+    + `$element`: 绑定事件的dom
+    + `$event`: 事件触发的eventObject
+    + `$value`: 当前绑定事件的dom的value
+    + `'string'` `1` `false` `true` JSON 基本对象
 
 ---
 
 ### formatters
+> 对于当前类似 `[text]="my.text"` 的 directive, 如果传入的值需要一些固定的改变再去变化的 dom 的话 可以使用 formatter 修饰。`[text]="my.text | prefix '$'"` 
+
+例子：
+
+```
+<!--页面绑定实例-->
+<div id="root">${my.text | prefix '¥' | suffix '.00'}<div>
+<script>
+Akatsuki(document.getElementById('root'), {
+    model: {my: {text: 12}}
+})
+</script>
+
+//=>  <div id="root">¥12.00<div>
+```
+
+#### 支持的格式
+
++ 空格风格 `[text]="my.num | > 0"`
++ 调用风格 `[text]="my.test | prefix('$')"`
++ 支持链式 `[text]="my.test | prefix '$' | suffix('.00')"`
+
+#### 支持的参数
+
+formatter空格后面或者括号中的参数。可以是JSON的简单数据类型，以及 `$index` `$length` (如果在`[each]` 中的话表示当前index和数组长度)
+
+#### 自带的formatter
+
++ `toString` 返回数据的 toString() 方法
++ `count` 如果是数组返回length，如果是对象返回 keys.length。否则返回0
++ `empty` 如果是数组判断length是否为零，如果是对象判断 keys.length 是否为零。否则判断当前是否==false
++ `!empty` empty的取反
++ `<` 逻辑判断
++ `<=` 同上
++ `==` 同上
++ `===` 同上
++ `>=` 同上
++ `>` 同上
++ `!=` 同上
++ `!==` 同上
++ `??` 如果当前数据是空，那么使用参数（作为默认值使用）
++ `+` 数学运算
++ `-` 同上
++ `*` 同上
++ `/` 同上
++ `%` 同上
++ `-x` 数学运算 被减
++ `/x` 同上
++ `%x` 同上
++ `toFixed` 同 number.toFixed
++ `pad` 在前面补0.补到传入参数的位数
++ `date` 时间格式化 yyyy-MM-dd hh:mm:ss.S
++ `replace` 同 string.replace
++ `substr` 同 string.substr
++ `substring` 同 string.substring
++ `slice` 同 string.slice
++ `trim` 同 string.trim
++ `trimLeft` 同 string.trimLeft
++ `trimRight` 同 string.trimRight
++ `prefix` 在前面添加字符串
++ `suffix` 在后面添加字符串
+
+#### 自定义formatter
+> 朱一很懒，饿了，吃饭去
 
 ---
 
 ### operations
+> model 操作符，用于简化 model操作
+
+#### 数组
+
++ `$push`
++ `$pop`
++ `$unshift`
++ `$shift`
++ `$slice`
++ `$splice`
++ `$reverse`
++ `$sort`
++ `$filter`
++ `$map`
++ `$remove`
+
+#### 布尔
+
++ `$toggle`
+
+#### 数字
+
++ `$+`
++ `$-`
++ `$*`
++ `$/`
++ `$%`
++ `$-x`
++ `$/x`
++ `$%x`
+
+#### 字符串
+
++ `$replace`
++ `$substr`
++ `$substring`
++ `$slice`
++ `$trim`
++ `$trimLeft`
++ `$trimRight`
++ `$append`
++ `$prepend`
+
+#### 自定义
+
++ `exec`
+
+---
+
+### computed
+> 计算属性， 如果有一些值需要一顶计算才能显示的，或者依赖多个值经过一定计算显示的
+> 
+> + computed 需要写明依赖的model的path，在处理函数中是拿不到 instance 的，只能对依赖的model进行计算
+> + computed 对应的值不可以设置，但是可以通过 this.get方法获得
+
+```
+<!--页面绑定实例-->
+<ul id="root">
+    <li [each:todo]="filteredTodos">${todo.title}</li>
+<ul>
+<script>
+Akatsuki(document.getElementById('root'), {
+    model: {
+        todos: [
+            {title: '买鸡蛋', complated: true},
+            {title: '买牛奶', complated: false}
+        ]，
+        filter: 'complated'
+    },
+    computed: {
+        filteredTodos: ['todos', 'filter', function (todos, filter) {
+          filter = ({
+            active: function (todo) { return todo.completed === false},
+            completed: function (todo) { return todo.completed === true}
+          })[filter]
+          return filter ? todos.filter(filter) : todos
+        }]
+    }
+})
+</script>
+```
 
 ---
 
 ### lifeCycle
+> lifeCycle 可以获取当前试图创建的时机
+> 
+> + lifeCycle 的方法中的 this 指向当前 instance
+> + lifeCycle 的方法也会挂载载 instance 上。
+
+#### viewWillMount
+> 当视图准备 mount 前触发，这时 
+> 
+> + instance.model 已经挂载。
+> + motheds 还没有绑定到 instance 上
+> + 页面directives 还没有解析
+> + this.els 还没有获取
+> + computed 计算属性还没有生成
+
+#### viewDidMount
+
+> 当视图 mount 完成后触发，这时 
+> 
+> + instance.model 已经挂载。
+> + motheds 已经绑定到 instance 上
+> + 页面 directives 已经解析，directives 在dom上的标记已经清除
+> + this.els 已经可以取到
+> + computed 计算属性可以使用
+
+#### viewWillUnMount
+
+> 当视图准备 unmount 前触发，这时 
+> 
+> + instance.model 继续挂载。
+> + motheds 还没有删除在 instance 上的绑定
+> + 页面directives 还没有析构
+> + this.els 还有
+> + computed 计算属性还有
+
+#### viewDidUnMount
+
+> 当视图 unmount 完成后触发，这时 
+> 
+> + instance.model 还是挂载。
+> + motheds 已经删除在 instance 上的绑定
+> + 页面directives 已经卸载，恢复 directives 在dom上的标记
+> + this.els 已经清除
+> + computed 计算属性已经清除
 
 ---
 
 ### other
+
+####Akatsuki.nextTick
+> 在下一个事件循环时处理回调
+> 
+> + @param {function}
+ 
+```javascript
+Akatsuki.nextTick(function () {
+    console.log('暁よ。一人前のレディーとして扱ってよね！')
+})
+```
