@@ -45,14 +45,28 @@ export default class Model {
   //反hook path的 each
   each (iteratee) { return this.path().each(iteratee) }
 
+  /**
+   * 从path获取对象
+   * @param  {path} path
+   * @return {any}
+   */
   get (path) {
     return deepCopy(objectValueFromPath(this.__model, path, true))
   }
 
+  /**
+   * 从path设置对象值
+   * @param {path} path
+   * @param {any} value
+   */
   set (path, value) {
     this.update(pathToObject(path, value))
   }
 
+  /**
+   * update对象
+   * @param  {object} next
+   */
   update (next) {
     //语法糖 支持 update('$push', 1) 这种写法
     if (getType(next) === 'string') next = {[next]: arguments[1]}
@@ -71,6 +85,7 @@ export default class Model {
 
   }
 
+  //事件处理函数。
   emit (path, value) {
     objForeach(this.__events, (events, _path) => {
       if (path.indexOf(_path) != 0) return
@@ -97,13 +112,14 @@ export default class Model {
   }
 }
 
-//用于 path, pathForEach 的语法糖
+//用于 path, each 的语法糖
 class Path {
   constructor (prefix, model) {
     this.prefix = prefix
     this.model = model
   }
 
+  //
   relative (path) {
     var _path = []
     if (this.prefix) _path.push(this.prefix)
