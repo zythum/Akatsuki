@@ -158,6 +158,24 @@ Akatsuki(document.getElementById('root'), {
 ---
 
 ### model
+> model 是数据的核心，能够判断数据的变化在改变view。
+> 在使用 Akatsuki 的过程中大部分时间都是在操作model
+> 
+> ⚠️ 对于model的操作请全部时候model提供的api来处理，如果对于get到的model数据直接操作是不会导致model变化的，因为model所有set，get都是对象的拷贝，
+
+#### get
+
+#### set
+
+#### update
+
+#### on
+
+#### off
+
+#### path
+
+#### each
 
 ---
 

@@ -54,6 +54,9 @@ export default class Model {
   }
 
   update (next) {
+    //语法糖 支持 update('$push', 1) 这种写法
+    if (getType(next) === 'string') next = {[next]: arguments[1]}
+
     patch(this.__model, next, (parent, key, value, path) => {
       const oldValue = parent[key]
       parent[key] = value
@@ -130,7 +133,11 @@ class Path {
   // hook model
   get (path) { return this.model.get(this.relative(path)) }
   set (path, value) { this.model.set(this.relative(path), value) }
-  update (next) { this.model.update(pathToObject(this.prefix, next)) }
+  update (next) { 
+    //语法糖 支持 update('$push', 1) 这种写法
+    if (getType(next) === 'string') next = {[next]: arguments[1]}
+    this.model.update(pathToObject(this.prefix, next)) 
+  }
   on (path, callback) { this.model.on(this.relative(path), callback) }
   off (path, callback) { this.model.off(this.relative(path), callback) }
   emit (path, value) { this.model.emit(this.relative(path), value) }

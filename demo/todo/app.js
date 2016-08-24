@@ -51,7 +51,7 @@ var todoapp = Akatsuki(rootElement, {
     createTodo: function (event, element, value) {
       if (value.trim().length === 0) return
       var unshiftData = {title: value, completed: false, key: ukey()}
-      this.path('todos').update({ $unshift: unshiftData })
+      this.path('todos').update('$unshift', unshiftData)
       element.value = ''
     },
     edit: function (element, index) {
@@ -81,7 +81,7 @@ var todoapp = Akatsuki(rootElement, {
     toggleItem: function (index) {
       var key = this.get('filteredTodos.$'+index+'.key')
       this.path('todos').each(function (path, index, listPath) {
-        if (path.get('key') === key) path.update({completed: {$toggle: true}})
+        if (path.get('key') === key) path.path('completed').update('$toggle')
       })
     },
     deleteItem: function (index) {
@@ -91,7 +91,7 @@ var todoapp = Akatsuki(rootElement, {
         if (path.get('key') === key) needRemoveIndex = index
       })
       if (needRemoveIndex != undefined) {
-        this.path('todos').update({$remove: needRemoveIndex})
+        this.path('todos').update('$remove', needRemoveIndex)
       }
     },
     filter: function (type) {

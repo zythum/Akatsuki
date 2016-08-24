@@ -198,7 +198,7 @@ export default class View {
     return value != undefined ? value : this.model.get(path)
   }
   set (path, value) { this.model.set(path, value); return this }
-  update (next) { this.model.update(next); return this }
+  update (...next) { this.model.update(...next); return this }
   path (path) { return this.model.path(path) }
   each (iteratee) { return this.model.each(iteratee) }
 
