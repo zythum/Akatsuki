@@ -207,9 +207,8 @@ model.set('your.model.path', {name: 'Akatsuki'})
 
 存在两种调用方式
 
-@param {string}
-
-@param {value}
++ @param {string}
++ @param {value}
 
 ```javascript
 model.update('name', 'Akatsuki')
@@ -218,7 +217,7 @@ model.update('$prefix', 'I love ')
 
 和
 
-@param  {{key: value}}
++ @param  {{key: value}}
 
 ```javascript
 model.update({name: 'Akatsuki'})
