@@ -1,3 +1,8 @@
+/**
+ * [html]
+ * 更新元素的 innerHTML, 
+ * <div [html]="your.model.path"><div>
+ */
 export default {
   displayName: 'html',
   priority: 300,

@@ -1,3 +1,9 @@
+/**
+ * [prop:propertyName]
+ * 更新元素的 property 属性，比如 checked 等
+ * `arg` 控制的 property 的name
+ * <input type="checkbox" [prop:checked]="your.model.path"/>
+ */
 export default {
   displayName: 'prop',
   priority: 300,

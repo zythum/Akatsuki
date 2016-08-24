@@ -1,3 +1,12 @@
+/**
+ * 更新元素的 className
+ * <div [class:current]="your.model.path"><div>
+ * <div [class:current selected]="your.model.path"><div>
+ * <div 
+ *     [class:current]="your.model.path" 
+ *     [class:current]="another.model.path">
+ * <div>
+ */
 export default {
   displayName: 'class',
   priority: 300,

@@ -1,5 +1,11 @@
 import {getType} from '../utils'
 
+/**
+ * [el:alias]
+ * 获取 elemet 节点, 可以在 `els` 属性上获得他
+ * `alias` els 上对应的key名
+ * ⚠️ 同名的el只能存在提个，Akastuki设计是抢占式的
+ */
 export default {
   displayName: 'el',
   priority: 300,

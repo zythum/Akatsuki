@@ -11,6 +11,18 @@ function shiftOne (array) {
   return one === undefined ? shiftOne(array) : one
 }
 
+/**
+ * [each:item]
+ * 根据表达式的值(数组)的渲染列表。
+ * `arg` 内部遍历到的数组的当前元素名
+ * `$index` 内部遍历到的数组的当前index
+ * `$lengh` 内部遍历到的数组的长度
+ * <ul>
+ *   <li [each:item]="list.path" [class:current]="item.current">
+ *     ${$index} | ${item.text} | ${$length}
+ *   </li>
+ * </ul>
+ */
 export default {
   displayName: 'each',
   priority: 600,

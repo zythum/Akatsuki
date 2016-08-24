@@ -1,5 +1,9 @@
 import {getType} from '../utils'
 
+/**
+ * 更新元素的 attribute 属性，
+ * <input type="checkbox" [attr:data-info]="your.model.path"/>
+ */
 export default {
   displayName: 'attr',
   priority: 300,

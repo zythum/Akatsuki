@@ -1,6 +1,11 @@
 import View from '../view'
 const placeHolderName = 'akasuki-if-placeholder'
 
+/**
+ * [if]
+ * 根据表达式的值的真假渲染element。在切换时元素及它的数据绑定被销毁并重建
+ * <div [if]="your.model.path"> 暁よ。一人前のレディーとして扱ってよね！</div>
+ */
 export default {
   displayName: 'if',
   priority: 500,

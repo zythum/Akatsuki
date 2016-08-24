@@ -8,20 +8,26 @@ export default objForeach({
     return value
   },
 
-  count (obj) {
-    if ('length' in obj) return obj.length
-    if (typeof obj === 'object') return Object.keys(obj)
+  // 返回数据的length 如果是对象返回 keys.length
+  count (object) {
+    if (typeof object != 'object') return 0
+    if ('length' in object) return object.length
+    if (typeof object === 'object') return Object.keys(object).length
     return 0
   },
 
-  empty (obj) {
-    if ('length' in obj) return obj.length === 0
-    if (typeof obj === 'object') return Object.keys(obj) === 0
-    return !obj
+  // 如果object 不存在或者 count是0
+  empty (object) {
+    if (typeof object === 'object') {
+      if ('length' in object) return object.length === 0
+      if (typeof object === 'object') return Object.keys(object).length === 0
+    }
+    return !object
   },
   
-  '!empty' (obj) {
-    return !this.empty(obj)
+  // empty的取反
+  '!empty' (object) {
+    return !this.empty(object)
   },
 
   '<':   (value, [arg]) => value <   arg,
@@ -33,12 +39,14 @@ export default objForeach({
   '!=':  (value, [arg]) => value !=  arg,
   '!==': (value, [arg]) => value !== arg,
 
+  // ? : 的三元运算符，这里记得 value ? a : b 中  ? : 的左右必须有空格 
   '?' : (value, args) => {
     let [trueValue, sign, falseValue] = args
     if (args.legnth != 3 || sign != ':') throw "? x : y 的三元运算符格式不对"
     return !!value ? trueValue : falseValue
   },
 
+  // 如果value 是空 则返回默认值的操作
   '??': (value, [arg]) => {
     return value === undefined || value === null ? arg : value
   }

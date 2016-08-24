@@ -1,3 +1,8 @@
+/**
+ * [show]
+ * 更新元素的 `style.display` 属性, 
+ * ⚠️show只是在 `'none'` `''` 之前切换，特殊的css处理会对show有一定影响
+ */
 export default {
   displayName: 'show',
   priority: 300,
