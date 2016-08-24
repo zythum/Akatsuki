@@ -20,7 +20,7 @@ export default {
   unbind () {
     let {childView, element, parentNode, current} = this
 
-    if (childView) childView.unmout()
+    if (childView) childView.unmount()
     parentNode.insertBefore(element, current)
     parentNode.removeChild(current)    
     if (childView) childView.destroy()
@@ -50,7 +50,7 @@ export default {
         parentNode.removeChild(current)
         this.current = placeHolder
       }
-      if (childView) childView.unmout()
+      if (childView) childView.unmount()
     }
   }
 }

@@ -36,7 +36,7 @@ export default {
     let {element, childViews, parentNode, 
       startPlaceHolder, endPlaceHolder} = this
     childViews.forEach(childView => {
-      childView.unmout()
+      childView.unmount()
       parentNode.removeChild(childView.__rootElement)
       childView.destroy()
     })
@@ -69,7 +69,7 @@ export default {
     })
 
     childViews.forEach((childView, index, list) => {
-      childView.unmout()
+      childView.unmount()
       if (!childView.hasOwnProperty('key')) return
       if (keys.hasOwnProperty(childView.key)) {
         keys[childView.key] = childView

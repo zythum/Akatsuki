@@ -57,7 +57,7 @@ export default class View {
   }
 
   destroy () {
-    this.unmout()
+    this.unmount()
     this.destroyed = true
 
     delete this.model
@@ -192,19 +192,17 @@ export default class View {
     return this
   }
 
+  //hook model的相关方法
   get (path) {
     let value = this.__computedModel.get(path)
     return value != undefined ? value : this.model.get(path)
   }
-  
   set (path, value) { this.model.set(path, value); return this }
-  
   update (next) { this.model.update(next); return this }
-
   path (path) { return this.model.path(path) }
-
   pathForEach (path, iteratee) { this.model.pathForEach(path, iteratee); return this }
 
+  //创建子view
   childView (element, mixins={}) {
     mixins.model = this.model
     mixins.computed = Object.assign({}, this.__computed, mixins.computed || {})

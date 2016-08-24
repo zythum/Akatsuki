@@ -100,6 +100,12 @@ class Path {
     this.model = model
   }
 
+  relative(path) {
+    return this.prefix ? `${this.prefix}.${path}` : path
+  }
+  
+  path (prefix) { return new Path(this.relative(prefix), this.model) }
+
   pathForEach (path, iteratee) {
     let array = this.get(path)
     if ( getType(array) === 'array' ) {
@@ -111,36 +117,17 @@ class Path {
     }
   }
 
-  path (prefix) {
-    return new Path(`${prefix}.${this.prefix}`, this.model)
-  }
-
-  get (path) {
-    return this.model.get(`${this.prefix}.${path}`)
-  }
-
-  set (path, value) {
-    this.model.set(`${this.prefix}.${path}`, value)
-  }
-
-  update (next) {
-    this.model.update(pathToObject(this.prefix, next))
-  }
-
-  on (path, callback) {
-    this.model.on(`${this.prefix}.${path}`, callback)
-  }
-
-  off (path, callback) {
-    this.model.off(`${this.prefix}.${path}`, callback)
-  }
-
-  emit (path, value) {
-    this.model.emit(`${this.prefix}.${path}`, value)
-  }
+  // hook model
+  get (path) { return this.model.get(this.relative(path)) }
+  set (path, value) { this.model.set(this.relative(path), value) }
+  update (next) { this.model.update(pathToObject(this.prefix, next)) }
+  on (path, callback) { this.model.on(this.relative(path), callback) }
+  off (path, callback) { this.model.off(this.relative(path), callback) }
+  emit (path, value) { this.model.emit(this.relative(path), value) }
 }
 
 function pathToObject (path, last) {
+  if (!path) return last
   path = path.split('.')
   let object, current, key
   current = object = {}
