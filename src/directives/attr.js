@@ -1,16 +1,11 @@
 import {getType} from '../utils'
-
+import {directiveHelper} from '../helpers'
 /**
  * 更新元素的 attribute 属性，
  * <input type="checkbox" [attr:data-info]="your.model.path"/>
  */
-export default {
+export default directiveHelper({
   displayName: 'attr',
-  priority: 300,
-  stopParseChildElement: false,
-  stopParseNextDirective: false,
-  noValueFormatter: false,
-  noClearAttribute: false,
   bind () {
     let {element, args} = this
     let attrName = this.attrName = args
@@ -38,4 +33,4 @@ export default {
       element.setAttribute(attrName, value)
     }
   }
-}
+})

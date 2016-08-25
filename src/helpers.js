@@ -1,4 +1,4 @@
-import {objForeach, getType} from './utils'
+import {objForeach, getType, assert} from './utils'
 
 const defaultDirectiveConfig = {
   priority: 300,                  // 指令的权重，权重越高优先级越高
@@ -11,7 +11,7 @@ const defaultDirectiveConfig = {
 
 /**
  * 处理 directives 的简单写法
- * @param  {{object or function}} configs
+ * @param  {object or function} config
  * @return {defaultDirectiveConfig}
  * 
  * 如果 config 是 function 那么参数全部默认， function作为 routine
@@ -31,16 +31,18 @@ const defaultDirectiveConfig = {
  *  view
  * }
  */
-export function directiveHelper (configs) {
-  return objForeach(configs, config => {
-    const configType = getType(config)
+export function directiveHelper (config) {
+  const configType = getType(config)
+  assert(configType != 'function' && configType != 'object', 
+    `directive must to be an Object or Function, but %s is a %s`, config, configType)
 
-    if (configType != 'function' && configType != 'object') {
-      throw "directive 必须是 object 或者 config"
-    }
-    if (configType === 'function') config = {routine: config}
-    return Object.assign({}, defaultDirectiveConfig, config)
-  })
+  if (configType === 'function') config = {routine: config}
+  return Object.assign({}, defaultDirectiveConfig, config)
+}
+
+// 上面的批量版本
+export function directiveHelperMap (configs) {
+  return objForeach(configs, directiveHelper)
 }
 
 const defaultMixinOptions = {

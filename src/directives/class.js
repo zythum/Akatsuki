@@ -1,3 +1,4 @@
+import {directiveHelper} from '../helpers'
 /**
  * 更新元素的 className
  * <div [class:current]="your.model.path"><div>
@@ -7,13 +8,8 @@
  *     [class:current]="another.model.path">
  * <div>
  */
-export default {
+export default directiveHelper({
   displayName: 'class',
-  priority: 300,
-  stopParseChildElement: false,
-  stopParseNextDirective: false,
-  noValueFormatter: false,
-  noClearAttribute: false,
   bind () {
     this.classNames = this.args.split(/\s+/)
     this.originClassName = this.element.className
@@ -33,4 +29,4 @@ export default {
         element.classList.remove(className)
     })
   }
-}
+})

@@ -6,7 +6,7 @@ import {
   parseFunctionCallString
 } from './parser'
 
-import {noop, objForeach, getType, walk} from './utils'
+import {noop, objForeach, getType, walk, assert} from './utils'
 import directive from './directive'
 import Model from './model'
 import event from './event'
@@ -30,7 +30,7 @@ export default class View {
   }) {
     
     this.els = {}
-    this.model = model instanceof Model ? model : new Model(model)
+    this.model = model instanceof Model ? model : new Model(model || {})
     this.__computedModel = null
     this.__rootView = this
     this.__rootElement = element
@@ -127,7 +127,11 @@ export default class View {
 
     //将 methods 外跑到 view 层
     objForeach(this.__methods, (methods, name) => {
-      if (name.indexOf('__') === 0) throw 'methods 不能以 "__" 开头'
+      assert(name.indexOf('__') === 0, 
+        `method name %s is not allowed, method name can not start with "__".`, name)
+      assert(this[name] != undefined, 
+        `method name %s is not allowed, name is an exist method.`, name)
+      
       this[name] = this.__methods[name].bind(this)
     })
 

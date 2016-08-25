@@ -1,4 +1,4 @@
-import {objForeach, getType} from '../utils'
+import {objForeach, getType, deepCopy, assert} from '../utils'
 
 export default objForeach({
 
@@ -10,13 +10,16 @@ export default objForeach({
    */
   exec: function (target, [fn]) { 
     const type = getType(target)
-    if (getType(target) === 'object') throw '$exec 必须不是个对象才可以'
-    if (getType(fn) != 'function') throw '$exec 参数必须是一个function'
-    if (type === 'array') target = [].concat(target)
+    const paramType = getType(fn)
+    
+    assert(type === 'object', '$exec can not operation at Object')
+    assert(paramType != 'function', '$exec wants a param with Function, not %s is a %s.', fn, paramType)
 
-    let result = fn.call(null, target) 
-    if (type === getType(result)) return result
-    throw '$exec中, 处理函数必须入参和返回值类型一致'
+    const result = fn.call(null, type === 'array' ? deepCopy(target) : target) 
+    const resultType = getType(result)
+    assert(type != resultType, "$exec operations at an %s, so it wants to return a %s, but %s is a %s.", 
+      type, type, result, resultType)
+    return result
   }
 
 }, (operation, name, object) => {

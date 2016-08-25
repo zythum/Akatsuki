@@ -1,4 +1,4 @@
-import {objForeach, getType} from '../utils'
+import {objForeach, getType, assert} from '../utils'
 
 export default objForeach({
 
@@ -11,7 +11,10 @@ export default objForeach({
 
 }, (operation, name, object) => {
   return (target, args) => {
-    if (getType(target) != 'boolean') throw `${name} 必须是个布尔才可以`
+    const targetType = getType(target)
+    assert(targetType != 'boolean', 
+      `%s only can operation at Boolean, but %s is a %s.`, name, target, targetType)
+    
     return operation.call(object, target, args === undefined ? [] : [].concat(args))
   }
 })

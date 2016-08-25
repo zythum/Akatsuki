@@ -1,15 +1,11 @@
+import {directiveHelper} from '../helpers'
 /**
  * [show]
  * 更新元素的 `style.display` 属性, 
  * ⚠️show只是在 `'none'` `''` 之前切换，特殊的css处理会对show有一定影响
  */
-export default {
+export default directiveHelper({
   displayName: 'show',
-  priority: 300,
-  stopParseChildElement: false,
-  stopParseNextDirective: false,
-  noValueFormatter: false,
-  noClearAttribute: false,
   bind () {
     this.originDisplay = this.element.style.display
   },
@@ -20,4 +16,4 @@ export default {
   routine (value) {
     this.element.style.display = !!value ? '' : 'none'
   }
-}
+})

@@ -26,7 +26,7 @@ export function getType (object) {
 
 /**
  * 循环对象元素
- * @param  {Object}   object      Object, 最好是一个纯对象
+ * @param  {Object}   object   Object, 最好是一个纯对象
  * @param  {Function} iteratee 循环函数
  * @return {Object}            类似Array.map 将 iteratee 返回的数据组成新对象
  */
@@ -178,10 +178,29 @@ export function deepCopy (object, checkObjectKey) {
     case 'object':
       return objForeach(object, (one, key) => {
         if (checkObjectKey) checkObjectKey(key)
-        return deepCopy(one)
+        return deepCopy(one, checkObjectKey)
       })
     case 'array':
-      return object.map((one) => deepCopy(one))
+      return object.map(one => deepCopy(one, checkObjectKey))
     default: return object
   }
 }
+
+/**
+ * 错误处理
+ * @param  {bool} expression 
+ * @param  {sting} message 
+ * @return
+ */
+export function assert (expression, message) {
+  let index = 2
+  if (expression) {
+    throw new Error('Akatsuki: ' + message.replace(/%s/g, () => 
+      assert.value(arguments[index++])))
+  }
+}
+assert.value = (value) => { 
+  try { return JSON.stringify(value) } catch (e) { return value + '' } 
+}
+
+

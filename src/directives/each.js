@@ -1,6 +1,7 @@
 import View from '../view'
 import {execEachFormatter} from '../formatter'
 import {getType} from '../utils'
+import {directiveHelper} from '../helpers'
 
 const startPlaceHolderName = 'akasuki-each-start-placeholder'
 const endPlaceHolderName = 'akasuki-each-end-placeholder'
@@ -23,7 +24,7 @@ function shiftOne (array) {
  *   </li>
  * </ul>
  */
-export default {
+export default directiveHelper({
   displayName: 'each',
   priority: 600,
   stopParseChildElement: true,
@@ -119,4 +120,4 @@ export default {
 
     this.childViews = nextChildViews
   }
-}
+})

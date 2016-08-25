@@ -1,18 +1,14 @@
 import {getType} from '../utils'
-
+import {directiveHelper} from '../helpers'
 /**
  * [el:alias]
  * 获取 elemet 节点, 可以在 `els` 属性上获得他
  * `alias` els 上对应的key名
  * ⚠️ 同名的el只能存在提个，Akastuki设计是抢占式的
  */
-export default {
+export default directiveHelper({
   displayName: 'el',
-  priority: 300,
-  stopParseChildElement: false,
-  stopParseNextDirective: false,
   noValueFormatter: true,
-  noClearAttribute: false,
   bind () {
     let {element, args, view} = this
     let elName = this.elName = args
@@ -26,4 +22,4 @@ export default {
     if (els[elName] === element) delete els[elName]
     delete this.elName
   },
-}
+})

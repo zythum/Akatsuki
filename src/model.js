@@ -4,6 +4,7 @@ import {
   objectValueFromPath, 
   deepCopy,
   pathToObject,
+  assert,
 } from './utils'
 import operationsCustom from './operations/custom'
 import operationsArray from './operations/array'
@@ -24,8 +25,10 @@ export default class Model {
 
   constructor (dataObject) {
     dataObject = deepCopy(dataObject, (key) => {
-      if (key.indexOf('.') != -1) throw 'model 数据的 key 不可以有 "."'
-      if (key.indexOf('$') === 0) throw 'model 数据的 key 不可以是 "$" 开头'
+      assert(key.indexOf('.') != -1, 
+        `model name "${name}" is not allowed, model name can not have "." character.`)
+      assert(key.indexOf('$') === 0, 
+        `model name "${name}" is not allowed, model name can not start with "$".`)
     })
     this.__model = {}
     this.__events = {}
@@ -135,14 +138,13 @@ class Path {
     let object = this.get()
     switch (getType(object)) {
       case 'array':
-        return object.map((_, index) => {
-          iteratee(this.path('$' + index), index, this)
-        })
+        return object.map((_, index) => 
+          iteratee(this.path('$' + index), index, this))
       case 'object':
-        return objForeach(object, (_, key) => {
-          iteratee(this.path('$' + index), key, this)
-        })
-      default: throw 'each的对象只能是object或者array'
+        return objForeach(object, (_, key) => 
+          iteratee(this.path('$' + index), key, this))
+      default: assert(true, 
+        `${object} is not an array or object, "each" mothed is not allowed with ${object}.`)
     }
   }
 
@@ -178,29 +180,30 @@ export function patch (prev, next, callback, prevParent, key, path=[]) {
   switch (operation) {
     //正常赋值
     case null:
-      if (prevType != nextType) throw "prev next的值类型不一致"      
+      assert(prevType != nextType, 
+        `new data %s's type is not same as prev data %s.`, next, prev)
       if (prevType === 'object') {
-        objForeach(next, (_next, key) => {
-          patch(prev[key], _next, callback, prev, key, path.concat(key))
-        })
+        objForeach(next, (_next, key) => 
+          patch(prev[key], _next, callback, prev, key, path.concat(key)))
       } else {
         callback(prevParent, key, next, pathString)
       }
       break
     case '$set':
-      if (prevType != getType(next.$set)) throw "set的数据类型和原先的不一样"
       callback(prevParent, key, next.$set, pathString)
       break
     case '$update':
-      if (getType(next.$update) != 'object') throw "update 必须是个对象"
-      if (prevType != 'object' && prevType != 'array') throw "prev 必须是个对象或者数组"
+      assert(getType(next.$update) != 'object', 
+        `%s is not allowed, "$update"'s param must to be an Object.`, next.$update)
+      assert(prevType != 'object' && prevType != 'array',
+        `"$update" only can operation at Object or Array, but %s is a %s.`, prev, prevType)
       objForeach(next.$update, (_next, key) => {
         let prefix = prevType === 'array' ? '$' : ''
         patch(prev[key], _next, callback, prev, key, path.concat(prefix + key))
       })
       break
     default:
-      if (!operations.hasOwnProperty(operation)) throw "operation 没有定义"
+      assert(!operations.hasOwnProperty(operation), `operation %s is not exists.`, operation)
       let nextValue = operations[operation](prevParent[key], next[operation])
       callback(prevParent, key, nextValue, pathString)
   }

@@ -1,4 +1,4 @@
-import {objForeach, getType} from '../utils'
+import {objForeach, getType, assert} from '../utils'
 
 /**
  * 字符串相关的model update 操作符。
@@ -32,7 +32,10 @@ export default objForeach({
 
 }, (operation, name, object) => {
   return (target, args) => {
-    if (getType(target) != 'array') throw `${name} 必须是个数组才可以`
+    const targetType = getType(target)
+    assert(targetType != 'String', 
+      `%s only can operation at String, but %s is a %s.`, name, target, targetType)
+
     return operation.call(object, target, args === undefined ? [] : [].concat(args))
   }
 })

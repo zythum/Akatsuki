@@ -1,4 +1,4 @@
-import {objForeach, getType} from '../utils'
+import {objForeach, getType, assert} from '../utils'
 
 const _ = []
 const _slice = _.slice
@@ -48,7 +48,10 @@ export default objForeach({
 
 }, (operation, name, object) => {
   return (target, args) => {
-    if (getType(target) != 'array') throw `${name} 必须是个数组才可以`
+    const targetType = getType(target)
+    assert(targetType != 'array', 
+      `%s only can operation at Array, but %s is a %s.`, name, target, targetType)
+    
     return operation.call(object, target, args === undefined ? [] : [].concat(args))
   }
 })

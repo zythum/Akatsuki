@@ -43,7 +43,7 @@ Akatsuki 的指令使用 `[directive:arg]="my.model.path | formatter"` 的格式
 + directive 是指令类型，
 + arg 是指令参数，
 + my.model.path 是指令监听的model的path, 
-+ formatter 是对于 model 数据的值处理（相见 formatters）
++ formatter 是对于 model 数据的值处理（详见 formatters）
 
 
 #### [text]
@@ -65,14 +65,14 @@ Akatsuki 的指令使用 `[directive:arg]="my.model.path | formatter"` 的格式
 #### [class:className1 className2]
 > 更新元素的 className。
 
-`arg` 控制的className值，可以多个空格分隔
+`arg` 控制的className值，可以多个，空格分隔
 
 ```
 <div [class:current]="my.model.path"><div>
 <div [class:current selected]="my.model.path"><div>
 <div 
     [class:current]="my.model.path" 
-    [class:current]="another.model.path">
+    [class:selected]="another.model.path">
 <div>
 ```
 #### [prop:propertyName]
@@ -112,7 +112,7 @@ Akatsuki 的指令使用 `[directive:arg]="my.model.path | formatter"` 的格式
 
 ```
 <div id="root">
-    <input [els:user] name="userName" value="用户名" />
+    <input [el:user] name="userName" value="用户名" />
 </div>
 
 <script>

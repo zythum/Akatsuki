@@ -1,16 +1,12 @@
+import {directiveHelper} from '../helpers'
 /**
  * [prop:propertyName]
  * 更新元素的 property 属性，比如 checked 等
  * `arg` 控制的 property 的name
  * <input type="checkbox" [prop:checked]="your.model.path"/>
  */
-export default {
+export default directiveHelper({
   displayName: 'prop',
-  priority: 300,
-  stopParseChildElement: false,
-  stopParseNextDirective: false,
-  noValueFormatter: false,
-  noClearAttribute: false,
   bind () {
     let {element, args} = this
     let propName = this.propName = args
@@ -33,4 +29,4 @@ export default {
     let {element, propName} = this
     element[propName] = value
   }
-}
+})

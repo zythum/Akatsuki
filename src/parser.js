@@ -84,7 +84,7 @@ export function parseFunctionCallString2 (template) {
  * @return {directiveType, args}
  */
 export function parseDirectiveName (template) {
-  let match = template.match(/([^:]+):(.*)/);
+  let match = template.match(/^([^:]+):(.*)$/);
   let [_, directiveType, args] = match || [undefined, template, '']
   return {directiveType, args}
 }
