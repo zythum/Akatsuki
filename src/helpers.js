@@ -41,7 +41,7 @@ export function directiveHelper (config) {
 }
 
 // 上面的批量版本
-export function directiveHelperMap (configs) {
+export function directiveMapHelper (configs) {
   return objForeach(configs, directiveHelper)
 }
 
