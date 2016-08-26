@@ -18,14 +18,14 @@ export default directiveHelper({
     let {element, originHasProp, propName} = this
     if (originHasProp)
       element[propName] = this.originValue
-    else 
+    else
       delete element[propName]
 
     delete this.originHasProp
     delete this.originValue
     delete this.propName
   },
-  routine (value) {    
+  routine (value) {
     let {element, propName} = this
     element[propName] = value
   }

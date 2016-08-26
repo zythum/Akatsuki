@@ -12,7 +12,7 @@ export default objForeach({
   substr    (string, args) { return _apply(string, 'substr',    args) },
   substring (string, args) { return _apply(string, 'substring', args) },
   slice     (string, args) { return _apply(string, 'slice',     args) },
-  
+
   trim      (string, args) { return string.trim() },
   trimLeft  (string, args) { return string.trimLeft() },
   trimRight (string, args) { return string.trimRight() },

@@ -6,27 +6,27 @@ import formattersString from './formatters/string'
 
 const formatters = {
   value: Object.assign(
-    {}, 
-    formattersCommon, 
-    formattersNumber, 
+    {},
+    formattersCommon,
+    formattersNumber,
     formattersString
   ),
   filter: {},
-  sort: {} 
+  sort: {}
 }
 
 export function parseFormatterArgs (formatterArgs, customFormateMap, dependMap) {
   let depends = {}
   formatterArgs = formatterArgs.map(({functionName, args}) => {
-    let type 
+    let type
     if (functionName.indexOf(':') === -1) {
       type = 'value',
       functionName = functionName
     } else {
       [type, functionName] = functionName.split(/\s*\:\s*/)
     }
-    
-    let formatter = customFormateMap[functionName] || 
+
+    let formatter = customFormateMap[functionName] ||
       objectValueFromPath(formatters, `${type}.${functionName}`)
 
     args = args.map(arg => {
@@ -46,14 +46,14 @@ export function parseFormatterArgs (formatterArgs, customFormateMap, dependMap) 
 
 export function execValueFormatter (value, formatterArgs) {
   return formatterArgs.reduce((value, {type, formatter, args}) => {
-    return type === 'value' && getType(formatter) === 'function' ? 
+    return type === 'value' && getType(formatter) === 'function' ?
       formatter(value, args) : value
   }, value)
 }
 
 //each的filter处理
 export function execEachFormatter (value, formatterArgs) {
-  let sourceMap = [], 
+  let sourceMap = [],
     indexedArray = value.map((value, index) => ({index, value}))
 
   formatterArgs.forEach(({type, formatter, args}) => {
@@ -70,9 +70,9 @@ export function execEachFormatter (value, formatterArgs) {
         })
         break
       default: break
-    }      
+    }
   })
-  
+
   value = indexedArray.map(({index, value}) => {
     sourceMap.push(index)
     return value

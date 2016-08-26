@@ -12,9 +12,9 @@ import {execValueFormatter, parseFormatterArgs} from './formatter'
 
 let directives = {}
 for (let directive of [
-  directivesText, 
-  directivesHtml, 
-  directivesIf, 
+  directivesText,
+  directivesHtml,
+  directivesIf,
   directivesClass,
   directivesAttr,
   directivesProp,
@@ -32,7 +32,7 @@ export default function directive (directiveArgs, view) {
     return priority2 - priority1
   })
   for (let {type, args, name, element, path, formatters} of directiveArgs) {
-    let directive = view.__directives[type] || directives[type]    
+    let directive = view.__directives[type] || directives[type]
     instances.push(bindDirective({ directive, args, name, element, path, formatters, view }))
     needBreak = needBreak || directive.stopParseChildElement
     if (directive.stopParseNextDirective) break
@@ -42,8 +42,8 @@ export default function directive (directiveArgs, view) {
 
 directive.text = function directiveText ({textNode, path, formatters, view}) {
   const delimiters = view.__textDelimiters
-  const model = view.__computedModel.get(path) != undefined ?
-    view.__computedModel : view.model  
+  const [firstPath] = path.split('.')
+  const model = view.__computed.hasOwnProperty(firstPath) ? view.computed : view.model
   const directiveTextListener = value => {
     value = execValueFormatter(value, formatters)
     if (view.mounted === true) {
@@ -53,25 +53,25 @@ directive.text = function directiveText ({textNode, path, formatters, view}) {
     }
   }
   formatters = parseFormatterArgs(formatters, view.__formatters, {
-    $index: () => view.__computedModel.get('$index'),
-    $length: () => view.__computedModel.get('$length')
+    $index: () => view.computed.get('$index'),
+    $length: () => view.computed.get('$length')
   })
-  directiveTextListener(model.get(path))  
+  directiveTextListener(model.get(path))
   model.on(path, directiveTextListener)
   objForeach(formatters.depends, dependPath => {
-    view.__computedModel.on(dependPath, directiveListener)
+    view.computed.on(dependPath, directiveListener)
   })
   return {
     element: textNode,
     path: path,
-    view: view, 
+    view: view,
     destroy () {
       objForeach(formatters.depends, dependPath => {
-        view.__computedModel.off(dependPath, directiveListener)
+        view.computed.off(dependPath, directiveListener)
       })
-      model.off(path, directiveTextListener) 
+      model.off(path, directiveTextListener)
       textNode.nodeValue = delimiters[0] + path + delimiters[1]
-    } 
+    }
   }
 }
 
@@ -81,12 +81,12 @@ directive.hasType = function hasType (type) {
 
 function bindDirective ({directive, element, path, args, name, formatters, view}) {
   formatters = parseFormatterArgs(formatters, view.__formatters, {
-    $index: () => view.__computedModel.get('$index'),
-    $length: () => view.__computedModel.get('$length')
+    $index: () => view.computed.get('$index'),
+    $length: () => view.computed.get('$length')
   })
   const attribute = element.getAttributeNode(name)
-  const model = view.__computedModel.get(path) != undefined ?
-    view.__computedModel : view.model  
+  const [firstPath] = path.split('.')
+  const model = view.__computed.hasOwnProperty(firstPath) ? view.computed : view.model
   const directiveListener = value => {
     if (directive.noValueFormatter === false) {
       value = execValueFormatter(value, formatters)
@@ -96,7 +96,7 @@ function bindDirective ({directive, element, path, args, name, formatters, view}
     } else {
       callObjectFunctionIfExit(instance, directive, 'routine', value)
     }
-  }  
+  }
   const instance = {
     element: element,
     attributeName: name,
@@ -107,7 +107,7 @@ function bindDirective ({directive, element, path, args, name, formatters, view}
     args: args,
     destroy () {
       objForeach(formatters.depends, dependPath => {
-        view.__computedModel.off(dependPath, directiveListener)
+        view.computed.off(dependPath, directiveListener)
       })
       model.off(path, directiveListener)
       callObjectFunctionIfExit(instance, directive, 'unbind')
@@ -126,7 +126,7 @@ function bindDirective ({directive, element, path, args, name, formatters, view}
   directiveListener(model.get(path))
   model.on(path, directiveListener)
   objForeach(formatters.depends, dependPath => {
-    view.__computedModel.on(dependPath, directiveListener)
+    view.computed.on(dependPath, directiveListener)
   })
 
   return instance

@@ -15,22 +15,22 @@ export default objForeach({
   $unshift (array, [item]) { return [item].concat(array) },
   $shift (array) { return array.slice(1) },
   $slice (array, args) { return _slice.apply(array, [].concat(args)) },
-  $splice (array, args) { 
+  $splice (array, args) {
     array = [].concat(array)
-    _splice.apply(array, [].concat(args)) 
+    _splice.apply(array, [].concat(args))
     return array
   },
   $reverse (array) { return [].concat(array).reverse() },
   $sort (array, [iteratee]) { return [].concat(array).sort(iteratee) },
   $filter (array, [iteratee]) { return  array.filter(iteratee)},
   $map (array, [iteratee]) { return  array.map(iteratee)},
-  
+
   /**
    * 删除数组中对应index的元素
    * @param  {array} array 原数组
    * @param  {array} args  需要删除的数组对应的index数组
    * @return {array}       去掉了需要删除数组的原数组拷贝
-   * 
+   *
    * $remove([1,2,3,4], [1,2]) == [1,4]
    */
   $remove (array, args) {
@@ -49,9 +49,9 @@ export default objForeach({
 }, (operation, name, object) => {
   return (target, args) => {
     const targetType = getType(target)
-    assert(targetType != 'array', 
+    assert(targetType != 'array',
       `%s only can operation at Array, but %s is a %s.`, name, target, targetType)
-    
+
     return operation.call(object, target, args === undefined ? [] : [].concat(args))
   }
 })

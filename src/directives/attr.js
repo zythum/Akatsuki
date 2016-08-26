@@ -13,8 +13,8 @@ export default directiveHelper({
   },
   unbind () {
     let {element, attrName, originValue} = this
-    
-    if (originValue) 
+
+    if (originValue)
       element.setAttribute(attrName, originValue)
     else
       element.removeAttribute(attrName)
@@ -27,7 +27,7 @@ export default directiveHelper({
     if (getType(value) === 'boolean') {
       if (value)
         element.setAttribute(attrName, attrName)
-      else 
+      else
         element.removeAttribute(attrName)
     } else {
       element.setAttribute(attrName, value)

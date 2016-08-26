@@ -7,15 +7,15 @@
 </head>
 <body>
 
-<div id="a">  
+<div id="a">
   <span [class:show-1]="data.show" >${data.count | prefix('$')}</span>
   <button (click)="buttonClick">plus</button>
   <button (click)="toggleShow($event, $element)">toggleShow</button>
-  <div [if]="data.show">        
+  <div [if]="data.show">
     <button (click)="pushItem">push D</button>
     <button (click)="popItem">pop</button>
     <button (click)="reverse">reverse</button>
-    <span>${listLen}</span>  
+    <span>${listLen}</span>
     <ul>
       <li [each:item]="data.list" [attr-a]="item.text">${item.text} | ${$index} | ${$length}</li>
     </ul>
@@ -38,7 +38,7 @@
   var vm_text = Akatsuki(document.getElementById('a'), {
     model: {
       data: {
-        count: 1, 
+        count: 1,
         show: true,
         list: [
           {text: 1, show: true},

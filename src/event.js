@@ -5,7 +5,7 @@ export default function event (events, view) {
   return events.map(({type, element, name, functionName, args}) => {
     const method = objectValueFromPath(view.__methods, functionName)
     if (!method) return { destroy: noop }
-    
+
     const attribute = element.getAttributeNode(name)
     let configs = type.split('.')
     type = configs.shift().trim()
@@ -42,9 +42,9 @@ export default function event (events, view) {
         $event: event,
         $element: element,
         $value: element.value,
-        $index: view.__computedModel.get('$index'),
-        $length: view.__computedModel.get('$length'),
-      }      
+        $index: view.computed.get('$index'),
+        $length: view.computed.get('$length'),
+      }
       method.apply(view.__rootView, args.map(type => {
         if (argMap.hasOwnProperty(type)) return argMap[type]
         return parseValue(type)
@@ -86,9 +86,9 @@ const keyCodes = {
 export function parseCharCode (key) {
   let charCode = keyCodes[key]
   if (charCode != undefined) return charCode
-  
+
   key = key[0]
-  charCode = key.toUpperCase().charCodeAt(0)    
+  charCode = key.toUpperCase().charCodeAt(0)
   //数字
   if (charCode > 47 && charCode < 58) {
     key = parseInt(key, 10)

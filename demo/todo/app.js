@@ -10,11 +10,11 @@ todos = JSON.parse(todos) || [
   {title: '今天天气不错', completed: false, key: ukey()},
   {title: '吃晚饭后跑两圈', completed: false, key: ukey()},
   {title: '周日去定羽毛球场地', completed: false, key: ukey()}
-]  
+]
 
 var todoapp = Akatsuki(rootElement, {
-  model: { 
-    editing:-1, filter: 'all', todos: todos   
+  model: {
+    editing:-1, filter: 'all', todos: todos
   },
   viewDidMount: function () {
     this.sync(this.get('todos'))
@@ -55,10 +55,10 @@ var todoapp = Akatsuki(rootElement, {
       element.value = ''
     },
     edit: function (element, index) {
-      this.set('editing', index)      
+      this.set('editing', index)
     },
     startEdit: function (element, index) {
-      element.value = this.get('todos.$' + index + '.title')      
+      element.value = this.get('todos.$' + index + '.title')
     },
     finishEdit: function (element, value, index) {
       this.set('editing', -1)
@@ -73,19 +73,19 @@ var todoapp = Akatsuki(rootElement, {
       element.value = ''
     },
     toggleAll: function () {
-      var hasLeft = this.get('leftTodoCount') > 0
+      var hasLeft = this.computed.get('leftTodoCount') > 0
       this.path('todos').each(function (path) {
           path.set('completed', hasLeft)
       })
     },
     toggleItem: function (index) {
-      var key = this.get('filteredTodos.$'+index+'.key')
+      var key = this.computed.get('filteredTodos.$'+index+'.key')
       this.path('todos').each(function (path, index, listPath) {
         if (path.get('key') === key) path.path('completed').update('$toggle')
       })
     },
     deleteItem: function (index) {
-      var key = this.get('filteredTodos.$'+index+'.key')
+      var key = this.computed.get('filteredTodos.$'+index+'.key')
       var needRemoveIndex
       this.path('todos').each(function (path, index, listPath) {
         if (path.get('key') === key) needRemoveIndex = index

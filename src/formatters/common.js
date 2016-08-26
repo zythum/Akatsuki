@@ -3,7 +3,7 @@ import {objForeach, getType} from '../utils'
 export default objForeach({
 
   toString (value, args) {
-    if (value && value.toString) 
+    if (value && value.toString)
       return value.toString.apply(value, args)
     return value
   },
@@ -24,7 +24,7 @@ export default objForeach({
     }
     return !object
   },
-  
+
   // empty的取反
   '!empty' (object) {
     return !this.empty(object)

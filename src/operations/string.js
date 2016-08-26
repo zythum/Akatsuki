@@ -33,7 +33,7 @@ export default objForeach({
 }, (operation, name, object) => {
   return (target, args) => {
     const targetType = getType(target)
-    assert(targetType != 'String', 
+    assert(targetType != 'String',
       `%s only can operation at String, but %s is a %s.`, name, target, targetType)
 
     return operation.call(object, target, args === undefined ? [] : [].concat(args))

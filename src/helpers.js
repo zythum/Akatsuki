@@ -13,7 +13,7 @@ const defaultDirectiveConfig = {
  * 处理 directives 的简单写法
  * @param  {object or function} config
  * @return {defaultDirectiveConfig}
- * 
+ *
  * 如果 config 是 function 那么参数全部默认， function作为 routine
  * 否则 是和上面参数的 assign
  *
@@ -23,7 +23,7 @@ const defaultDirectiveConfig = {
  *
  * 以上方法中可以使用 this 上的 {
  *  formatters
- *  element 
+ *  element
  *  attributeName
  *  arg
  *  model
@@ -33,7 +33,7 @@ const defaultDirectiveConfig = {
  */
 export function directiveHelper (config) {
   const configType = getType(config)
-  assert(configType != 'function' && configType != 'object', 
+  assert(configType != 'function' && configType != 'object',
     `directive must to be an Object or Function, but %s is a %s`, config, configType)
 
   if (configType === 'function') config = {routine: config}
@@ -71,23 +71,23 @@ export function mixinHelper (options = defaultMixinOptions) {
 
   //合并mixins
   mixins.push(options)
-  
-  mixins.forEach(mixin => {    
-    //合并生命周期函数      
+
+  mixins.forEach(mixin => {
+    //合并生命周期函数
     [
-      'viewWillMount', 
-      'viewDidMount', 
-      'viewWillUnmount', 
+      'viewWillMount',
+      'viewDidMount',
+      'viewWillUnmount',
       'viewDidUmmount'
     ].forEach(key => {
       let prev = result[key], next = mixin[key]
       if ( getType(next) != 'function') return
-      result[key] = getType(prev) === 'function' ? 
-        function () { prev.call(this), next.call(this) } : 
+      result[key] = getType(prev) === 'function' ?
+        function () { prev.call(this), next.call(this) } :
         function () { next.call(this) }
     })
     //合并方法和计算属性
-    for (let key of ['directives', 'formatters', 'methods', 'computed']) 
+    for (let key of ['directives', 'formatters', 'methods', 'computed'])
       Object.assign(result[key], mixin[key])
   })
   return result

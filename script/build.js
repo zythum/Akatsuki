@@ -12,7 +12,7 @@ rollup.rollup({
 })
 .then( bundle => {
   console.timeEnd(logText)
-  return bundle.write({ 
+  return bundle.write({
     format: 'umd',
     moduleName: 'Akatsuki',
     dest: './dist/akatsuki.js',
@@ -28,7 +28,7 @@ rollup.rollup({
 })
 .then( bundle => {
   console.timeEnd(logTextMin)
-  return bundle.write({ 
+  return bundle.write({
     format: 'umd',
     moduleName: 'Akatsuki',
     dest: './dist/akatsuki.min.js',

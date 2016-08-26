@@ -27,7 +27,7 @@ export default directiveHelper({
 
     if (childView) childView.unmount()
     parentNode.insertBefore(element, current)
-    parentNode.removeChild(current)    
+    parentNode.removeChild(current)
     if (childView) childView.destroy()
     delete this.childView
     delete this.current
@@ -35,7 +35,7 @@ export default directiveHelper({
     delete this.placeHolder
   },
   routine (value) {
-    let {element, attributeName, view, 
+    let {element, attributeName, view,
       childView, placeHolder, parentNode, current} = this
 
     if (!!value) {

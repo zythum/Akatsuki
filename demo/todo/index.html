@@ -10,33 +10,33 @@
     <section class="todoapp">
       <header class="header">
         <h1>todos</h1>
-        <input 
-          class="new-todo" 
-          placeholder="请输入待完成任务" 
-          autofocus 
+        <input
+          class="new-todo"
+          placeholder="请输入待完成任务"
+          autofocus
           (keyup.enter)="createTodo($event, $element, $value)"
         >
       </header>
       <section class="main">
-        <input 
-          class="toggle-all" 
-          type="checkbox" 
-          [prop:checked]="leftTodoCount | == 0" 
-          [show]="todos | count | > 0" 
+        <input
+          class="toggle-all"
+          type="checkbox"
+          [prop:checked]="leftTodoCount | == 0"
+          [show]="todos | count | > 0"
           (click)="toggleAll"
         >
         <label for="toggle-all">Mark all as complete</label>
         <ul class="todo-list" [el:list]>
-          <li 
-            [each:todo]="filteredTodos" 
+          <li
+            [each:todo]="filteredTodos"
             [class:completed]="todo.completed"
             [class:editing]="editing | == $index"
           >
             <div class="view">
-              <input 
-                class="toggle" 
-                type="checkbox" 
-                [prop:checked]="todo.completed" 
+              <input
+                class="toggle"
+                type="checkbox"
+                [prop:checked]="todo.completed"
                 (click)="toggleItem($index)"
               >
               <label (dblclick)="edit($element, $index)">${todo.title}</label>
@@ -57,21 +57,21 @@
       <span class="todo-count"><strong [text]="leftTodoCount"></strong> item left</span>
       <ul class="filters">
         <li>
-          <a 
+          <a
             href="javascript:void(0);"
-            [class:selected]="filter | == 'all'" 
+            [class:selected]="filter | == 'all'"
             (click)="filter('all')"
           >All</a>
         </li>
         <li>
-          <a 
+          <a
             href="javascript:void(0);"
             [class:selected]="filter | == 'active'"
             (click)="filter('active')"
           >Active</a>
         </li>
         <li>
-          <a 
+          <a
             href="javascript:void(0);"
             [class:selected]="filter | == 'completed'"
             (click)="filter('completed')"
@@ -79,7 +79,7 @@
         </li>
       </ul>
     </footer>
-    </section>    
+    </section>
     <script src="./app.js"></script>
   </body>
 </html>

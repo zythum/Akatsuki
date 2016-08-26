@@ -14,10 +14,10 @@ export default objForeach({
   '%x':   (number, [arg]) => parseFloat(arg) % number,
 
   toFixed (number, [arg]) { return number.toFixed(arg) },
-  
-  pad (number, [arg]) { 
+
+  pad (number, [arg]) {
     arg = parseFloat(arg)
-    return (Array(arg).join(0) + number).slice(-arg) 
+    return (Array(arg).join(0) + number).slice(-arg)
   },
 
   date (number, [format]) {

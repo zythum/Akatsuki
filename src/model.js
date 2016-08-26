@@ -1,7 +1,7 @@
-import { 
-  objForeach, 
-  getType, 
-  objectValueFromPath, 
+import {
+  objForeach,
+  getType,
+  objectValueFromPath,
   deepCopy,
   pathToObject,
   assert,
@@ -25,16 +25,16 @@ export default class Model {
 
   constructor (dataObject) {
     dataObject = deepCopy(dataObject, (key) => {
-      assert(key.indexOf('.') != -1, 
+      assert(key.indexOf('.') != -1,
         `model name "${name}" is not allowed, model name can not have "." character.`)
-      assert(key.indexOf('$') === 0, 
+      assert(key.indexOf('$') === 0,
         `model name "${name}" is not allowed, model name can not start with "$".`)
     })
     this.__model = {}
     this.__events = {}
     if (dataObject) this.update({$set: dataObject})
   }
-  
+
   destroy () {
     delete this.__model
     delete this.__events
@@ -129,21 +129,21 @@ class Path {
     if (path) _path.push(path)
     return _path.join('.')
   }
-  
-  path (prefix) { 
-    return new Path(this.relative(prefix), this.model) 
+
+  path (prefix) {
+    return new Path(this.relative(prefix), this.model)
   }
 
   each (iteratee) {
     let object = this.get()
     switch (getType(object)) {
       case 'array':
-        return object.map((_, index) => 
+        return object.map((_, index) =>
           iteratee(this.path('$' + index), index, this))
       case 'object':
-        return objForeach(object, (_, key) => 
+        return objForeach(object, (_, key) =>
           iteratee(this.path('$' + index), key, this))
-      default: assert(true, 
+      default: assert(true,
         `${object} is not an array or object, "each" mothed is not allowed with ${object}.`)
     }
   }
@@ -151,10 +151,10 @@ class Path {
   // hook model
   get (path) { return this.model.get(this.relative(path)) }
   set (path, value) { this.model.set(this.relative(path), value) }
-  update (next) { 
+  update (next) {
     //语法糖 支持 update('$push', 1) 这种写法
     if (getType(next) === 'string') next = {[next]: arguments[1]}
-    this.model.update(pathToObject(this.prefix, next)) 
+    this.model.update(pathToObject(this.prefix, next))
   }
   on (path, callback) { this.model.on(this.relative(path), callback) }
   off (path, callback) { this.model.off(this.relative(path), callback) }
@@ -180,10 +180,10 @@ export function patch (prev, next, callback, prevParent, key, path=[]) {
   switch (operation) {
     //正常赋值
     case null:
-      assert(prevType != nextType, 
+      assert(prevType != nextType,
         `new data %s's type is not same as prev data %s.`, next, prev)
       if (prevType === 'object') {
-        objForeach(next, (_next, key) => 
+        objForeach(next, (_next, key) =>
           patch(prev[key], _next, callback, prev, key, path.concat(key)))
       } else {
         callback(prevParent, key, next, pathString)
@@ -193,7 +193,7 @@ export function patch (prev, next, callback, prevParent, key, path=[]) {
       callback(prevParent, key, next.$set, pathString)
       break
     case '$update':
-      assert(getType(next.$update) != 'object', 
+      assert(getType(next.$update) != 'object',
         `%s is not allowed, "$update"'s param must to be an Object.`, next.$update)
       assert(prevType != 'object' && prevType != 'array',
         `"$update" only can operation at Object or Array, but %s is a %s.`, prev, prevType)

@@ -100,7 +100,7 @@ export function parseDirectiveValue (template) {
   let path = formatters.shift().trim()
   formatters = formatters.map(formatter => {
     formatter = parseFunctionCallString(formatter)
-    if (formatter.args.length === 0) 
+    if (formatter.args.length === 0)
       formatter = parseFunctionCallString2(formatter.functionName)
     return formatter
   })

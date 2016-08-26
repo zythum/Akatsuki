@@ -13,7 +13,7 @@ export default directiveHelper({
     let {element, args, view} = this
     let elName = this.elName = args
     let els = view.__rootView.els
-    if (els[elName]) return 
+    if (els[elName]) return
     els[elName] = element
   },
   unbind () {

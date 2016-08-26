@@ -1,8 +1,8 @@
-import {  
-  parseTextTemplate, 
-  parseAttributeName, 
-  parseDirectiveName, 
-  parseDirectiveValue, 
+import {
+  parseTextTemplate,
+  parseAttributeName,
+  parseDirectiveName,
+  parseDirectiveValue,
   parseFunctionCallString
 } from './parser'
 
@@ -14,11 +14,12 @@ import event from './event'
 const defaultTextDelimiters = ['${', '}']
 const defaultTirectiveAttributeDelimiters = ['[', ']']
 const defaultTventAttributeDelimiters = ['(', ')']
+const ModelUpdate = Model.prototype.update
 
 export default class View {
   constructor (element, {
     model = {},
-    mixins = [],    
+    mixins = [],
     directives = {},
     formatters = {},
     methods = {},
@@ -28,14 +29,14 @@ export default class View {
     viewWillUnmount = noop,
     viewDidUmmount = noop,
   }) {
-    
+
     this.els = {}
     this.model = model instanceof Model ? model : new Model(model || {})
-    this.__computedModel = null
+    this.computed = null
     this.__rootView = this
     this.__rootElement = element
-    
-    this.__binding = []    
+
+    this.__binding = []
 
     this.__directives = directives
     this.__formatters = formatters
@@ -62,14 +63,14 @@ export default class View {
 
     delete this.model
     delete this.els
-    delete this.__rootView    
+    delete this.__rootView
     delete this.__rootElement
     delete this.__binding
     delete this.__directives
     delete this.__formatters
     delete this.__methods
     delete this.__computed
-    delete this.__computedModel
+    delete this.computed
     delete this.viewWillMount
     delete this.viewDidMount
     delete this.viewWillUnmount
@@ -83,8 +84,8 @@ export default class View {
     let _bindingOne
     while (_bindingOne = this.__binding.pop()) _bindingOne.destroy()
 
-    this.__computedModel.destroy()
-    this.__computedModel = null
+    this.computed.destroy()
+    this.computed = null
 
     //将 methods 外跑到 view 层
     objForeach(this.__methods, (_, name) => delete this[name])
@@ -97,9 +98,11 @@ export default class View {
   mount () {
     if (this.mounted) return
     this.viewWillMount()
-    
-    //处理计算属性  
-    this.__computedModel = new Model({})
+
+    //处理计算属性
+    this.computed = new Model({})
+    this.computed.set = undefined
+    this.computed.update = undefined
     objForeach(this.__computed, (computed, name) => {
       const modelPaths = [].concat(computed)
       let _computedFunction = modelPaths.pop()
@@ -111,15 +114,16 @@ export default class View {
       if (getType(_computedFunction) === 'function') {
         const routine = () => {
           return _computedFunction.apply(this, modelPaths.map(path => model.get(path)))
-        }        
-        this.__computedModel.__model[name] = routine()
+        }
+        this.computed.__model[name] = routine()
         modelPaths.forEach(modelPath => {
           const linstener = () => {
-            if (this.__computedModel) this.__computedModel.set(name, routine())
+            if (this.computed)
+              ModelUpdate.call(this.computed, { [name]: {$set: routine()} })
           }
           model.on(modelPath, linstener)
           this.__binding.push({
-            destroy: () => model.off(modelPath, linstener) 
+            destroy: () => model.off(modelPath, linstener)
           })
         })
       }
@@ -127,11 +131,11 @@ export default class View {
 
     //将 methods 外跑到 view 层
     objForeach(this.__methods, (methods, name) => {
-      assert(name.indexOf('__') === 0, 
+      assert(name.indexOf('__') === 0,
         `method name %s is not allowed, method name can not start with "__".`, name)
-      assert(this[name] != undefined, 
+      assert(this[name] != undefined,
         `method name %s is not allowed, name is an exist method.`, name)
-      
+
       this[name] = this.__methods[name].bind(this)
     })
 
@@ -163,7 +167,7 @@ export default class View {
             if ( type = parseAttributeName(name, this.__directiveAttributeDelimiters) ) {
               let {directiveType, args} = parseDirectiveName(type)
               let {path, formatters} = parseDirectiveValue(value)
-              if ( directive.hasType(directiveType) || this.__directives.hasOwnProperty(directiveType) ) 
+              if ( directive.hasType(directiveType) || this.__directives.hasOwnProperty(directiveType) )
                 directives.push({type: directiveType, args, name, element, path, formatters, view: this})
             }
 
@@ -197,10 +201,7 @@ export default class View {
   }
 
   //hook model的相关方法
-  get (path) {
-    let value = this.__computedModel.get(path)
-    return value != undefined ? value : this.model.get(path)
-  }
+  get (path) { return this.model.get(path) }
   set (path, value) { this.model.set(path, value); return this }
   update (...next) { this.model.update(...next); return this }
   path (path) { return this.model.path(path) }
@@ -211,7 +212,7 @@ export default class View {
     mixins.model = this.model
     mixins.computed = Object.assign({}, this.__computed, mixins.computed || {})
     mixins.directives = this.__directives
-    
+
     ;['formatters', 'methods'].forEach(prop => {
       let wrapper = objForeach(this[`__${prop}`], (_, name) => {
         // 这里用 this[`__${prop}`][name] 而不只是直接用对应值是留一个运行时修改的余地
@@ -222,7 +223,7 @@ export default class View {
     })
 
     const childView = new View(element, mixins)
-    
+
     //把parent的一些东西写回去
     for (let prop of [
       '__rootView',

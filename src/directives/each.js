@@ -34,19 +34,19 @@ export default directiveHelper({
   bind () {
     let { element } = this
     let childViews = this.childViews = []
-    let parentNode = this.parentNode = 
+    let parentNode = this.parentNode =
       element.parentNode
-    let startPlaceHolder = this.startPlaceHolder = 
+    let startPlaceHolder = this.startPlaceHolder =
       document.createComment(startPlaceHolderName)
-    let endPlaceHolder = this.endPlaceHolder = 
-      document.createComment(endPlaceHolderName)    
+    let endPlaceHolder = this.endPlaceHolder =
+      document.createComment(endPlaceHolderName)
     parentNode.insertBefore(startPlaceHolder, element)
     parentNode.insertBefore(endPlaceHolder, element)
     parentNode.removeChild(element)
 
   },
   unbind () {
-    let {element, childViews, parentNode, 
+    let {element, childViews, parentNode,
       startPlaceHolder, endPlaceHolder} = this
     childViews.forEach(childView => {
       childView.unmount()
@@ -62,7 +62,7 @@ export default directiveHelper({
     delete this.endPlaceHolder
   },
   routine (value) {
-    
+
     let sourceMap
     if (this.formatters.length) {
       let result = execEachFormatter(value, this.formatters)
@@ -70,15 +70,15 @@ export default directiveHelper({
       value = result.sourceMap
     }
 
-    let {element, attributeName, path, view, 
+    let {element, attributeName, path, view,
       childViews, parentNode, endPlaceHolder} = this
-    
+
     let itemKey = this.args
     let keys = {}
 
     value.forEach(item => {
-      if (getType(item) === 'object' && 'key' in item) 
-        keys[item.key] = null 
+      if (getType(item) === 'object' && 'key' in item)
+        keys[item.key] = null
     })
 
     childViews.forEach((childView, index, list) => {
@@ -111,11 +111,11 @@ export default directiveHelper({
       nextChildViews.push(childView)
     })
 
-    childViews.forEach(childView => { 
+    childViews.forEach(childView => {
       if (childView) {
         parentNode.removeChild(childView.__rootElement)
         childView.destroy()
-      } 
+      }
     })
 
     this.childViews = nextChildViews
