@@ -2,9 +2,8 @@ import {objForeach, getType} from '../utils'
 
 export default objForeach({
 
-  toString (value, args) {
-    if (value && value.toString)
-      return value.toString.apply(value, args)
+  string (value, args) {
+    if (value && value.toString) return value.toString(...args)
     return value
   },
 

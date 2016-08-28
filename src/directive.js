@@ -105,7 +105,10 @@ function bindDirective ({directive, element, path, args, name, formatters, view}
     formatters: formatters,
     view: view,
     args: args,
-    dispatchEvent: function (type, data) {
+    nextTick (fn) {
+      nextTick(fn, instance)
+    },
+    dispatchEvent (type, data) {
       element.dispatchEvent(createCustomEventObject(type, data))
     },
     destroy () {

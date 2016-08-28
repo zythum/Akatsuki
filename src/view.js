@@ -6,7 +6,7 @@ import {
   parseFunctionCallString
 } from './parser'
 
-import {noop, objForeach, getType, walk, assert} from './utils'
+import {noop, objForeach, getType, walk, nextTick, assert} from './utils'
 import directive from './directive'
 import Model from './model'
 import event from './event'
@@ -206,6 +206,9 @@ export default class View {
   update (...next) { this.model.update(...next); return this }
   path (path) { return this.model.path(path) }
   each (iteratee) { return this.model.each(iteratee) }
+
+  //hook nextTick this指向自己
+  nextTick (fn) {nextTick(fn, this)}
 
   //创建子view
   childView (element, mixins={}) {
