@@ -44,6 +44,7 @@ export default function event (events, view) {
         $value: element.value,
         $index: view.computed.get('$index'),
         $length: view.computed.get('$length'),
+        $data: event && event.detail
       }
       method.apply(view.__rootView, args.map(type => {
         if (argMap.hasOwnProperty(type)) return argMap[type]

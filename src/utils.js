@@ -203,4 +203,22 @@ assert.value = (value) => {
   try { return JSON.stringify(value) } catch (e) { return value + '' }
 }
 
-
+/**
+ * 创建自定义事件的eventObject
+ * @param  {string} type   
+ * @param  {any}    detail
+ * @return {eventObject}
+ */
+export function createCustomEventObject (type, detail) {
+  if (window.CustomEvent) return new CustomEvent(type, {detail: detail})
+  let event
+  try {
+    event = document.createEvent('CustomEvent')
+    event.initCustomEvent(type, true, true, detail)
+  } catch (e) {
+    event = document.createEvent('Event')
+    event.initEvent(type, true, true)
+    event.detail = eventInitDict.detail
+  }
+  return event
+}

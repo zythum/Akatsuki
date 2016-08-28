@@ -7,7 +7,7 @@ import directivesProp from './directives/prop'
 import directivesShow from './directives/show'
 import directivesEach from './directives/each'
 import directivesEl from './directives/el'
-import {objForeach, nextTick} from './utils'
+import {objForeach, createCustomEventObject, nextTick} from './utils'
 import {execValueFormatter, parseFormatterArgs} from './formatter'
 
 let directives = {}
@@ -105,6 +105,9 @@ function bindDirective ({directive, element, path, args, name, formatters, view}
     formatters: formatters,
     view: view,
     args: args,
+    dispatchEvent: function (type, data) {
+      element.dispatchEvent(createCustomEventObject(type, data))
+    },
     destroy () {
       objForeach(formatters.depends, dependPath => {
         view.computed.off(dependPath, directiveListener)
