@@ -2,7 +2,7 @@ import {objForeach, getType, toStr} from '../utils'
 
 
 function _apply (instance, methodName, args) {
-  return instance['methodName'].apply(instance, args)
+  return instance[methodName].apply(instance, args)
 }
 
 export default objForeach({
