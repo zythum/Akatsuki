@@ -14,7 +14,7 @@ export default objForeach({
   $pop (array) { return array.slice(0, -1) },
   $unshift (array, [item]) { return [item].concat(array) },
   $shift (array) { return array.slice(1) },
-  $slice (array, args) { return _slice.apply(array, [].concat(args)) },
+  $arraySlice (array, args) { return _slice.apply(array, [].concat(args)) },
   $splice (array, args) {
     array = [].concat(array)
     _splice.apply(array, [].concat(args))
@@ -22,8 +22,8 @@ export default objForeach({
   },
   $reverse (array) { return [].concat(array).reverse() },
   $sort (array, [iteratee]) { return [].concat(array).sort(iteratee) },
-  $filter (array, [iteratee]) { return  array.filter(iteratee)},
-  $map (array, [iteratee]) { return  array.map(iteratee)},
+  $filter (array, [iteratee]) { return array.filter(iteratee)},
+  $map (array, [iteratee]) { return array.map(iteratee)},
 
   /**
    * 删除数组中对应index的元素
