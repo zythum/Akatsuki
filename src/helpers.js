@@ -62,11 +62,11 @@ const defaultMixinOptions = {
  * @param  {array} options
  * @return
  */
-export function mixinHelper (options = defaultMixinOptions) {
+export function mixinHelper (options = defaultMixinOptions, globalMixins) {
   options = Object.assign({}, options)
 
   let result = Object.assign({}, defaultMixinOptions)
-  let mixins = options.mixins || []
+  let mixins = globalMixins.concat(options.mixins || [])
   delete options.mixins
 
   //合并mixins

@@ -10,10 +10,8 @@ import {noop, objForeach, getType, walk, nextTick, assert} from './utils'
 import directive from './directive'
 import Model from './model'
 import event from './event'
+import config from './config'
 
-const defaultTextDelimiters = ['${', '}']
-const defaultTirectiveAttributeDelimiters = ['[', ']']
-const defaultTventAttributeDelimiters = ['(', ')']
 const ModelUpdate = Model.prototype.update
 
 export default class View {
@@ -52,9 +50,9 @@ export default class View {
     this.viewDidUmmount = viewDidUmmount
 
     //默认标示设置
-    this.__textDelimiters = defaultTextDelimiters
-    this.__directiveAttributeDelimiters = defaultTirectiveAttributeDelimiters
-    this.__eventAttributeDelimiters = defaultTventAttributeDelimiters
+    this.__textDelimiters = config.defaultTextDelimiters
+    this.__directiveAttributeDelimiters = config.defaultDirectiveAttributeDelimiters
+    this.__eventAttributeDelimiters = config.defaultEventAttributeDelimiters
   }
 
   destroy () {

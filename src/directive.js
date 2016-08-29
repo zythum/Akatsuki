@@ -9,6 +9,7 @@ import directivesEach from './directives/each'
 import directivesEl from './directives/el'
 import {objForeach, createCustomEventObject, nextTick} from './utils'
 import {execValueFormatter, applyFormatterArgs} from './formatter'
+import config from './config'
 
 let directives = {}
 for (let directive of [
@@ -49,7 +50,7 @@ directive.text = function directiveText ({textNode, path, formatters, view}) {
   const directiveTextListener = () => {
     let value = model.get(path)
     value = execValueFormatter(value, formatters)
-    if (view.mounted === true) {
+    if (view.mounted === true && config.async === true) {
       nextTick(() => textNode.nodeValue = value)
     } else {
       textNode.nodeValue = value
@@ -91,7 +92,7 @@ function bindDirective ({directive, element, path, args, name, formatters, view}
     if (directive.noValueFormatter === false) {
       value = execValueFormatter(value, formatters)
     }
-    if (view.mounted === true) {
+    if (view.mounted === true && config.async === true) {
       nextTick(()=> callObjectFunctionIfExit(instance, directive, 'routine', value))
     } else {
       callObjectFunctionIfExit(instance, directive, 'routine', value)
