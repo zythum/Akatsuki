@@ -1,13 +1,12 @@
 // Karma configuration
 // Generated on Thu Aug 25 2016 23:14:50 GMT+0800 (CST)
-
-module.exports = function(config) {
+module.exports = config => {
   config.set({
-    basePath: './',
+    basePath: '../',
     frameworks: ['mocha', 'chai'],
     files: [
-      '../dist/akatsuki.js',
-      '../test/**/*.spec.js'
+      'dist/akatsuki.js',
+      'test/**/*.js'
     ],
     exclude: [],
     preprocessors: {
@@ -17,12 +16,6 @@ module.exports = function(config) {
       options: {
         presets: ['es2015'],
         sourceMap: 'inline'
-      },
-      filename: function (file) {
-        return file.originalPath.replace(/\.js$/, '.es5.js');
-      },
-      sourceFileName: function (file) {
-        return file.originalPath;
       }
     },
     reporters: ['mocha'],
