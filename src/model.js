@@ -25,10 +25,11 @@ export default class Model {
 
   constructor (dataObject) {
     dataObject = deepCopy(dataObject, (key) => {
-      assert(key.indexOf('.') != -1,
-        `model name "${name}" is not allowed, model name can not have "." character.`)
+      const match = key.match(/(\s+|\(|\)|\[|\]|\.|\,\{|\})/)
+      assert(!!match,
+        'model name %s is not allowed, model name can not have " "(/\s/) character.', match && match[1])
       assert(key.indexOf('$') === 0,
-        `model name "${name}" is not allowed, model name can not start with "$".`)
+        'model name %s is not allowed, model name can not start with "$".', key)
     })
     this.__model = {}
     this.__events = {}

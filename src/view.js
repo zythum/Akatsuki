@@ -99,12 +99,14 @@ export default class View {
 
     //处理计算属性
     this.computed = new Model({})
+    //封掉 computed 的设置方法。不给用2333
     this.computed.set = undefined
     this.computed.update = undefined
     objForeach(this.__computed, (computed, name) => {
       const modelPaths = [].concat(computed)
       let _computedFunction = modelPaths.pop()
       let model = this.model
+      //如果最后一个参数是 Model, 那么说明监听的是这个 model 的值的变化产生新值，默认是自己的 model
       if (_computedFunction instanceof Model) {
         [model, _computedFunction] = [_computedFunction, modelPaths.pop()]
       }
@@ -120,9 +122,7 @@ export default class View {
               ModelUpdate.call(this.computed, { [name]: {$set: routine()} })
           }
           model.on(modelPath, linstener)
-          this.__binding.push({
-            destroy: () => model.off(modelPath, linstener)
-          })
+          this.__binding.push({ destroy () { model.off(modelPath, linstener) } })
         })
       }
     })
