@@ -62,13 +62,14 @@ export default directiveHelper({
     delete this.endPlaceHolder
   },
   routine (value) {
-
+    console.log(value)
     let sourceMap
     if (this.formatters.length) {
       let result = execEachFormatter(value, this.formatters)
       sourceMap = result.sourceMap
-      value = result.sourceMap
+      value = result.value
     }
+    console.log(value)
 
     let {element, attributeName, path, view,
       childViews, parentNode, endPlaceHolder} = this
@@ -95,15 +96,17 @@ export default directiveHelper({
 
     let nextChildViews = []
     value.forEach((item, index) => {
-      let key = item.key
+      const key = item.key
       let childView = keys[key] instanceof View ? keys[key] : shiftOne(childViews)
       if (!childView) {
         childView = view.childView(element.cloneNode(true))
         childView.__rootElement.removeAttribute(attributeName)
       }
+      const originIndex = sourceMap ? sourceMap[index] : index
       childView.__computed = Object.assign({}, view.__computed, {
-        [itemKey]: [path + '.$' + (sourceMap ? sourceMap[index] : index), (item) => item, this.model],
+        [itemKey]: [path + '.$' + originIndex, (item) => item, this.model],
         '$index': [()=> index],
+        '$originIndex': [()=> originIndex],
         '$length': [() => value.length]
       })
       parentNode.insertBefore(childView.__rootElement, endPlaceHolder)

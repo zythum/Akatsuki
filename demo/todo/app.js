@@ -1,15 +1,10 @@
-function ukey () {
-  ukey.count = ukey.count || 0
-  return Date.now() + '-' + ukey.count++
-}
-
 var rootElement = document.querySelector('.todoapp')
 var storageKey = 'Akatsuki-todos'
 var todos = localStorage.getItem(storageKey)
 todos = JSON.parse(todos) || [
-  {title: '今天天气不错', completed: false, key: ukey()},
-  {title: '吃晚饭后跑两圈', completed: false, key: ukey()},
-  {title: '周日去定羽毛球场地', completed: false, key: ukey()}
+  {title: '今天天气不错', completed: false},
+  {title: '吃晚饭后跑两圈', completed: false},
+  {title: '周日去定羽毛球场地', completed: false}
 ]
 
 var todoapp = Akatsuki(rootElement, {
@@ -30,14 +25,18 @@ var todoapp = Akatsuki(rootElement, {
       Akatsuki.nextTick(function () { element.focus() })
     }
   },
+  formatters: {
+    'todoFilter': function (todo, index, list, args) {
+      var filter = args[0]
+      switch (filter) {
+        case 'all': return true
+        case 'active': return todo.completed === false
+        case 'completed': return todo.completed === true
+        default: break;
+      }
+    }
+  },
   computed: {
-    filteredTodos: ['todos', 'filter', function (todos, filter) {
-      filter = ({
-        active: function (todo) { return todo.completed === false},
-        completed: function (todo) { return todo.completed === true}
-      })[filter]
-      return filter ? todos.filter(filter) : todos
-    }],
     leftTodoCount: ['todos', function (todos) {
       return todos.filter(function (todo) {
         return todo.completed === false
@@ -50,7 +49,7 @@ var todoapp = Akatsuki(rootElement, {
     },
     createTodo: function (event, element, value) {
       if (value.trim().length === 0) return
-      var unshiftData = {title: value, completed: false, key: ukey()}
+      var unshiftData = {title: value, completed: false}
       this.path('todos').update('$unshift', unshiftData)
       element.value = ''
     },
@@ -74,25 +73,13 @@ var todoapp = Akatsuki(rootElement, {
     },
     toggleAll: function () {
       var hasLeft = this.computed.get('leftTodoCount') > 0
-      this.path('todos').each(function (path) {
-          path.set('completed', hasLeft)
-      })
+      this.path('todos').each(function (path) { path.set('completed', hasLeft) })
     },
     toggleItem: function (index) {
-      var key = this.computed.get('filteredTodos.$'+index+'.key')
-      this.path('todos').each(function (path, index, listPath) {
-        if (path.get('key') === key) path.path('completed').update('$toggle')
-      })
+      this.path('todos.$' + index + '.completed').update('$toggle')
     },
     deleteItem: function (index) {
-      var key = this.computed.get('filteredTodos.$'+index+'.key')
-      var needRemoveIndex
-      this.path('todos').each(function (path, index, listPath) {
-        if (path.get('key') === key) needRemoveIndex = index
-      })
-      if (needRemoveIndex != undefined) {
-        this.path('todos').update('$remove', needRemoveIndex)
-      }
+      this.path('todos').update('$remove', index)
     },
     filter: function (type) {
       this.set('filter', type)

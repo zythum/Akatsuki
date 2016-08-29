@@ -8,7 +8,7 @@ import directivesShow from './directives/show'
 import directivesEach from './directives/each'
 import directivesEl from './directives/el'
 import {objForeach, createCustomEventObject, nextTick} from './utils'
-import {execValueFormatter, parseFormatterArgs} from './formatter'
+import {execValueFormatter, applyFormatterArgs} from './formatter'
 
 let directives = {}
 for (let directive of [
@@ -42,9 +42,12 @@ export default function directive (directiveArgs, view) {
 
 directive.text = function directiveText ({textNode, path, formatters, view}) {
   const delimiters = view.__textDelimiters
+
   const [firstPath] = path.split('.')
   const model = view.__computed.hasOwnProperty(firstPath) ? view.computed : view.model
-  const directiveTextListener = value => {
+
+  const directiveTextListener = () => {
+    let value = model.get(path)
     value = execValueFormatter(value, formatters)
     if (view.mounted === true) {
       nextTick(() => textNode.nodeValue = value)
@@ -52,22 +55,19 @@ directive.text = function directiveText ({textNode, path, formatters, view}) {
       textNode.nodeValue = value
     }
   }
-  formatters = parseFormatterArgs(formatters, view.__formatters, {
-    $index: () => view.computed.get('$index'),
-    $length: () => view.computed.get('$length')
-  })
-  directiveTextListener(model.get(path))
+  formatters = applyFormatterArgs(formatters, view)
+  directiveTextListener()
   model.on(path, directiveTextListener)
-  objForeach(formatters.depends, dependPath => {
-    view.computed.on(dependPath, directiveListener)
+  objForeach(formatters.depends, (model, path) => {
+    model.on(path, directiveListener)
   })
   return {
     element: textNode,
     path: path,
     view: view,
     destroy () {
-      objForeach(formatters.depends, dependPath => {
-        view.computed.off(dependPath, directiveListener)
+      objForeach(formatters.depends, (model, path) => {
+        model.off(path, directiveListener)
       })
       model.off(path, directiveTextListener)
       textNode.nodeValue = delimiters[0] + path + delimiters[1]
@@ -80,14 +80,14 @@ directive.hasType = function hasType (type) {
 }
 
 function bindDirective ({directive, element, path, args, name, formatters, view}) {
-  formatters = parseFormatterArgs(formatters, view.__formatters, {
-    $index: () => view.computed.get('$index'),
-    $length: () => view.computed.get('$length')
-  })
+  formatters = applyFormatterArgs(formatters, view)
   const attribute = element.getAttributeNode(name)
+
   const [firstPath] = path.split('.')
   const model = view.__computed.hasOwnProperty(firstPath) ? view.computed : view.model
-  const directiveListener = value => {
+
+  const directiveListener = () => {
+    let value = model.get(path)
     if (directive.noValueFormatter === false) {
       value = execValueFormatter(value, formatters)
     }
@@ -112,8 +112,8 @@ function bindDirective ({directive, element, path, args, name, formatters, view}
       element.dispatchEvent(createCustomEventObject(type, data))
     },
     destroy () {
-      objForeach(formatters.depends, dependPath => {
-        view.computed.off(dependPath, directiveListener)
+      objForeach(formatters.depends, (model, path) => {
+        model.off(path, directiveListener)
       })
       model.off(path, directiveListener)
       callObjectFunctionIfExit(instance, directive, 'unbind')
@@ -129,10 +129,10 @@ function bindDirective ({directive, element, path, args, name, formatters, view}
     element.removeAttributeNode(attribute)
   }
   callObjectFunctionIfExit(instance, directive, 'bind')
-  directiveListener(model.get(path))
+  directiveListener()
   model.on(path, directiveListener)
-  objForeach(formatters.depends, dependPath => {
-    view.computed.on(dependPath, directiveListener)
+  objForeach(formatters.depends, (model, path) => {
+    model.on(path, directiveListener)
   })
 
   return instance

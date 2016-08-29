@@ -1,5 +1,5 @@
 import {noop, getType, dateFormat, objectValueFromPath} from './utils'
-import {parseAttributeName} from './parser'
+import {parseSimpleType_throwError} from './parser'
 import formattersCommon from './formatters/common'
 import formattersNumber from './formatters/number'
 import formattersString from './formatters/string'
@@ -15,7 +15,8 @@ const formatters = {
   sort: {}
 }
 
-export function parseFormatterArgs (formatterArgs, customFormateMap, dependMap) {
+export function applyFormatterArgs (formatterArgs, view) {
+  const customFormateMap = view.__formatters
   let depends = {}
   formatterArgs = formatterArgs.map(({functionName, args}) => {
     let type
@@ -30,13 +31,16 @@ export function parseFormatterArgs (formatterArgs, customFormateMap, dependMap) 
       objectValueFromPath(formatters, `${type}.${functionName}`)
 
     args = args.map(arg => {
-      if (dependMap.hasOwnProperty(args)) {
-        depends[arg] = true
-        return dependMap[arg]
+      try {
+        return parseSimpleType_throwError(arg)
+      } catch (e) {
+        //如果上面不匹配。那么默认是path
+        const [firstPath] = arg.split('.')
+        const model = depends[arg] =
+          view.__computed.hasOwnProperty(firstPath) ? view.computed : view.model
+
+        return ()=> model.get(arg)
       }
-      let _arg = parseAttributeName(arg, ['\'', '\''])
-      if (_arg && _arg.indexOf('\'') === -1) arg = '"' + _arg + '"'
-      return JSON.parse(arg)
     })
     return {type, formatter, args}
   })
@@ -58,6 +62,7 @@ export function execEachFormatter (value, formatterArgs) {
 
   formatterArgs.forEach(({type, formatter, args}) => {
     if (getType(formatter) != 'function') return
+    args = args.map(arg => getType(formatter) === 'function' ? arg() : arg)
     switch (type) {
       case 'filter':
         indexedArray = indexedArray.filter((item, index, list) => {

@@ -108,12 +108,17 @@ export function parseDirectiveValue (template) {
 }
 
 /**
- * 转换字符串为JSON基本类型
- * @param  {string} value
+ * 字符串转换简单的JSON基本数据类型 转换失败则报错
+ * @param  {string} string
  * @return {JSON可用类型}
  */
-export function parseValue (value) {
-  let _value = parseAttributeName(value, ['\'', '\''])
-  if (_value && _value.indexOf('\'') === -1) value = '"' + _value + '"'
-  return JSON.parse(value)
+export function parseSimpleType_throwError (string) {
+   //兼容" 和 '
+    let result = parseAttributeName(string, ['\'', '\''])
+    result = result && result.indexOf('\'') === -1 ? '"' + result + '"' : string
+
+    //如果是简单数据结构那么可以JSON Parse 成功
+    result = JSON.parse(result)
+    if (typeof result === 'object') throw 'parseSimpleType_throwError:not allow array or object'
+    return result
 }

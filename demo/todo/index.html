@@ -28,27 +28,27 @@
         <label for="toggle-all">Mark all as complete</label>
         <ul class="todo-list" [el:list]>
           <li
-            [each:todo]="filteredTodos"
+            [each:todo]="todos | filter:todoFilter(filter)"
             [class:completed]="todo.completed"
-            [class:editing]="editing | == $index"
+            [class:editing]="editing | == $originIndex"
           >
             <div class="view">
               <input
                 class="toggle"
                 type="checkbox"
                 [prop:checked]="todo.completed"
-                (click)="toggleItem($index)"
+                (click)="toggleItem($originIndex)"
               >
-              <label (dblclick)="edit($element, $index)">${todo.title}</label>
-              <button class="destroy" (click)="deleteItem($index)"></button>
+              <label (dblclick)="edit($element, $originIndex)">${todo.title}</label>
+              <button class="destroy" (click)="deleteItem($originIndex)"></button>
             </div>
             <input
               class="edit" type="text"
-              [focus]="editing | == $index"
-              (keyup.enter)="finishEdit($element, $value, $index)"
-              (keyup.esc)="cancelEdit($element, $value, $index)"
-              (focus)="startEdit($element, $index)"
-              (blur)="finishEdit($element, $value, $index)"
+              [focus]="editing | == $originIndex"
+              (keyup.enter)="finishEdit($element, $value, $originIndex)"
+              (keyup.esc)="cancelEdit($element, $value, $originIndex)"
+              (focus)="startEdit($element, $originIndex)"
+              (blur)="finishEdit($element, $value, $originIndex)"
             >
           </li>
         </ul>

@@ -1,5 +1,5 @@
 import {noop, objectValueFromPath} from './utils'
-import {parseValue} from './parser'
+import {parseSimpleType_throwError} from './parser'
 
 export default function event (events, view) {
   return events.map(({type, element, name, functionName, args}) => {
@@ -42,13 +42,17 @@ export default function event (events, view) {
         $event: event,
         $element: element,
         $value: element.value,
-        $index: view.computed.get('$index'),
-        $length: view.computed.get('$length'),
         $data: event && event.detail
       }
-      method.apply(view.__rootView, args.map(type => {
-        if (argMap.hasOwnProperty(type)) return argMap[type]
-        return parseValue(type)
+      method.apply(view.__rootView, args.map(arg => {
+        if (argMap.hasOwnProperty(arg)) return argMap[arg]
+        try {
+          return parseSimpleType_throwError(arg)
+        } catch (e) {
+           const [firstPath] = arg.split('.')
+          const model = view.__computed.hasOwnProperty(firstPath) ? view.computed : view.model
+          return model.get(arg)
+        }
       }))
     }
 
