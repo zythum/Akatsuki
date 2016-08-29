@@ -62,14 +62,12 @@ export default directiveHelper({
     delete this.endPlaceHolder
   },
   routine (value) {
-    console.log(value)
     let sourceMap
     if (this.formatters.length) {
       let result = execEachFormatter(value, this.formatters)
       sourceMap = result.sourceMap
       value = result.value
     }
-    console.log(value)
 
     let {element, attributeName, path, view,
       childViews, parentNode, endPlaceHolder} = this
