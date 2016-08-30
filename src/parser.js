@@ -53,7 +53,7 @@ export function parseTextTemplate (template, delimiters) {
 }
 
 /**
- * 分析 functionName(args1, args2...) 这种格式
+ * 分析 functionName(arg1, arg2...) 这种格式
  * @param  {string} template       模版字符串
  * @return {functionName, args}    args = [arg1, arg2...]
  */

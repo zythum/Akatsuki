@@ -6,17 +6,11 @@ module.exports = config => {
     frameworks: ['mocha', 'chai'],
     files: [
       'dist/akatsuki.js',
-      'test/**/*.js'
+      'test/**/*.spec.js'
     ],
     exclude: [],
     preprocessors: {
-      'test/**/*.js': ['babel']
-    },
-    babelPreprocessor: {
-      options: {
-        presets: ['es2015'],
-        sourceMap: 'inline'
-      }
+      'test/**/*.js': ['rollup']
     },
     reporters: ['mocha'],
     port: 9876,
