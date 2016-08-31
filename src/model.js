@@ -92,8 +92,8 @@ export default class Model {
   //事件处理函数。
   emit (path, value) {
     objForeach(this.__events, (events, _path) => {
-      if (path.indexOf(_path) != 0) return
-      [].concat(events).forEach( callback => {
+      if (path && path.indexOf(_path) != 0) return
+      [].concat(events).forEach( callback => {        
         callback(this.get(_path))
       })
     })

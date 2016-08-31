@@ -12,6 +12,18 @@ module.exports = config => {
     preprocessors: {
       'test/**/*.js': ['rollup']
     },
+    rollupPreprocessor: {
+      rollup: {
+        plugins: [
+          require('rollup-plugin-babel')({
+            presets: [ require('babel-preset-es2015-rollup') ]
+          })
+        ]
+      },
+      bundle: {
+        sourceMap: 'inline'
+      }
+    },
     reporters: ['mocha'],
     port: 9876,
     colors: true,

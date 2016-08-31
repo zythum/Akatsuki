@@ -1,10 +1,10 @@
-import {objForeach, getType} from '../utils'
+import {objForeach, getType, empty} from '../utils'
 
 export default objForeach({
 
   string (value, args) {
     if (value && value.toString) return value.toString(...args)
-    return value
+    return value + ''
   },
 
   // 返回数据的length 如果是对象返回 keys.length
@@ -40,7 +40,7 @@ export default objForeach({
 
   // 如果value 是空 则返回默认值的操作
   '??': (value, [arg]) => {
-    return value === undefined || value === null ? arg : value
+    return empty(value) ? arg : value
   }
 
 }, (formatter, name, object) => {

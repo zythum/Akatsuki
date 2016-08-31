@@ -4,10 +4,11 @@ import directivesIf from './directives/if'
 import directivesClass from './directives/class'
 import directivesAttr from './directives/attr'
 import directivesProp from './directives/prop'
+import directivesStyle from './directives/style'
 import directivesShow from './directives/show'
 import directivesEach from './directives/each'
 import directivesEl from './directives/el'
-import {objForeach, createCustomEventObject, nextTick} from './utils'
+import {objForeach, createCustomEventObject, nextTick, empty} from './utils'
 import {execValueFormatter, applyFormatterArgs} from './formatter'
 import config from './config'
 
@@ -19,6 +20,7 @@ for (let directive of [
   directivesClass,
   directivesAttr,
   directivesProp,
+  directivesStyle,
   directivesShow,
   directivesEach,
   directivesEl
@@ -48,19 +50,19 @@ directive.text = function directiveText ({textNode, path, formatters, view}) {
   const model = view.__computed.hasOwnProperty(firstPath) ? view.computed : view.model
 
   const directiveTextListener = () => {
-    let value = model.get(path)
-    value = execValueFormatter(value, formatters)
+    let value = execValueFormatter(model.get(path), formatters)
+    let setValue = () => textNode.nodeValue = empty(value) ? '' : value
     if (view.mounted === true && config.async === true) {
-      nextTick(() => textNode.nodeValue = value)
+      nextTick(setValue)
     } else {
-      textNode.nodeValue = value
+      setValue()
     }
   }
   formatters = applyFormatterArgs(formatters, view)
   directiveTextListener()
   model.on(path, directiveTextListener)
   objForeach(formatters.depends, (model, path) => {
-    model.on(path, directiveListener)
+    model.on(path, directiveTextListener)
   })
   return {
     element: textNode,
@@ -68,7 +70,7 @@ directive.text = function directiveText ({textNode, path, formatters, view}) {
     view: view,
     destroy () {
       objForeach(formatters.depends, (model, path) => {
-        model.off(path, directiveListener)
+        model.off(path, directiveTextListener)
       })
       model.off(path, directiveTextListener)
       textNode.nodeValue = delimiters[0] + path + delimiters[1]

@@ -10,7 +10,7 @@ describe('utils', () => {
     expect(utils.getType(true)).to.equal('boolean')
   })
 
-  it('objectforeah current', () => {
+  it('objforeah current', () => {
     expect(utils.objForeach({1: 'a',2: 'b',3: 'c'}, (item, key) => item + key))
       .to.deep.equal({1: 'a1', 2: 'b2', 3: 'c3'})
   })
@@ -18,6 +18,10 @@ describe('utils', () => {
   it('objectValueFromPath current', () => {
     const obj = {a: {b : {c: 1}}}
     expect(utils.objectValueFromPath(obj, 'a.b.c')).to.equal(1)
+  })
+
+  it('camelize current', () => {
+    expect(utils.camelize('good-day')).to.equal('goodDay')
   })
 
   it('pathToObject current', () => {

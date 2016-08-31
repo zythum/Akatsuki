@@ -1,3 +1,5 @@
+import {createUuid, objForeach, assert} from './utils'
+
 /**
  * 获取节点属性是否是对应的标志的开头和结束
  * @param  {string}           attributeName 被判断的字符串
@@ -89,6 +91,13 @@ export function parseDirectiveName (template) {
   return {directiveType, args}
 }
 
+
+function replaceStringMap (string, map) {
+  objForeach(map, (value, placeholder) => {
+    string = string.replace(placeholder, value)
+  })
+  return string
+}
 /**
  * 分析 "xx.xx.xx | filter1('a') | filter2('b')" 这种格式
  * 或者 "xx.xx.xx | filter1  | filter2 'b'" 这种格式
@@ -96,12 +105,37 @@ export function parseDirectiveName (template) {
  * @return {path, formatters:[]}   formatters 元素是 parseFunctionCallString 的返回值
  */
 export function parseDirectiveValue (template) {
-  let formatters = template.split('|')
+  let stringMap = {}
+  let stack = undefined
+
+  let _template = ''
+  for (let char of template) {
+    if (stack) {
+      stack[1] += char
+      if (char === stack[0]) {
+        let placeholder = `___${createUuid()}___`
+        stringMap[placeholder] = stack[1]
+        _template += placeholder
+        stack = undefined
+      }
+    } else if (char === '\'' || char === '\"') {
+      stack = [char, char]
+    } else {
+      _template += char
+    }
+  }
+  assert(stack != undefined, '%s parse error.', template)
+
+  let formatters = _template.split('|')
   let path = formatters.shift().trim()
   formatters = formatters.map(formatter => {
     formatter = parseFunctionCallString(formatter)
     if (formatter.args.length === 0)
       formatter = parseFunctionCallString2(formatter.functionName)
+    
+    formatter.functionName = replaceStringMap(formatter.functionName, stringMap)
+    formatter.args = formatter.args.map(arg => replaceStringMap(arg, stringMap))
+
     return formatter
   })
   return {path, formatters}

@@ -1,3 +1,13 @@
+// uuid
+function S4 () { 
+  return (((1+Math.random())*0x10000)|0).toString(16).substring(1)
+}
+export function createUuid () {
+  // then to call it, plus stitch in '4' in the third group
+  return (S4() + S4() + "-" + S4() + "-4" + S4().substr(0,3) + 
+    "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase()
+}
+
 /**
  * 空方法
  * @return {undefined}
@@ -38,6 +48,24 @@ export function objForeach (object, iteratee) {
       result[key] = iteratee(object[key], key, object)
   }
   return result
+}
+
+/**
+ * 判读是否为 undefined 或者 null
+ * @param  {object} object
+ * @return {boolean}
+ */
+export function empty (object) {
+  return object === undefined || object === null
+}
+
+/**
+ * 转化成驼峰个是 good-day => goodDay
+ * @param  {string} string
+ * @return {string}
+ */
+export function camelize (string) { 
+  return string.replace(/-+(.)?/g, (_, char) => char ? char.toUpperCase() : '')
 }
 
 /**
