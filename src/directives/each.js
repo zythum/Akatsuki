@@ -62,55 +62,57 @@ export default directiveHelper({
     delete this.endPlaceHolder
   },
   routine (value) {
-    let sourceMap
-    if (this.formatters.length) {
-      let result = execEachFormatter(value, this.formatters)
-      sourceMap = result.sourceMap
-      value = result.value
-    }
-
     let {element, attributeName, path, view,
-      childViews, parentNode, endPlaceHolder} = this
-
-    let itemKey = this.args
-    let keys = {}
-
-    value.forEach(item => {
-      if (getType(item) === 'object' && 'key' in item)
-        keys[item.key] = null
-    })
-
-    childViews.forEach((childView, index, list) => {
-      childView.unmount()
-      if (!childView.hasOwnProperty('key')) return
-      if (keys.hasOwnProperty(childView.key)) {
-        keys[childView.key] = childView
-      } else {
-        childView.destroy()
-        parentNode.removeChild(childView.element)
-      }
-      list[index] = undefined
-    })
-
+        childViews, parentNode, endPlaceHolder} = this
     let nextChildViews = []
-    value.forEach((item, index) => {
-      const key = item.key
-      let childView = keys[key] instanceof View ? keys[key] : shiftOne(childViews)
-      if (!childView) {
-        childView = view.childView(element.cloneNode(true))
-        childView.__rootElement.removeAttribute(attributeName)
+
+    if (getType(value) == 'array') {
+      let sourceMap
+      if (this.formatters.length) {
+        let result = execEachFormatter(value, this.formatters)
+        sourceMap = result.sourceMap
+        value = result.value
       }
-      const originIndex = sourceMap ? sourceMap[index] : index
-      childView.__computed = Object.assign({}, view.__computed, {
-        [itemKey]: [path + '.$' + originIndex, (item) => item, this.model],
-        '$index': [()=> index],
-        '$originIndex': [()=> originIndex],
-        '$length': [() => value.length]
+
+      let itemKey = this.args
+      let keys = {}
+
+      value.forEach(item => {
+        if (getType(item) === 'object' && 'key' in item)
+          keys[item.key] = null
       })
-      parentNode.insertBefore(childView.__rootElement, endPlaceHolder)
-      childView.mount()
-      nextChildViews.push(childView)
-    })
+
+      childViews.forEach((childView, index, list) => {
+        childView.unmount()
+        if (!childView.hasOwnProperty('key')) return
+        if (keys.hasOwnProperty(childView.key)) {
+          keys[childView.key] = childView
+        } else {
+          childView.destroy()
+          parentNode.removeChild(childView.element)
+        }
+        list[index] = undefined
+      })
+
+      value.forEach((item, index) => {
+        const key = item.key
+        let childView = keys[key] instanceof View ? keys[key] : shiftOne(childViews)
+        if (!childView) {
+          childView = view.childView(element.cloneNode(true))
+          childView.__rootElement.removeAttribute(attributeName)
+        }
+        const originIndex = sourceMap ? sourceMap[index] : index
+        childView.__computed = Object.assign({}, view.__computed, {
+          [itemKey]: [path + '.$' + originIndex, (item) => item, this.model],
+          '$index': [()=> index],
+          '$originIndex': [()=> originIndex],
+          '$length': [() => value.length]
+        })
+        parentNode.insertBefore(childView.__rootElement, endPlaceHolder)
+        childView.mount()
+        nextChildViews.push(childView)
+      })
+    }
 
     childViews.forEach(childView => {
       if (childView) {
