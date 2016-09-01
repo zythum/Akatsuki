@@ -22,7 +22,7 @@ Akatsuki(document.getElementById('main'), {
 
 git clone 下来之后执行下面命令
 
-```
+```bash
 $ npm install
 $ npm run build 
 ```
