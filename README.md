@@ -12,11 +12,11 @@
 Akatsuki(document.getElementById('main'), {
     model: {greeting: 'Hello, world.'}
 })
-</scirpt>
+</script>
 
 ```
 
----
+------
 
 ## 开发 Akatsuki
 
@@ -31,7 +31,7 @@ $ npm run build
 `dist`: 生成文件目录; 
 `demo`: ~~呆毛~~ ~~🌰~~ 例子目录
 
----
+------
 
 ## 使用 Akatsuki
 
@@ -50,8 +50,8 @@ Akatsuki 的指令使用 `[directive:arg]="my.model.path | formatter"` 的格式
 > 更新元素的 textContent, 也可以直接使用 `${my.model.path}` 的方式写在内容体内。
 
 ```
-<div [text]="my.model.path"><div>
-<div>${my.model.path}<div>
+<div [text]="my.model.path"></div>
+<div>${my.model.path}</div>
 ```
 
 #### [html]
@@ -60,7 +60,7 @@ Akatsuki 的指令使用 `[directive:arg]="my.model.path | formatter"` 的格式
 ⚠️尽量使用`[text]` `${}`的方式而不是修改innerHTML, 直接渲染html是有xss风险的，特别是内容是用户输入的情况下。
 
 ```
-<div [html]="my.model.path"><div>
+<div [html]="my.model.path"></div>
 ```
 #### [class:className1 className2]
 > 更新元素的 className。
@@ -68,12 +68,12 @@ Akatsuki 的指令使用 `[directive:arg]="my.model.path | formatter"` 的格式
 `arg` 控制的className值，可以多个，空格分隔
 
 ```
-<div [class:current]="my.model.path"><div>
-<div [class:current selected]="my.model.path"><div>
+<div [class:current]="my.model.path"></div>
+<div [class:current selected]="my.model.path"></div>
 <div 
     [class:current]="my.model.path" 
     [class:selected]="another.model.path">
-<div>
+</div>
 ```
 #### [prop:propertyName]
 > 更新元素的 property 属性，比如 checked 等。
@@ -152,10 +152,9 @@ Akatsuki(document.getElementById('root'), {
 ```
 
 #### 自定义 directive
-
 > 朱一很懒，困了， 碎觉去了
 
----
+------
 
 ### model
 > model 是数据的核心，能够判断数据的变化在改变view。
@@ -278,7 +277,8 @@ model.path('goods').each(function (path, index, listPath) {
 // => cake 3 ['apple', 'car', 'bike', 'cake']
 ```
 
----
+------
+
 ### methods
 > methods 处理当前 view 中的所有事件，当前view给出的外跑还输，以及一些公用方法。
 > 
@@ -294,7 +294,7 @@ model.path('goods').each(function (path, index, listPath) {
 <!--页面绑定实例-->
 <div id="root">
     <input (keyup.enter)="inputSubmit($value)" />
-<div>
+</div>
 <script>
 Akatsuki(document.getElementById('root'), {
     methods: {
@@ -323,7 +323,7 @@ Akatsuki(document.getElementById('root'), {
     + `$value`: 当前绑定事件的dom的value
     + `'string'` `1` `false` `true` JSON 基本对象
 
----
+------
 
 ### formatters
 > 对于当前类似 `[text]="my.text"` 的 directive, 如果传入的值需要一些固定的改变再去变化的 dom 的话 可以使用 formatter 修饰。`[text]="my.text | prefix '$'"` 
@@ -332,7 +332,7 @@ Akatsuki(document.getElementById('root'), {
 
 ```
 <!--页面绑定实例-->
-<div id="root">${my.text | prefix '¥' | suffix '.00'}<div>
+<div id="root">${my.text | prefix '¥' | suffix '.00'}</div>
 <script>
 Akatsuki(document.getElementById('root'), {
     model: {my: {text: 12}}
@@ -391,7 +391,7 @@ formatter空格后面或者括号中的参数。可以是JSON的简单数据类�
 #### 自定义formatter
 > 朱一很懒，饿了，吃饭去
 
----
+------
 
 ### operations
 > model 操作符，用于简化 model操作
@@ -441,7 +441,7 @@ formatter空格后面或者括号中的参数。可以是JSON的简单数据类�
 
 + `exec`
 
----
+------
 
 ### computed
 > 计算属性， 如果有一些值需要一顶计算才能显示的，或者依赖多个值经过一定计算显示的
@@ -453,7 +453,7 @@ formatter空格后面或者括号中的参数。可以是JSON的简单数据类�
 <!--页面绑定实例-->
 <ul id="root">
     <li [each:todo]="filteredTodos">${todo.title}</li>
-<ul>
+</ul>
 <script>
 Akatsuki(document.getElementById('root'), {
     model: {
@@ -476,7 +476,7 @@ Akatsuki(document.getElementById('root'), {
 </script>
 ```
 
----
+------
 
 ### lifeCycle
 > lifeCycle 可以获取当前试图创建的时机
@@ -523,7 +523,7 @@ Akatsuki(document.getElementById('root'), {
 > + this.els 已经清除
 > + computed 计算属性已经清除
 
----
+------
 
 ### other
 
