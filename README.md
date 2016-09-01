@@ -460,7 +460,7 @@ Akatsuki(document.getElementById('root'), {
         todos: [
             {title: '买鸡蛋', complated: true},
             {title: '买牛奶', complated: false}
-        ]，
+        ],
         filter: 'complated'
     },
     computed: {
