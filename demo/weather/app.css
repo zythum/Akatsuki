@@ -39,7 +39,7 @@ body { font-size: 16px; color: #687D8B; background: #E6EBED; font-family: 'Helve
 h1 {position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); margin-top: -180px; font-size: 100px;
 font-weight: 100; text-align: center; opacity: 0.3; text-rendering: optimizeLegibility;} 
 .wrapper {background: #F6F6FB; box-shadow: 0 0 3px rgba(0,0,0,0.3); border-radius: 4px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);}
-.main {width: 250px; padding: 10px 10px 0}
+.main {width: 250px; padding: 10px 10px 0; margin: 0 auto;}
 .main h2 {text-align: center; padding: 10px 0 10px; font-size: 50px; height: 80px;}
 .main ul {display: flex;}
 .main li {flex: 1; text-align: center; height: 40px; line-height: 40px; font-size: 20px;}
@@ -54,9 +54,9 @@ font-weight: 100; text-align: center; opacity: 0.3; text-rendering: optimizeLegi
 .other i {display: block; font-size: 20px;}
 
 .now {float: left;}
-.forecast {height: 240px; width: 740px; margin-left: 250px; padding: 20px 20px 20px 0; }
-.forecast .chart {width: 700px; height: 150px;}
-.forecast ul {display: flex; margin-top: 5px;}
+.forecast {height: 240px; width: 740px; margin-left: 250px; padding: 20px 20px 20px 0; overflow-x: auto;}
+.forecast .chart {width: 720px; height: 150px;}
+.forecast ul {display: flex; margin-top: 5px; width: 720px;}
 .forecast ul li {flex: 1; display: flex; padding: 0 6px;}
 .forecast ul div {flex: 3; height: 100%;}
 
@@ -67,3 +67,19 @@ font-weight: 100; text-align: center; opacity: 0.3; text-rendering: optimizeLegi
 .forecast ul div:last-child {flex: 2; padding-top: 7px; opacity: 0.4;}
 
 .yahoo-link {position: absolute; right: 10px; bottom: 10px;}
+
+@media (max-width: 1000px) {
+  h1 {visibility: hidden;}
+  .now {float: none;}
+  .forecast {margin-left: 0; padding: 20px 10px 20px 10px;}
+}
+
+@media (max-width: 800px) {
+  .now {float: none;}
+  .forecast {width: 500px; padding: 0; height: 220px;}
+}
+
+@media (max-width: 600px) {
+  .now {float: none;}
+  .forecast {width: 300px;}
+}
