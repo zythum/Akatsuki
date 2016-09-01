@@ -197,10 +197,10 @@ export function deepCopy (object, checkObjectKey) {
  * @return
  */
 export function assert (expression, message) {
-  let index = 2
+  let index = 2, args = arguments
   if (expression) {
     throw new Error('Akatsuki: ' + message.replace(/%s/g, () =>
-      assert.value(arguments[index++])))
+      assert.value(args[index++])))
   }
 }
 assert.value = (value) => {
