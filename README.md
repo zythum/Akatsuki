@@ -4,7 +4,7 @@
 > 
 > 我是晓，要把我当成独当一面的 ~~小学生~~ ~~Lady~~ MVVM 看哟!
 
-```
+```html
 <!--demo: hello world-->
 <div id="main">${greeting}</div>
 
@@ -49,7 +49,7 @@ Akatsuki 的指令使用 `[directive:arg]="my.model.path | formatter"` 的格式
 #### [text]
 > 更新元素的 textContent, 也可以直接使用 `${my.model.path}` 的方式写在内容体内。
 
-```
+```html
 <div [text]="my.model.path"></div>
 <div>${my.model.path}</div>
 ```
@@ -59,7 +59,7 @@ Akatsuki 的指令使用 `[directive:arg]="my.model.path | formatter"` 的格式
 
 ⚠️尽量使用`[text]` `${}`的方式而不是修改innerHTML, 直接渲染html是有xss风险的，特别是内容是用户输入的情况下。
 
-```
+```html
 <div [html]="my.model.path"></div>
 ```
 #### [class:className1 className2]
@@ -67,7 +67,7 @@ Akatsuki 的指令使用 `[directive:arg]="my.model.path | formatter"` 的格式
 
 `arg` 控制的className值，可以多个，空格分隔
 
-```
+```html
 <div [class:current]="my.model.path"></div>
 <div [class:current selected]="my.model.path"></div>
 <div 
@@ -80,7 +80,7 @@ Akatsuki 的指令使用 `[directive:arg]="my.model.path | formatter"` 的格式
 
 `arg` 控制的 property 的name
 
-```
+```html
 <input type="checkbox" [prop:checked]="my.model.path"/>
 ```
 
@@ -90,7 +90,7 @@ Akatsuki 的指令使用 `[directive:arg]="my.model.path | formatter"` 的格式
 
 `arg` 控制的 attribute 的 name 
 
-```
+```html
 <input type="checkbox" [attr:data-info]="my.model.path"/>
 ```
 
@@ -99,7 +99,7 @@ Akatsuki 的指令使用 `[directive:arg]="my.model.path | formatter"` 的格式
 
 ⚠️show只是在 `'none'` `''` 之前切换，特殊的css处理会对show有一定影响
 
-```
+```html
 <div class="modal" [show]="my.model.path"></div>
 ```
 
@@ -110,7 +110,7 @@ Akatsuki 的指令使用 `[directive:arg]="my.model.path | formatter"` 的格式
 
 ⚠️ 同名的el只能存在提个，Akastuki设计是抢占式的
 
-```
+```html
 <div id="root">
     <input [el:user] name="userName" value="用户名" />
 </div>
@@ -130,7 +130,7 @@ Akatsuki(document.getElementById('root'), {
 请区别 [if] 和 ［show］，虽然一般来说表现效果一致，但是内在实现完全不同，
 [if] 不显示时不显示的dom是不存在的， [show] 只是`display:none`了而已
 
-```
+```html
 <div [if]="my.model.path"> 暁よ。一人前のレディーとして扱ってよね！</div>
 ```
 
@@ -143,7 +143,7 @@ Akatsuki(document.getElementById('root'), {
 
 `$lengh` 内部遍历到的数组的长度
 
-```
+```html
 <ul>
   <li [each:item]="list.path" [class:current]="item.current">
     ${$index} | ${item.text} | ${$length}
@@ -290,7 +290,7 @@ model.path('goods').each(function (path, index, listPath) {
 
 页面标记 `(eventName.plugin)="methodsName(...args)"`
 
-```
+```html
 <!--页面绑定实例-->
 <div id="root">
     <input (keyup.enter)="inputSubmit($value)" />
@@ -330,7 +330,7 @@ Akatsuki(document.getElementById('root'), {
 
 例子：
 
-```
+```html
 <!--页面绑定实例-->
 <div id="root">${my.text | prefix '¥' | suffix '.00'}</div>
 <script>
@@ -449,7 +449,7 @@ formatter空格后面或者括号中的参数。可以是JSON的简单数据类�
 > + computed 需要写明依赖的model的path，在处理函数中是拿不到 instance 的，只能对依赖的model进行计算
 > + computed 对应的值不可以设置，但是可以通过 this.get方法获得
 
-```
+```html
 <!--页面绑定实例-->
 <ul id="root">
     <li [each:todo]="filteredTodos">${todo.title}</li>
