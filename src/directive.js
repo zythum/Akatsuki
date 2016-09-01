@@ -43,7 +43,7 @@ export default function directive (directiveArgs, view) {
   return {instances, needBreak}
 }
 
-directive.text = function directiveText ({textNode, path, formatters, view}) {
+directive.text = function directiveText ({textNode, path, formatters, directivesValue, view}) {
   const delimiters = view.__textDelimiters
 
   const [firstPath] = path.split('.')
@@ -73,7 +73,7 @@ directive.text = function directiveText ({textNode, path, formatters, view}) {
         model.off(path, directiveTextListener)
       })
       model.off(path, directiveTextListener)
-      textNode.nodeValue = delimiters[0] + path + delimiters[1]
+      textNode.nodeValue = delimiters[0] + directivesValue + delimiters[1]
     }
   }
 }

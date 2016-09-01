@@ -148,7 +148,7 @@ export default class View {
             if (token.type === 'binding') {
               let {path, formatters} = parseDirectiveValue(token.value)
               this.__binding.push(
-                directive.text({textNode, path, formatters, view: this}))
+                directive.text({textNode, path, formatters, directivesValue: token.value, view: this}))
             }
           })
           element.parentNode.removeChild(element)
