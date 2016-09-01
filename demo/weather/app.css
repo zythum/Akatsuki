@@ -39,22 +39,22 @@ body { font-size: 16px; color: #687D8B; background: #E6EBED; font-family: 'Helve
 h1 {position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); margin-top: -180px; font-size: 100px;
 font-weight: 100; text-align: center; opacity: 0.3; text-rendering: optimizeLegibility;} 
 .wrapper {background: #F6F6FB; box-shadow: 0 0 3px rgba(0,0,0,0.3); border-radius: 4px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);}
-.main {width: 300px; padding: 10px}
+.main {width: 250px; padding: 10px 10px 0}
 .main h2 {text-align: center; padding: 10px 0 10px; font-size: 50px; height: 80px;}
 .main ul {display: flex;}
 .main li {flex: 1; text-align: center; height: 40px; line-height: 40px; font-size: 20px;}
-.main li.location {font-size: 14px; font-weight: bold;}
+.main li.location {font-size: 14px; font-weight: bold; white-space: nowrap;}
 .main li.temp {font-size: 20px; position: relative;}
 .main li.wind {font-size: 20px;}
 
-.other {padding-top: 10px; padding-bottom: 20px;}
+.other {padding-top: 20px; padding-bottom: 20px;}
 .other::before {content: ''; display: block; width: 90%; margin:0 auto; border-top: 1px solid #687D8B; opacity: 0.3;}
 .other ul {margin-top: 30px; display: flex; padding:0 10px;}
-.other li {flex: 1; text-align: center; height: 40px; line-height: 20px; font-size: 12px;}
+.other li {flex: 1; text-align: center; height: 40px; line-height: 20px; font-size: 12px; white-space: nowrap;}
 .other i {display: block; font-size: 20px;}
 
 .now {float: left;}
-.forecast {height: 240px; width: 740px; margin-left: 300px; padding: 20px 20px 20px 0; }
+.forecast {height: 240px; width: 740px; margin-left: 250px; padding: 20px 20px 20px 0; }
 .forecast .chart {width: 700px; height: 150px;}
 .forecast ul {display: flex; margin-top: 5px;}
 .forecast ul li {flex: 1; display: flex; padding: 0 6px;}
