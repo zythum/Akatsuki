@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-cn">
+  <head>
+    <meta charset="utf-8">
+    <title>Weather</title>
+    <link rel="stylesheet" href="./app.css">
+    <script src="./icons.map.js"></script>
+    <script src="../../dist/akatsuki.js"></script>
+  </head>
+  <body>
+    <h1>Weather</h1>
+    <div class="wrapper">      
+      <div class="now">
+        <div class="main">
+          <h2><i>${item.condition.code | ?? '3200' | weather}</i></h2>
+          <ul>
+            <li class="location">${location.city | ?? 'Unknown'}</li>
+            <li class="temp">
+              <i type="celsius">${item.condition.temp | celsius }</i>
+            </li>
+            <li class="wind">
+              <i type="wind" [style:transform]="wind.direction | prefix 'rotate(' | suffix 'deg)'"></i>
+              <i [attr:type]="wind.speed | ?? 0 | windBeaufort | prefix 'wind-beaufort-'"></i>
+            </li>
+          </ul>
+        </div>
+        <div class="other">
+          <ul>
+            <li><i type="sunrise"></i>${astronomy.sunrise | ?? 'N/A'}</li>
+            <li><i type="sunset"></i>${astronomy.sunset | ?? 'N/A'}</li>
+            <li><i type="humidity"></i>${atmosphere.humidity | ?? 0 | suffix ' %'}</li>
+            <li><i type="barometer"></i>${atmosphere.pressure | ?? 0 | / 10 | suffix ' kPa'}</li>
+          </ul>
+        </div>
+      </div>
+      <div class="forecast">
+        <svg width="700" height="150" version="1.1" class="chart">
+          <path [each:path]="forecastPath" [attr:d]="path" 
+            style="fill:transparent;stroke:#687D8B;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:miter;"
+            [style:opacity]="$index | / 2 | + 0.5"></path>
+        </svg>
+        <ul>
+          <li [each:item]="item.forecast">
+            <div>
+              <span class="weather"><i>${item.code | ?? '3200' | weather}</i></span>
+              <span class="day">${item.day}</span>
+            </div>
+            <div>
+              <span class="temp"><i type="celsius">${item.high | celsius}</i></span>
+              <span class="temp"><i type="celsius">${item.low | celsius}</i></span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <a class="yahoo-link" href="https://www.yahoo.com/?ilc=401" target="_blank"> <img src="https://poweredby.yahoo.com/purple.png" width="134" height="29"/> </a>
+    <script src="./app.js"></script>
+  </body>
+</html>
