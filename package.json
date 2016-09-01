@@ -1,6 +1,6 @@
 {
   "name": "akatsuki",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "简单的MVVM实现",
   "main": "index.js",
   "scripts": {
@@ -13,7 +13,6 @@
   },
   "license": "ISC",
   "devDependencies": {
-    "babel-preset-es2015": "^6.14.0",
     "babel-preset-es2015-rollup": "^1.2.0",
     "chai": "^3.5.0",
     "karma": "^1.2.0",
