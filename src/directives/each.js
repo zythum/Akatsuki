@@ -1,4 +1,4 @@
-import View from '../view'
+import View, {createChildView} from '../view'
 import {execEachFormatter} from '../formatter'
 import {getType} from '../utils'
 import {directiveHelper} from '../helpers'
@@ -98,7 +98,7 @@ export default directiveHelper({
         const key = item.key
         let childView = keys[key] instanceof View ? keys[key] : shiftOne(childViews)
         if (!childView) {
-          childView = view.childView(element.cloneNode(true))
+          childView = createChildView(view, element.cloneNode(true))
           childView.__rootElement.removeAttribute(attributeName)
         }
         const originIndex = sourceMap ? sourceMap[index] : index

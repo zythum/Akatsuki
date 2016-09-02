@@ -94,7 +94,8 @@ export function parseDirectiveName (template) {
 
 function replaceStringMap (string, map) {
   objForeach(map, (value, placeholder) => {
-    string = string.replace(placeholder, value)
+    //replace 会对$做特殊处理。
+    string = string.replace(placeholder, value.replace(/\$/g, '$$$$'))
   })
   return string
 }

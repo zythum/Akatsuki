@@ -1,4 +1,4 @@
-import View from '../view'
+import View, {createChildView} from '../view'
 import {directiveHelper} from '../helpers'
 
 const placeHolderName = 'akasuki-if-placeholder'
@@ -40,7 +40,7 @@ export default directiveHelper({
 
     if (!!value) {
       if (! (childView instanceof View) ) {
-        childView = this.childView = view.childView(element.cloneNode(true))
+        childView = this.childView = createChildView(view, element.cloneNode(true))
         childView.__rootElement.removeAttribute(attributeName)
       }
       if (current === placeHolder) {

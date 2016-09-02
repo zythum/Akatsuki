@@ -207,32 +207,36 @@ export default class View {
 
   //hook nextTick this指向自己
   nextTick (fn) {nextTick(fn, this)}
+}
 
-  //创建子view
-  childView (element, mixins={}) {
-    mixins.model = this.model
-    mixins.computed = Object.assign({}, this.__computed, mixins.computed || {})
-    mixins.directives = this.__directives
+//创建子view
+export function createChildView (parentView, element, mixins={}) {
+  
+  const bindParentComputed = objForeach(parentView.__computed, (_, name) => 
+    [name, value => value, parentView.computed])
 
-    ;['formatters', 'methods'].forEach(prop => {
-      let wrapper = objForeach(this[`__${prop}`], (_, name) => {
-        // 这里用 this[`__${prop}`][name] 而不只是直接用对应值是留一个运行时修改的余地
-        let self = this[`__${prop}`]
-        return function () { return self[name].apply(this, arguments) }
-      })
-      mixins[prop] = Object.assign({}, wrapper, mixins[prop] || {})
+  mixins.model = parentView.model
+  mixins.computed = Object.assign({}, bindParentComputed, mixins.computed || {})
+  mixins.directives = Object.assign({}, parentView.__directives, mixins.__directives || {})
+
+  ;['formatters', 'methods'].forEach(prop => {
+    let wrapper = objForeach(parentView[`__${prop}`], (_, name) => {
+      // 这里用 parentView[`__${prop}`][name] 而不只是直接用对应值是留一个运行时修改的余地
+      let self = parentView[`__${prop}`]
+      return function () { return self[name].apply(parentView, arguments) }
     })
+    mixins[prop] = Object.assign({}, wrapper, mixins[prop] || {})
+  })
 
-    const childView = new View(element, mixins)
+  const childView = new View(element, mixins)
 
-    //把parent的一些东西写回去
-    for (let prop of [
-      '__rootView',
-      '__textDelimiters',
-      '__directiveAttributeDelimiters',
-      '__eventAttributeDelimiters'
-    ]) childView[prop] = this[prop]
+  //把parent的一些东西写回去
+  for (let prop of [
+    '__rootView',
+    '__textDelimiters',
+    '__directiveAttributeDelimiters',
+    '__eventAttributeDelimiters'
+  ]) childView[prop] = parentView[prop]
 
-    return childView
-  }
+  return childView
 }

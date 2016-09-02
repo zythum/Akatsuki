@@ -4,7 +4,7 @@ const rollup = require('rollup')
 const babel = require('rollup-plugin-babel')
 const uglify = require('rollup-plugin-uglify')
 
-function formateSize  (s) {
+function formateSize (s) {
   return (s/1024).toFixed(2)
 }
 
