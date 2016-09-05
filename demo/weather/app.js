@@ -21,14 +21,13 @@ function pointToPath (points) {
     min = Math.min(min, point[0], point[1])
     max = Math.max(max, point[0], point[1])
   })
-
   var path = ['', '']
   points.forEach(function (point, index) {
     var prefix = (index == 0 ? 'M' : 'L') + (index * 72 + 36) + ','
     path.forEach(function (_, i) {
-      path[i] += prefix + (((point[i] - min) / (max - min) * 110) + 20)
+      path[i] += prefix + (((1 - (point[i] - min) / (max - min)) * 110) + 20)
     })
-  })
+  })  
   return path
 }
 

@@ -37,7 +37,7 @@
         <svg width="720" height="150" version="1.1" class="chart">
           <path [each:path]="forecastPath" [attr:d]="path" 
             style="fill:transparent;stroke:#687D8B;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:miter;"
-            [style:opacity]="$index | / 2 | + 0.5"></path>
+            [style:opacity]="$index | / 2 | -x 1"></path>
         </svg>
         <ul>
           <li [each:item]="item.forecast">
