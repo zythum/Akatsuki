@@ -1,3 +1,5 @@
+'use strict';
+
 // Karma configuration
 // Generated on Thu Aug 25 2016 23:14:50 GMT+0800 (CST)
 module.exports = config => {

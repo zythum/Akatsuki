@@ -8,6 +8,7 @@
     <script src="../../dist/akatsuki.js"></script>
   </head>
   <body>
+    <div class="map" [style:background-image]="mapUrl | prefix 'url(' | suffix ')'"></div>
     <h1>Weather</h1>
     <div class="wrapper">      
       <div class="now">

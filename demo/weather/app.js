@@ -53,6 +53,9 @@ var app = Akatsuki(document.body, {
     }
   },
   computed: {
+    mapUrl: ['item.lat', 'item.long', function (la, lo) {
+      return 'http://api.map.baidu.com/staticimage?center='+lo+','+la+'&width=1024&height=1024&zoom=10';
+    }],
     forecastPath: ['item.forecast', function (forecast) {
       if (forecast) 
         return pointToPath(forecast.map(function (one) { 
