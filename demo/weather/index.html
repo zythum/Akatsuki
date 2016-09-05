@@ -30,7 +30,7 @@
             <li><i type="sunrise"></i>${astronomy.sunrise | ?? 'N/A'}</li>
             <li><i type="sunset"></i>${astronomy.sunset | ?? 'N/A'}</li>
             <li><i type="humidity"></i>${atmosphere.humidity | ?? 0 | suffix ' %'}</li>
-            <li><i type="barometer"></i>${atmosphere.pressure | ?? 0 | / 10 | suffix ' kPa'}</li>
+            <li><i type="barometer"></i>${atmosphere.pressure | ?? 0 | / 10 | toFixed 1 | suffix ' kPa'}</li>
           </ul>
         </div>
       </div>

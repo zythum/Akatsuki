@@ -44,7 +44,7 @@ font-weight: 100; text-align: center; opacity: 0.5; text-rendering: optimizeLegi
 .main h2 {text-align: center; padding: 10px 0 10px; font-size: 50px; height: 80px;}
 .main ul {display: flex;}
 .main li {flex: 1; text-align: center; height: 40px; line-height: 40px; font-size: 20px;}
-.main li.location {font-size: 14px; font-weight: bold; white-space: nowrap;}
+.main li.location {font-size: 14px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
 .main li.temp {font-size: 20px; position: relative;}
 .main li.wind {font-size: 20px;}
 

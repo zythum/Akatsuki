@@ -25,7 +25,7 @@ function blue (str) {
 }
 
 
-console.log('> Build Akatsuki <')
+console.log('> Build Akatsuki')
 
 let startAt = Date.now()
 rollup.rollup({
