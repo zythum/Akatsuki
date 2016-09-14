@@ -57,7 +57,7 @@ font-weight: 100; text-align: center; opacity: 0.5; text-rendering: optimizeLegi
 .now {float: left;}
 .forecast {height: 240px; width: 740px; margin-left: 250px; padding: 20px 20px 20px 0; overflow-x: auto;}
 .forecast .chart {width: 720px; height: 150px;}
-.forecast ul {display: flex; margin-top: 5px; width: 720px;}
+.forecast ul {display: flex; margin-top: 6px; width: 720px;}
 .forecast ul li {flex: 1; display: flex; padding: 0 6px;}
 .forecast ul div {flex: 3; height: 100%;}
 
