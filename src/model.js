@@ -64,7 +64,7 @@ export default class Model {
    * @param {any} value
    */
   set (path, value) {
-    this.update(pathToObject(path, value))
+    this.update(pathToObject(path, {$set: value}))
   }
 
   /**
